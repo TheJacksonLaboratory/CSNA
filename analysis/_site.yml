@@ -1,17 +1,23 @@
-name: "csna_workflow"
+me: CSNA_workflow
 output_dir: ../docs
+include: .nojekyll
+exclude: include
 navbar:
-  title: "csna_workflow"
+  title: CSNA_workflow
   left:
   - text: Home
     href: index.html
-  - text: About
-    href: about.html
   - text: License
     href: license.html
+  - text: GitHub
+    href: https://github.com/TheJacksonLaboratory/CSNA
+  right:
+  - icon: fa-github
+    text: Source code
+    href: https://github.com/xhyuo/CSNA
 output:
   workflowr::wflow_html:
     toc: yes
-    toc_float: yes
-    theme: cosmo
+    toc_float: no
+    theme: united
     highlight: textmate
