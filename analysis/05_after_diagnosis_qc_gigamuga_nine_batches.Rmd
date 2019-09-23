@@ -1,0 +1,242 @@
+---
+title: "after_diagnosis_qc_gigamuga_nine_batches"
+author: "Hao He"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# After genotype diagnostics for diversity outbred mice
+We first load the R/qtl2 package and the data.
+We’ll also load the R/broman package for some utilities and plotting functions, and R/qtlcharts for interactive graphs.
+
+# library
+```{r library, message=FALSE}
+library(broman)
+library(qtl2)
+library(qtlcharts)
+library(ggplot2)
+library(ggrepel)
+library(DOQTL)
+library(mclust)
+source("code/reconst_utils.R")
+```
+
+# Missing data per sample
+```{r Missing data per sample,fig.height=12, fig.width=12, eval=TRUE}
+load("data/Jackson_Lab_Bubier_MURGIGV01/gm_DO2437_qc.RData")
+gm <- gm_DO2437_qc
+gm
+
+percent_missing <- n_missing(gm, "ind", "prop")*100
+setScreenSize(height=100, width=300)
+labels <- paste0(names(percent_missing), " (", round(percent_missing,2), "%)")
+iplot(seq_along(percent_missing), percent_missing, indID=labels,
+      chartOpts=list(xlab="Mouse", ylab="Percent missing genotype data",
+                     ylim=c(0, 60)))
+
+#save into pdf
+pdf(file = "output/AfterQC_Percent_missing_genotype_data.pdf", width = 20, height = 20)
+labels <- as.character(do.call(rbind.data.frame, strsplit(ind_ids(gm), "V01_"))[,2])
+labels[percent_missing < 5] = ""
+# Change point shapes and colors
+p <- ggplot(data = data.frame(Mouse=seq_along(percent_missing),  
+                         Percent_missing_genotype_data = percent_missing,
+                         batch = factor(as.character(do.call(rbind.data.frame, strsplit(ind_ids(gm), "_"))[,5]))), 
+        aes(x=Mouse, y=Percent_missing_genotype_data, color = batch)) +
+  geom_point() +
+  geom_hline(yintercept=5, linetype="solid", color = "red") +
+  geom_text_repel(aes(label=labels), vjust = 0, nudge_y = 0.01, show.legend = FALSE, size=3) +
+  theme(text = element_text(size = 20))
+p
+dev.off()
+
+p
+
+```
+
+# Sexes
+```{r Sexes, eval=FALSE}
+xint <- read_csv_numer("data/Jackson_Lab_Bubier_MURGIGV01/Jackson_Lab_Bubier_MURGIGV01_qtl2_chrXint.csv", transpose=TRUE)
+yint <- read_csv_numer("data/Jackson_Lab_Bubier_MURGIGV01/Jackson_Lab_Bubier_MURGIGV01_qtl2_chrYint.csv", transpose=TRUE)
+
+#subset to gm subject name
+xint <- xint[rownames(xint) %in% rownames(gm$covar),]
+yint <- yint[rownames(yint) %in% rownames(gm$covar),]
+
+# Gigamuga marker annotation file from UNC.
+gm_marker_file = "http://csbio.unc.edu/MUGA/snps.gigamuga.Rdata" #FIXED
+# Read in the UNC GigaMUGA SNPs and clusters.
+load(url(gm_marker_file))
+#subset down to gm
+snps$marker = as.character(snps$marker)
+#snp <- snps[snps$marker %in% marker_names(gm),]
+
+#load the intensities.fst.RData
+load("data/Jackson_Lab_Bubier_MURGIGV01/intensities.fst.RData")
+#X and Y channel
+X <- result[result$channel == "X",c("snp","channel",rownames(gm$covar))]
+rownames(X) <- X$snp
+X <- X[,c(-1,-2)]
+
+Y <- result[result$channel == "Y",c("snp","channel",rownames(gm$covar))]
+rownames(Y) <- Y$snp
+Y <- Y[,c(-1,-2)]
+
+#determine sex
+sex = determine_sex_chry_m(x = X, y = Y, markers = snps)$sex
+
+#sex order
+sex <- sex[rownames(xint)]
+
+x_pval <- apply(xint, 2, function(a) t.test(a ~ sex)$p.value)
+y_pval <- apply(yint, 2, function(a) t.test(a ~ sex)$p.value)
+
+xint_ave <- rowMeans(xint[, x_pval < 0.05/length(x_pval)], na.rm=TRUE)
+yint_ave <- rowMeans(yint[, y_pval < 0.05/length(y_pval)], na.rm=TRUE)
+
+point_colors <- as.character( brocolors("web")[c("green", "purple")] )
+labels <- paste0(names(xint_ave))
+iplot(xint_ave, yint_ave, group=sex, indID=labels,
+      chartOpts=list(pointcolor=point_colors, pointsize=4,
+                     xlab="Average X chr intensity", ylab="Average Y chr intensity"))
+
+phetX <- rowSums(gm$geno$X == 2)/rowSums(gm$geno$X != 0)
+phetX <- phetX[names(phetX) %in% names(xint_ave)]
+iplot(xint_ave, phetX, group=sex, indID=labels,
+      chartOpts=list(pointcolor=point_colors, pointsize=4,
+                     xlab="Average X chr intensity", ylab="Proportion het on X chr"))
+```
+
+# Sample duplicates
+```{r Sample duplicates, eval=FALSE}
+cg <- compare_geno(gm, cores=20)
+summary.cg <- summary(cg)
+summary.cg
+summary.cg$Name.ind1 <- as.character(do.call(rbind.data.frame, strsplit(as.character(summary.cg$ind1), "_"))[,6])
+summary.cg$Name.ind2 <- as.character(do.call(rbind.data.frame, strsplit(as.character(summary.cg$ind2), "_"))[,6])
+summary.cg$miss.ind1 <- percent_missing[match(summary.cg$ind1, names(percent_missing))]
+summary.cg$miss.ind2 <- percent_missing[match(summary.cg$ind2, names(percent_missing))]
+summary.cg$remove.id <- ifelse(summary.cg$miss.ind1 > summary.cg$miss.ind2, summary.cg$ind1, summary.cg$ind2)
+summary.cg$remove.id  
+
+pdf(file = "output/AfterQC_Proportion_matching_genotypes_before_removal_of_bad_samples.pdf", width = 20, height = 20) 
+par(mar=c(5.1,0.6,0.6, 0.6))
+hist(cg[upper.tri(cg)], breaks=seq(0, 1, length=201),
+     main="", yaxt="n", ylab="", xlab="Proportion matching genotypes")
+rug(cg[upper.tri(cg)])
+dev.off()
+
+par(mar=c(5.1,0.6,0.6, 0.6))
+hist(cg[upper.tri(cg)], breaks=seq(0, 1, length=201),
+     main="", yaxt="n", ylab="", xlab="Proportion matching genotypes")
+rug(cg[upper.tri(cg)])
+
+pdf(file = "output/AfterQC_Proportion_matching_genotypes_after_removal_of_bad_samples.pdf",width = 20, height = 20) 
+cgsub <- cg[percent_missing < 5, percent_missing < 5]
+par(mar=c(5.1,0.6,0.6, 0.6))
+hist(cgsub[upper.tri(cgsub)], breaks=seq(0, 1, length=201),
+     main="", yaxt="n", ylab="", xlab="Proportion matching genotypes")
+rug(cgsub[upper.tri(cgsub)])
+dev.off()
+
+cgsub <- cg[percent_missing < 5, percent_missing < 5]
+par(mar=c(5.1,0.6,0.6, 0.6))
+hist(cgsub[upper.tri(cgsub)], breaks=seq(0, 1, length=201),
+     main="", yaxt="n", ylab="", xlab="Proportion matching genotypes")
+rug(cgsub[upper.tri(cgsub)])
+
+#show top 20 samples with missing genotypes
+percent_missing <- n_missing(gm, "ind", "prop")*100
+round(sort(percent_missing, decreasing=TRUE)[1:20], 1)
+```
+
+# Array intensities and Genotype frequencies
+```{r Array intensities and Genotype frequencies, fig.height=12, fig.width=12, eval=FALSE}
+int <- result[,c("snp","channel",rownames(gm$covar))]
+#rm(result)
+int <- int[seq(1, nrow(int), by=2),-(1:2)] + int[-seq(1, nrow(int), by=2),-(1:2)]
+int <- int[,intersect(ind_ids(gm), colnames(int))]
+n <- names(sort(percent_missing[intersect(ind_ids(gm), colnames(int))], decreasing=TRUE))
+iboxplot(log10(t(int[,n])+1), orderByMedian=FALSE, chartOpts=list(ylab="log10(SNP intensity + 1)"))
+
+# Genotype frequencies
+g <- do.call("cbind", gm$geno[1:19])
+fg <- do.call("cbind", gm$founder_geno[1:19])
+g <- g[,colSums(fg==0)==0]
+fg <- fg[,colSums(fg==0)==0]
+fgn <- colSums(fg==3)
+
+gf_ind <- vector("list", 4)
+for(i in 1:4) {
+  gf_ind[[i]] <- t(apply(g[,fgn==i], 1, function(a) table(factor(a, 1:3))/sum(a != 0)))
+}
+
+par(mfrow=c(4,1), mar=c(0.6, 0.6, 2.6, 0.6))
+for(i in 1:4) {
+  triplot(c("AA", "AB", "BB"), main=paste0("MAF = ", i, "/8"))
+  tripoints(gf_ind[[i]], pch=21, bg="lightblue")
+  tripoints(c((1-i/8)^2, 2*i/8*(1-i/8), (i/8)^2), pch=21, bg="violetred")
+  
+  if(i>=3) { # label mouse with lowest het
+    wh <- which(gf_ind[[i]][,2] == min(gf_ind[[i]][,2]))
+    tritext(gf_ind[[i]][wh,,drop=FALSE] + c(0.02, -0.02, 0),
+            names(wh), adj=c(0, 1))
+  }
+  
+  # label other mice
+  if(i==1) {
+    lab <- rownames(gf_ind[[i]])[gf_ind[[i]][,2]>0.3]
+  }
+  else if(i==2) {
+    lab <- rownames(gf_ind[[i]])[gf_ind[[i]][,2]>0.48]
+  }
+  else if(i==3) {
+    lab <- rownames(gf_ind[[i]])[gf_ind[[i]][,2]>0.51]
+  }
+  else if(i==4) {
+    lab <- rownames(gf_ind[[i]])[gf_ind[[i]][,2]>0.6]
+  }
+  
+  for(ind in lab) {
+    if(grepl("^F", ind) && i != 3) {
+      tritext(gf_ind[[i]][ind,,drop=FALSE] + c(-0.01, 0, +0.01), ind, adj=c(1,0.5))
+    } else {
+      tritext(gf_ind[[i]][ind,,drop=FALSE] + c(0.01, 0, -0.01), ind, adj=c(0,0.5))
+    }
+  }
+}
+
+```
+
+# Crossover counts and Genotyping error LOD scores
+```{r Crossover counts and Genotyping error LOD scores, eval=FALSE}
+#load pre-caluated results
+load("data/Jackson_Lab_Bubier_MURGIGV01/nxo.RData")
+
+#crossover
+totxo <- rowSums(nxo)[names(rowSums(nxo)) %in% rownames(gm$covar)]
+iplot(seq_along(totxo),
+      totxo,
+      group=gm$covar$ngen,
+      chartOpts=list(xlab="Mouse", ylab="Number of crossovers", 
+                     margin=list(left=80,top=40,right=40,bottom=40,inner=5),
+                     axispos=list(xtitle=25,ytitle=50,xlabel=5,ylabel=5)))
+
+#save crossover into pdf
+pdf(file = "output/AfterQC_number_crossover.pdf")
+cross_over <- data.frame(Mouse = seq_along(totxo), Number_crossovers = totxo, generation = gm$covar$ngen)
+names(totxo) <- as.character(do.call(rbind.data.frame, strsplit(names(totxo), "V01_"))[,2])
+names(totxo)[totxo <= 800] = ""
+# Change point shapes and colors
+p <-ggplot(cross_over, aes(x=Mouse, y=Number_crossovers, fill = generation, color=generation)) +
+  geom_point() +
+  geom_text_repel(aes(label=names(totxo),hjust=0,vjust=0), show.legend = FALSE)
+p
+dev.off()
+
+p
+```
