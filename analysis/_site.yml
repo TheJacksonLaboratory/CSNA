@@ -14,7 +14,7 @@ navbar:
   right:
   - icon: fa-github
     text: Source code
-    href: https://github.com/xhyuo/CSNA
+    href: https://github.com/TheJacksonLaboratory/CSNA
 output:
   workflowr::wflow_html:
     toc: yes
