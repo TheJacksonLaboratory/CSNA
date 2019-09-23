@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE,warning=FALSE)
 This script will plot the recombination block size and founder props across all generations
 
 # library
-```{r library, message=FALSE}
+```{r library, message=FALSE, warning=FALSE}
 library(qtl2)
 library(abind)
 library(tidyverse)
@@ -46,7 +46,7 @@ names(CCcolors) = c("A_J", "C57BL_6J", "l29S1_SvImJ", "NOD_ShiLtJ",
 ```
 
 # plot founder_proportions
-```{r plot founder_proportions,fig.height=16, fig.width=16, eval=TRUE}
+```{r plot founder_proportions,fig.height=16, fig.width=16, eval=TRUE, message=FALSE, warning=FALSE}
 #allele probs
 load("data/Jackson_Lab_Bubier_MURGIGV01/apr_DO2437.RData")
 #geno probs
@@ -71,6 +71,7 @@ apr.3d.all <- apr.3d.all[,,markers$marker]
 #subset to each generation
 for(g in unique(gm_DO2437_qc$covar$ngen)){
   #g = "21"
+  print(g)
   apr.3d <- apr.3d.all[gm_DO2437_qc$covar[gm_DO2437_qc$covar$ngen == g,"id"],,]
   
   #reformat
@@ -148,7 +149,7 @@ save(pos_ind, pos_ind_gen, file = "data/Jackson_Lab_Bubier_MURGIGV01/recom_block
 ```
 
 # plot Recombination Block Size
-```{r plot Recombination Block Size, fig.height=16, fig.width=16, eval=TRUE}
+```{r plot Recombination Block Size, fig.height=16, fig.width=16, eval=TRUE,message=FALSE, warning=FALSE}
 for(g in unique(gm_DO2437_qc$covar$ngen)){
   #plot for recom block size
   png(paste0("output/DO_recom_block_size_G", g, ".png"))
@@ -202,7 +203,7 @@ for(g in unique(gm_DO2437_qc$covar$ngen)){
 ```
 
 #plot for each generation
-```{r plot for each generation, fig.height=20, fig.width=20, eval=TRUE}
+```{r plot for each generation, fig.height=20, fig.width=20, eval=TRUE,message=FALSE, warning=FALSE}
 fp <- list()
 #subset to each generation
 for(g in unique(gm_DO2437_qc$covar$ngen)){
