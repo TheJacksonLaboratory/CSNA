@@ -385,15 +385,18 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtreee3f5af2f6eb48eeee0d43807bb5c733db963308atargetblanke3f5af2a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/e3f5af2f6eb48eeee0d43807bb5c733db963308a" target="_blank">e3f5af2</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtreefb74e741456c6d1feadb17ab84b13e8b329c30betargetblankfb74e74a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/fb74e741456c6d1feadb17ab84b13e8b329c30be" target="_blank">fb74e74</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtreee3f5af2f6eb48eeee0d43807bb5c733db963308atargetblanke3f5af2a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtreefb74e741456c6d1feadb17ab84b13e8b329c30betargetblankfb74e74a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 </p>
 <pre><code>
+Ignored files:
+    Ignored:    output/permu/
+
 Untracked files:
     Untracked:  analysis/01_geneseek2qtl2.R
     Untracked:  analysis/01_geneseek2qtl2.Rout
@@ -437,6 +440,7 @@ Untracked files:
     Untracked:  analysis/07_recomb_size_founder_prop.stdout
     Untracked:  analysis/08_gcta_herit.R
     Untracked:  analysis/09_qtlmapping.R
+    Untracked:  analysis/10_qtl_permu.R
     Untracked:  analysis/Novelty_resids_datarelease_07302918.gcta.Rout
     Untracked:  analysis/Novelty_resids_datarelease_07302918.gcta.script
     Untracked:  analysis/Novelty_resids_datarelease_07302918.gcta.stderr
@@ -453,6 +457,26 @@ Untracked files:
     Untracked:  analysis/Novelty_resids_datarelease_07302918_m3.script
     Untracked:  analysis/Novelty_resids_datarelease_07302918_m3.stderr
     Untracked:  analysis/Novelty_resids_datarelease_07302918_m3.stdout
+    Untracked:  analysis/Novelty_resids_datarelease_07302918_m3_1.Rout
+    Untracked:  analysis/Novelty_resids_datarelease_07302918_m3_1.script
+    Untracked:  analysis/Novelty_resids_datarelease_07302918_m3_1.stderr
+    Untracked:  analysis/Novelty_resids_datarelease_07302918_m3_1.stdout
+    Untracked:  analysis/Novelty_resids_datarelease_07302918_m3_2.Rout
+    Untracked:  analysis/Novelty_resids_datarelease_07302918_m3_2.script
+    Untracked:  analysis/Novelty_resids_datarelease_07302918_m3_2.stderr
+    Untracked:  analysis/Novelty_resids_datarelease_07302918_m3_2.stdout
+    Untracked:  analysis/Novelty_resids_datarelease_07302918_m3_3.Rout
+    Untracked:  analysis/Novelty_resids_datarelease_07302918_m3_3.script
+    Untracked:  analysis/Novelty_resids_datarelease_07302918_m3_3.stderr
+    Untracked:  analysis/Novelty_resids_datarelease_07302918_m3_3.stdout
+    Untracked:  analysis/Novelty_resids_datarelease_07302918_m3_4.Rout
+    Untracked:  analysis/Novelty_resids_datarelease_07302918_m3_4.script
+    Untracked:  analysis/Novelty_resids_datarelease_07302918_m3_4.stderr
+    Untracked:  analysis/Novelty_resids_datarelease_07302918_m3_4.stdout
+    Untracked:  analysis/Novelty_resids_datarelease_07302918_m3_5.Rout
+    Untracked:  analysis/Novelty_resids_datarelease_07302918_m3_5.script
+    Untracked:  analysis/Novelty_resids_datarelease_07302918_m3_5.stderr
+    Untracked:  analysis/Novelty_resids_datarelease_07302918_m3_5.stdout
     Untracked:  analysis/Novelty_residuals_RankNormal_datarelease_07302918.gcta.Rout
     Untracked:  analysis/Novelty_residuals_RankNormal_datarelease_07302918.gcta.script
     Untracked:  analysis/Novelty_residuals_RankNormal_datarelease_07302918.gcta.stderr
@@ -479,6 +503,7 @@ Untracked files:
     Untracked:  analysis/run_07_recomb_size_founder_prop.R
     Untracked:  analysis/run_08_gcta_herit.R
     Untracked:  analysis/run_09_qtlmapping.R
+    Untracked:  analysis/run_10_qtl_permu.R
     Untracked:  code/reconst_utils.R
     Untracked:  data/FinalReport/
     Untracked:  data/GCTA/
@@ -551,6 +576,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/97188bc6892400711418899a25e52e3ef0ebed6e/docs/index.html" target="_blank">97188bc</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2019-09-23
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
