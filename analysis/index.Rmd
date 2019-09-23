@@ -1,11 +1,35 @@
 ---
-title: "Home"
+title: "CSNA_workflow"
+author: "Hao He"
 site: workflowr::wflow_site
 output:
   workflowr::wflow_html:
-    toc: false
-editor_options:
-  chunk_output_type: console
+    toc: true
 ---
 
-Welcome to my research website.
+### 1 Data transformation from Finalreport.txt to qtl2 for nine batches of Jackson_Lab_Bubier
+* [01_geneseek2qtl2.R]
+
+### 2 Grab intensities from GeneSeek FinalReport.txt files convert them to a single big data frame
+* [02_geneseek2intensity.R]
+
+### 3 First time to calculate genoprobs, maxmarg, crossover, errorlod, snpg for the qc diagnositics
+* [03_firstgm2genoprobs.R]
+
+### 4 Genotype diagnostics for diversity outbred mice of nine batches
+* [04_diagnosis_qc_gigamuga_nine_batches.Rmd](04_diagnosis_qc_gigamuga_nine_batches.html)
+
+### 5 After QC, genotype diagnostics
+* [05_after_diagnosis_qc_gigamuga_nine_batches.Rmd](05_after_diagnosis_qc_gigamuga_nine_batches.html)
+
+### 6 Calculation of the genoprobs after qc and do interpolatino to 69K grid
+* [06_final_pr_apr_69K.R]
+
+### 7 Plot the recombination block size and founder props across all generations
+* [07_recomb_size_founder_prop.Rmd](07_recomb_size_founder_prop.html)
+
+### 8 GCTA heritability 
+* [08_gcta_herit.R]
+
+### 9 qtl mapping
+* [09_qtlmapping.R]
