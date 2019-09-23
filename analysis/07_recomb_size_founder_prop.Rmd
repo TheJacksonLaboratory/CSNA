@@ -1,0 +1,267 @@
+---
+title: "recomb_size_founder_prop"
+author: "Hao He"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This script will plot the recombination block size and founder props across all generations
+
+# library
+```{r library, message=FALSE}
+library(qtl2)
+library(abind)
+library(tidyverse)
+library(plotly)
+require(vcd)
+require(MASS)
+options(stringsAsFactors = F)
+
+# Reformat for tidyverse.
+reformat_probs = function(probs) {
+  
+  mat = matrix(0, nrow = nrow(probs) * dim(probs)[3], ncol = 8,
+               dimnames = list(rep(rownames(probs), dim(probs)[3]),
+                               names(CCcolors)))
+  for(i in 1:dim(probs)[3]) {
+    st = (i - 1) * nrow(probs) + 1
+    en = i * nrow(probs)
+    mat[st:en,] = probs[,,i]
+  } # for(i)
+  
+  return(data.frame(chr = rep(markers$chr, each = nrow(probs)), 
+                    pos = rep(markers$pos, each = nrow(probs)), mat))
+  
+} # reformat_probs()
+
+# NOTE: I'm using a lower case L as the beginning of 129 becuase
+#       the tidy functions won't allow a number or a "_" at the 
+#       beginning of a variable name.
+names(CCcolors) = c("A_J", "C57BL_6J", "l29S1_SvImJ", "NOD_ShiLtJ", 
+                    "NZO_HlLtJ", "CAST_EiJ", "PWK_PhJ", "WSB_EiJ")
+```
+
+# plot founder_proportions
+```{r plot founder_proportions,fig.height=16, fig.width=16, eval=TRUE}
+#allele probs
+load("data/Jackson_Lab_Bubier_MURGIGV01/apr_DO2437.RData")
+#geno probs
+load("data/Jackson_Lab_Bubier_MURGIGV01/pr_DO2437.RData")
+#cross infor
+load("data/Jackson_Lab_Bubier_MURGIGV01/gm_DO2437_qc.RData")
+
+#combine all chrs into one 3d array
+apr.3d.all <- do.call("abind",list(apr,along = 3))
+rm(apr)
+
+# Load in the markers.
+load(url("ftp://ftp.jax.org/MUGA/GM_snps.Rdata"))
+GM_snps <- GM_snps[!is.na(GM_snps$chr),]
+GM_snps$chr <- factor(GM_snps$chr)
+markers = GM_snps[intersect(dimnames(apr.3d.all)[[3]],GM_snps$marker),1:4]
+markers$chr = factor(markers$chr, levels = c(1:19, "X"))
+
+# subset to the markers
+apr.3d.all <- apr.3d.all[,,markers$marker]
+
+#subset to each generation
+for(g in unique(gm_DO2437_qc$covar$ngen)){
+  #g = "21"
+  apr.3d <- apr.3d.all[gm_DO2437_qc$covar[gm_DO2437_qc$covar$ngen == g,"id"],,]
+  
+  #reformat
+  probs = reformat_probs(apr.3d)
+  gc()
+  
+  # Summarize founder proportion by chromosome.
+  fp = probs %>% group_by(chr, pos) %>%
+    summarize_all(mean) %>%
+    gather(founder, prop, 3:10)
+  fp$founder = factor(fp$founder, levels = names(CCcolors))
+  
+  #plot for all the chromosomes
+  png(paste0("output/DO_Gigamuga_founder_proportions_G", g, ".png"), width = 3600,
+      height = 2000, res = 128)
+  p1 <- ggplot(fp, aes(pos, prop, color = founder)) +
+    geom_line() + 
+    geom_hline(yintercept=0.125, linetype="dashed", color = "black", size = 0.25) +
+    scale_color_manual(values = CCcolors) +
+    facet_grid(chr~founder)
+  print(p1)
+  dev.off()
+  print(p1)
+  
+  # Make a plot of just Chr 2.
+  png(paste0("output/DO_Gigamuga_founder_proportions_chr2_G", g, ".png"), width = 1200,
+      height = 800, res = 128)
+  p2 <- fp %>% filter(chr == 2) %>% 
+    ggplot(aes(pos, prop, color = founder)) +
+    geom_line() +
+    geom_hline(yintercept=0.125, linetype="dashed", color = "black", size = 0.25) +
+    scale_color_manual(values = CCcolors) +
+    facet_grid(founder~.)+ 
+    labs(title = "Chr 2")
+  print(p2)
+  dev.off()
+  print(p2)
+  
+  #plot on chr2 for WSB
+  png(paste0("output/DO_Gigamuga_chr2_WSB_G", g, ".png"), width = 1200,
+      height = 800, res = 128)
+  chr2 = probs[probs$chr == 2, c(1,2,10)]
+  agg = aggregate(chr2$WSB_EiJ, list(chr2$pos), mean)
+  plot(agg, type = "l", ylab = "prop", xlab = "Chr2", col = "#B10DC9")
+  abline(h=0.125, col="black")
+  dev.off()
+  
+  chr2 = probs[probs$chr == 2, c(1,2,10)]
+  agg = aggregate(chr2$WSB_EiJ, list(chr2$pos), mean)
+  plot(agg, type = "l", ylab = "prop", xlab = "Chr2", col = "#B10DC9")
+  abline(h=0.125, col="black")
+}
+
+#locate xo pos
+g <- maxmarg(pr, cores = 20)
+pos <- locate_xo(g, gm_DO2437_qc$gmap, cores = 20)
+
+pos_ind <- list()
+for(i in ind_ids(gm_DO2437_qc)){
+  pos_ind[[i]] <- list()
+  for (j in c(1:19, "X")) {
+    pos_ind[[i]][[j]] <- diff(pos[[j]][[i]])
+  }
+  pos_ind[[i]] <- as.vector(unlist(pos_ind[[i]]))
+}
+
+# for each generation
+#subset to each generation
+pos_ind_gen <- list()
+for(g in unique(gm_DO2437_qc$covar$ngen)){
+  #g = "21"
+  pos_ind_gen[[g]] <- as.vector(unlist(pos_ind[gm_DO2437_qc$covar[gm_DO2437_qc$covar$ngen == g,"id"]]))
+}
+save(pos_ind, pos_ind_gen, file = "data/Jackson_Lab_Bubier_MURGIGV01/recom_block_size.RData")
+```
+
+# plot Recombination Block Size
+```{r plot Recombination Block Size, fig.height=16, fig.width=16, eval=TRUE}
+for(g in unique(gm_DO2437_qc$covar$ngen)){
+  #plot for recom block size
+  png(paste0("output/DO_recom_block_size_G", g, ".png"))
+  x <- pos_ind_gen[[g]][pos_ind_gen[[g]] != 0]
+  # estimate the parameters
+  fit1 <- fitdistr(x, "exponential") 
+  
+  # goodness of fit test
+  ks.test(x, "pexp", fit1$estimate) # p-value > 0.05 -> distribution not refused
+  
+  # plot a graph
+  hist(x, 
+       freq = FALSE, 
+       breaks = 200, 
+       xlim = c(0, 5+quantile(x, 1)), 
+       #ylim = c(0,0.3),
+       xlab = "Recombination Block Size (Mb)", 
+       main = paste0("Gen ", g))
+  curve(dexp(x, rate = fit1$estimate), 
+        from = 0, 
+        to = 5+quantile(x, 1), 
+        col = "red", 
+        add = TRUE)
+  dev.off()
+}
+for(g in unique(gm_DO2437_qc$covar$ngen)){
+  #plot for recom block size
+  #png(paste0("output/DO_recom_block_size_G", g, ".png"))
+  x <- pos_ind_gen[[g]][pos_ind_gen[[g]] != 0]
+  # estimate the parameters
+  fit1 <- fitdistr(x, "exponential") 
+  
+  # goodness of fit test
+  ks.test(x, "pexp", fit1$estimate) # p-value > 0.05 -> distribution not refused
+  
+  # plot a graph
+  hist(x, 
+       freq = FALSE, 
+       breaks = 200, 
+       xlim = c(0, 5+quantile(x, 1)), 
+       #ylim = c(0,0.3),
+       xlab = "Recombination Block Size (Mb)", 
+       main = paste0("Gen ", g))
+  curve(dexp(x, rate = fit1$estimate), 
+        from = 0, 
+        to = 5+quantile(x, 1), 
+        col = "red", 
+        add = TRUE)
+  #dev.off()
+}
+```
+
+#plot for each generation
+```{r plot for each generation, fig.height=20, fig.width=20, eval=TRUE}
+fp <- list()
+#subset to each generation
+for(g in unique(gm_DO2437_qc$covar$ngen)){
+  #g = "21"
+  apr.3d <- apr.3d.all[gm_DO2437_qc$covar[gm_DO2437_qc$covar$ngen == g,"id"],,]
+  
+  #reformat
+  probs = reformat_probs(apr.3d)
+  gc()
+  
+  # Summarize founder proportion by chromosome.
+  fp[[g]] = probs %>% group_by(chr, pos) %>%
+    summarize_all(mean) %>%
+    gather(founder, prop, 3:10)
+  fp[[g]]$founder = factor(fp[[g]]$founder, levels = names(CCcolors))   
+}
+save(fp, file = "data/Jackson_Lab_Bubier_MURGIGV01/fp.RData")
+
+# add gen
+for(g in unique(gm_DO2437_qc$covar$ngen)){
+  #g = "21"
+  fp[[g]]$gen <- as.factor(g)
+}
+fp_data <- do.call(rbind.data.frame,fp)
+
+p <- list()
+for(c in unique(names(gm_DO2437_qc$geno))){
+  print(c)
+  fp_subdata <- fp_data[fp_data$chr == c,]
+  pp <- ggplot(data = fp_subdata,aes(pos, prop, group = gen, color = founder)) +
+    geom_line(aes(linetype=gen)) +
+    scale_linetype_manual(values=rep("solid",9)) +
+    geom_hline(yintercept=0.125, linetype="dashed", color = "black", size = 0.25) +
+    scale_color_manual(values = CCcolors) +
+    facet_grid(founder~.) + 
+    labs(title = paste0("Chr ", c)) + 
+    theme(legend.position='none')
+  p[[c]] <- ggplotly(pp, width = 1000, height = 1000)
+  #htmlwidgets::saveWidget(as_widget(p[[c]]), paste0("/projects/heh/csna_workflow/output/prop_across_generation_chr",c,".html"))
+}
+save(p, file = "output/prop_across_generation_chr_p.RData")
+#as_widget(p[["1"]])
+#as_widget(p[["2"]])
+# as_widget(p[["3"]])
+# as_widget(p[["4"]])
+# as_widget(p[["5"]])
+# as_widget(p[["6"]])
+# as_widget(p[["7"]])
+# as_widget(p[["8"]])
+# as_widget(p[["9"]])
+# as_widget(p[["10"]])
+# as_widget(p[["11"]])
+# as_widget(p[["12"]])
+# as_widget(p[["13"]])
+# as_widget(p[["14"]])
+# as_widget(p[["15"]])
+# as_widget(p[["16"]])
+# as_widget(p[["17"]])
+# as_widget(p[["18"]])
+# as_widget(p[["19"]])
+# as_widget(p[["X"]])
+```
