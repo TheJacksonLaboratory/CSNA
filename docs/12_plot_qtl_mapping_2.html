@@ -440,10 +440,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtree31226acc1ff37450d8a181fac7e3ce6e51c97cfatargetblank31226aca"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/31226acc1ff37450d8a181fac7e3ce6e51c97cfa" target="_blank">31226ac</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtree867a8b9fc629eb83a02b9fa60a5f1d14dff681e5targetblank867a8b9a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/867a8b9fc629eb83a02b9fa60a5f1d14dff681e5" target="_blank">867a8b9</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtree31226acc1ff37450d8a181fac7e3ce6e51c97cfatargetblank31226aca" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtree867a8b9fc629eb83a02b9fa60a5f1d14dff681e5targetblank867a8b9a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -1831,6 +1831,7 @@ Untracked files:
     Untracked:  output/m3.Novelty_resids_datarelease_07302918.RData
     Untracked:  output/m3.Novelty_resids_datarelease_07302918_genomescan.pdf
     Untracked:  output/m3.Novelty_residuals_RankNormal_datarelease_07302918.RData
+    Untracked:  output/m3.Novelty_residuals_RankNormal_datarelease_07302918_genomescan.pdf
     Untracked:  output/num.geno.pheno.in.Novelty_resids_datarelease_07302918.csv
     Untracked:  output/num.geno.pheno.in.Novelty_residuals_RankNormal_datarelease_07302918.csv
     Untracked:  output/number_crossover.pdf
@@ -1881,6 +1882,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/867a8b9fc629eb83a02b9fa60a5f1d14dff681e5/analysis/12_plot_qtl_mapping_2.Rmd" target="_blank">867a8b9</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2019-10-02
+</td>
+<td>
+12_plot_qtl_mapping_2.Rmd
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/e79d270039d8e2458add5233f8e728ccfbcdf624/docs/12_plot_qtl_mapping_2.html" target="_blank">e79d270</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2019-10-02
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2120,78 +2155,6 @@ for(i in names(m3.qtl.out)){
        main = i)
 }
 #dev.off()</code></pre>
-<p>m3</p>
-<pre class="r"><code>pheno &lt;- read.csv(&quot;data/pheno/Novelty_residuals_RankNormal_datarelease_07302918.csv&quot;, header = TRUE)
-print(&quot;m3&quot;)</code></pre>
-<pre><code>[1] &quot;m3&quot;</code></pre>
-<pre class="r"><code>load(&quot;output/m3.Novelty_residuals_RankNormal_datarelease_07302918.RData&quot;)
-
-#permutation results
-#The default is to return the 5% significance thresholds. Thresholds for other (or for multiple) significance levels can be obtained via the alpha argument.
-# operm &lt;- list()
-# for(i in 3:5){
-#   operm[[i]] &lt;- get(load(paste0(&quot;output/permu/m3_Novelty_residuals_RankNormal_datarelease_07302918_&quot;, colnames(pheno)[14], &quot;_&quot;, i, &quot;.RData&quot;)))
-#   operm[[i]] &lt;- operm[[i]]$OFA.total.distance.traveled
-# }
-# operm &lt;- matrix(do.call(rbind, operm[3:5]),ncol = 1)
-# class(operm) &lt;- c(&quot;scan1perm&quot;, &quot;matrix&quot;)
-# cutoff &lt;- summary(operm, c(0.05, 0.1))[,1]
-
-#genome-wide results
-pdf(file = paste0(&quot;output/m3.Novelty_residuals_RankNormal_datarelease_07302918&quot;, &quot;_genomescan.pdf&quot;), width = 14)
-for(i in names(m3.qtl.out)){
-  par(mar=c(5.1, 4.1, 1.1, 1.1))
-  ymx &lt;- maxlod(m3.qtl.out[[i]]) # overall maximum LOD score
-  plot(m3.qtl.out[[i]], gm_DO2437_qc$gmap, lodcolumn=1,
-       col=&quot;slateblue&quot;, ylim=c(0, ymx*1.02),
-       main=i)
-  # abline(h=cutoff[1], col=&quot;red&quot;,lty=2) # 0.05 cutoff
-  # abline(h=cutoff[2], col=&quot;red&quot;,lty=1) # 0.1 cutoff
-}
-dev.off()</code></pre>
-<pre><code>png 
-  2 </code></pre>
-<pre class="r"><code>for(i in names(m3.qtl.out)){
-  par(mar=c(5.1, 4.1, 1.1, 1.1))
-  ymx &lt;- maxlod(m3.qtl.out[[i]]) # overall maximum LOD score
-  plot(m3.qtl.out[[i]], gm_DO2437_qc$gmap, lodcolumn=1,
-       col=&quot;slateblue&quot;, ylim=c(0, ymx*1.02),
-       main=i)
-  # abline(h=cutoff[1], col=&quot;red&quot;,lty=2) # 0.05 cutoff
-  # abline(h=cutoff[2], col=&quot;red&quot;,lty=1) # 0.1 cutoff
-}</code></pre>
-<p><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-1.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-2.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-3.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-4.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-5.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-6.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-7.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-8.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-9.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-10.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-11.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-12.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-13.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-14.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-15.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-16.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-17.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-18.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-19.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-20.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-21.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-22.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-23.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-24.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-25.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-26.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-27.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-28.png" width="1344" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>#load blup results
-x &lt;- list()
-for(i in colnames(pheno)[14:41]){
-  y &lt;- get(load(paste0(&quot;output/blup/m3_blup_Novelty_residuals_RankNormal_datarelease_07302918_&quot;,i,&quot;.RData&quot;)))
-  x[[i]] &lt;- y[[i]]
-}
-m3.blup = x
-
-#coeffects plot
-#pdf(file = paste0(&quot;output/m3.Novelty_residuals_RankNormal_datarelease_07302918&quot;, &quot;_coeffgeneplot.pdf&quot;), width = 14)
-for(i in names(m3.qtl.out)){
-  chr &lt;- as.character(m3.peak[[i]][m3.peak[[i]]$lodcolumn == i,&quot;chr&quot;])
-  par(mar=c(4.1, 4.1, 1.6, 1.6))
-  plot_coefCC(m3.coef[[i]], 
-              gm_DO2437_qc$gmap[chr], 
-              scan1_output=m3.qtl.out[[i]], 
-              bgcolor=&quot;gray95&quot;, #legend=&quot;bottomleft&quot;, 
-              main =i)
-  plot_coefCC(m3.blup[[i]], 
-              gm_DO2437_qc$gmap[chr], 
-              scan1_output=m3.qtl.out[[i]], 
-              bgcolor=&quot;gray95&quot;, #legend=&quot;bottomleft&quot;, 
-              main =i)
-  plot(m3.snps[[i]]$lod, 
-       m3.snps[[i]]$snpinfo, 
-       drop_hilit=1.5, 
-       genes=m3.genes[[i]],
-       main = i)
-}</code></pre>
-<p><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-29.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-30.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-31.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-32.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-33.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-34.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-35.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-36.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-37.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-38.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-39.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-40.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-41.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-42.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-43.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-44.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-45.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-46.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-47.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-48.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-49.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-50.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-51.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-52.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-53.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-54.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-55.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-56.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-57.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-58.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-59.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-60.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-61.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-62.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-63.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-64.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-65.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-66.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-67.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-68.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-69.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-70.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-71.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-72.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-73.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-74.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-75.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-76.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-77.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-78.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-79.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-80.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-81.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-82.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-83.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-84.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-85.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-86.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-87.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-88.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-89.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-90.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-91.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-92.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-93.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-94.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-95.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-96.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-97.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-98.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-99.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-100.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-101.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-102.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-103.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-104.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-105.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-106.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-107.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-108.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-109.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-110.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-111.png" width="1344" style="display: block; margin: auto;" /><img src="figure/12_plot_qtl_mapping_2.Rmd/m3-112.png" width="1344" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>#dev.off()</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
