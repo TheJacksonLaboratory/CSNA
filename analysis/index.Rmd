@@ -33,3 +33,13 @@ output:
 
 ### 9 qtl mapping
 * [09_qtlmapping.R]
+
+### 10 qtl permutation
+* [10_qtl_permu.R]
+
+### 11 qtl blup
+* [11_qtl_blup.R]
+
+### 12 plot qtl mapping
+* [12_plot_qtl_mapping_1.Rmd](12_plot_qtl_mapping_1.html)
+* [12_plot_qtl_mapping_2.Rmd](12_plot_qtl_mapping_2.html)
