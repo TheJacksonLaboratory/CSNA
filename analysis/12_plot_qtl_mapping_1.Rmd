@@ -18,8 +18,8 @@ library(ggplot2)
 load("data/Jackson_Lab_Bubier_MURGIGV01/gm_DO2437_qc.RData")
 ```
 
-# plot scan result for Novelty_resids_datarelease_07302918
-```{r plot scan result for Novelty_resids_datarelease_07302918, fig.height=14, fig.width=14, eval=TRUE}
+# plot scan result for m1 Novelty_resids_datarelease_07302918
+```{r plot scan result for m1 Novelty_resids_datarelease_07302918, fig.height=14, fig.width=14, eval=TRUE}
 pheno <- read.csv("data/pheno/Novelty_resids_datarelease_07302918.csv", header = TRUE)
 
 print("m1")
@@ -89,8 +89,10 @@ for(i in names(m1.qtl.out)){
        main = i)
 }
 #dev.off()
+```
 
-
+# plot scan result for m2 Novelty_resids_datarelease_07302918
+```{r plot scan result for m2 Novelty_resids_datarelease_07302918,fig.height=14, fig.width=14, eval=TRUE}
 print("m2")
 load("output/m2.Novelty_resids_datarelease_07302918.RData")
 
@@ -158,7 +160,10 @@ for(i in names(m2.qtl.out)){
        main = i)
 }
 #dev.off()
+```
 
+# plot scan result for m3 Novelty_resids_datarelease_07302918
+```{r plot scan result for m3 Novelty_resids_datarelease_07302918, fig.height=14, fig.width=14, eval=TRUE}
 print("m3")
 load("output/m3.Novelty_resids_datarelease_07302918.RData")
 
