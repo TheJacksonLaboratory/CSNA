@@ -46,6 +46,7 @@ output:
 
 ### 13 conditional_m2_qtlmapping
 * [13_conditional_m2_qtlmapping.R]
+* [13_plot_conditional_m2_qtlmapping.Rmd](13_plot_conditional_m2_qtlmapping.html)
 
 ### 14 geneseek2qtl2fst_Gagnon
 * [14_geneseek2qtl2fst_Gagnon.R]
@@ -54,4 +55,4 @@ output:
 * [15_firstgm2genoprobs_Gagnon.R]
 
 ### 16 diagnosis_qc_gigamuga_gagnon
-[16_diagnosis_qc_gigamuga_gagnon.Rmd](16_diagnosis_qc_gigamuga_gagnon.html)
+* [16_diagnosis_qc_gigamuga_gagnon.Rmd](16_diagnosis_qc_gigamuga_gagnon.html)
