@@ -27,9 +27,12 @@ for(i in names(condi.m2.qtl.out)){
 }
 dev.off()
 
-par(mar=c(5.1, 4.1, 1.1, 1.1))
-ymx <- maxlod(condi.m2.qtl.out[[i]]) # overall maximum LOD score
-plot(condi.m2.qtl.out[[i]], gm_DO2437_qc$gmap, lodcolumn=1,
-     col="slateblue", ylim=c(0, ymx*1.02),
-     main=i)
+for(i in names(condi.m2.qtl.out)){
+  par(mar=c(5.1, 4.1, 1.1, 1.1))
+  ymx <- maxlod(condi.m2.qtl.out[[i]]) # overall maximum LOD score
+  plot(condi.m2.qtl.out[[i]], gm_DO2437_qc$gmap, lodcolumn=1,
+       col="slateblue", ylim=c(0, ymx*1.02),
+       main=i)
+}
+
 ```
