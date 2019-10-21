@@ -1,4 +1,4 @@
-uthor: "Hao He"
+author: "Hao He"
 date: "`r Sys.Date()`"
 output: html_document
 ---
@@ -33,7 +33,7 @@ setScreenSize(height=100, width=300)
 labels <- paste0(names(percent_missing), " (", round(percent_missing,2), "%)")
 iplot(seq_along(percent_missing), percent_missing, indID=labels,
       chartOpts=list(xlab="Mouse", ylab="Percent missing genotype data",
-                     ylim=c(0, 60)))
+                     ylim=c(0, 100)))
 
 #save into pdf
 pdf(file = "/projects/csna/csna_workflow/data/Jackson_Lab_Gagnon/Percent_missing_genotype_data.pdf", width = 20, height = 20)
@@ -42,7 +42,7 @@ labels[percent_missing < 5] = ""
 # Change point shapes and colors
 p <- ggplot(data = data.frame(Mouse=seq_along(percent_missing),  
                          Percent_missing_genotype_data = percent_missing,
-                         batch = factor(as.character(do.call(rbind.data.frame, strsplit(ind_ids(gm), "_"))[,5]))), 
+                         batch = factor(as.character(do.call(rbind.data.frame, strsplit(ind_ids(gm), "_"))[,6]))), 
         aes(x=Mouse, y=Percent_missing_genotype_data, color = batch)) +
   geom_point() +
   geom_hline(yintercept=5, linetype="solid", color = "red") +
