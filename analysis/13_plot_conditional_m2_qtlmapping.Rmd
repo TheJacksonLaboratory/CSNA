@@ -1,6 +1,13 @@
-####################################################################################################################
-#   This script performs plotting on qtl conditional mapping for DO mice m2, Novelty_residuals_RankNormal_datarelease_07302918
+---
+title: "plot_conditional_m2.Novelty_residuals_RankNormal_datarelease_07302918"
+author: "Hao He"
+date: "`r Sys.Date()`"
+output: html_document
+---
 
+# plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_07302918
+```{r plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_07302918, fig.height=14, fig.width=14, eval=TRUE}
+#   This script performs plotting on qtl conditional mapping for DO mice m2, Novelty_residuals_RankNormal_datarelease_07302918
 library(qtl2)
 library(ggplot2)
 load("data/Jackson_Lab_Bubier_MURGIGV01/gm_DO2437_qc.RData")
@@ -25,3 +32,4 @@ ymx <- maxlod(condi.m2.qtl.out[[i]]) # overall maximum LOD score
 plot(condi.m2.qtl.out[[i]], gm_DO2437_qc$gmap, lodcolumn=1,
      col="slateblue", ylim=c(0, ymx*1.02),
      main=i)
+```
