@@ -43,3 +43,15 @@ output:
 ### 12 plot qtl mapping
 * [12_plot_qtl_mapping_1.Rmd](12_plot_qtl_mapping_1.html)
 * [12_plot_qtl_mapping_2.Rmd](12_plot_qtl_mapping_2.html)
+
+### 13 conditional_m2_qtlmapping
+* [13_conditional_m2_qtlmapping.R]
+
+### 14 geneseek2qtl2fst_Gagnon
+* [14_geneseek2qtl2fst_Gagnon.R]
+
+### 15 firstgm2genoprobs_Gagnon
+* [15_firstgm2genoprobs_Gagnon.R]
+
+### 16 diagnosis_qc_gigamuga_gagnon
+[16_diagnosis_qc_gigamuga_gagnon.Rmd](16_diagnosis_qc_gigamuga_gagnon.html)
