@@ -9,9 +9,11 @@
 <meta name="generator" content="pandoc" />
 
 
+<meta name="author" content="Hao He" />
 
+<meta name="date" content="2019-10-21" />
 
-<title></title>
+<title>plot_conditional_m2.Novelty_residuals_RankNormal_datarelease_07302918</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -314,13 +316,15 @@ div.section {
 
 
 
+<h1 class="title toc-ignore">plot_conditional_m2.Novelty_residuals_RankNormal_datarelease_07302918</h1>
+<h4 class="author"><em>Hao He</em></h4>
+<h4 class="date"><em>2019-10-21</em></h4>
 
 </div>
 
 <div id="TOC">
 <ul>
-<li><a href="#this-script-performs-plotting-on-qtl-conditional-mapping-for-do-mice-m2-novelty_residuals_ranknormal_datarelease_07302918">This script performs plotting on qtl conditional mapping for DO mice m2, Novelty_residuals_RankNormal_datarelease_07302918</a></li>
-<li><a href="#genome-wide-results">genome-wide results</a></li>
+<li><a href="#plot-scan-result-for-conditional_m2.novelty_residuals_ranknormal_datarelease_07302918">plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_07302918</a></li>
 </ul>
 </div>
 
@@ -347,7 +351,7 @@ div.section {
 <strong>Last updated:</strong> 2019-10-21
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>csna_workflow/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
@@ -375,10 +379,70 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtree45cb7a724673a3e314e93d818f62e9c95dfd02f4targetblank45cb7a7a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/45cb7a724673a3e314e93d818f62e9c95dfd02f4" target="_blank">45cb7a7</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtree45cb7a724673a3e314e93d818f62e9c95dfd02f4targetblank45cb7a7a" class="panel-collapse collapse">
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20190918code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20190918)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20190918code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20190918)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtree613db85bba45053ad4b0a96b8166753626ead2f2targetblank613db85a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/613db85bba45053ad4b0a96b8166753626ead2f2" target="_blank">613db85</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtree613db85bba45053ad4b0a96b8166753626ead2f2targetblank613db85a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -1857,6 +1921,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/613db85bba45053ad4b0a96b8166753626ead2f2/analysis/13_plot_conditional_m2_qtlmapping.Rmd" target="_blank">613db85</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2019-10-21
+</td>
+<td>
+13_plot_conditional_m2_qtlmapping.Rmd
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/d25bab6450bafb744e64c878fa0311710260a1f8/docs/13_plot_conditional_m2_qtlmapping.html" target="_blank">d25bab6</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2019-10-21
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/TheJacksonLaboratory/CSNA/blob/45cb7a724673a3e314e93d818f62e9c95dfd02f4/analysis/13_plot_conditional_m2_qtlmapping.Rmd" target="_blank">45cb7a7</a>
 </td>
 <td>
@@ -1876,18 +1974,79 @@ xhyuo
 </div>
 </div>
 </div>
-<div id="section" class="section level116">
-<p></p>
+<div id="plot-scan-result-for-conditional_m2.novelty_residuals_ranknormal_datarelease_07302918" class="section level1">
+<h1>plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_07302918</h1>
+<pre class="r"><code>#   This script performs plotting on qtl conditional mapping for DO mice m2, Novelty_residuals_RankNormal_datarelease_07302918
+library(qtl2)
+library(ggplot2)
+load(&quot;data/Jackson_Lab_Bubier_MURGIGV01/gm_DO2437_qc.RData&quot;)
+pheno &lt;- read.csv(&quot;data/pheno/Novelty_residuals_RankNormal_datarelease_07302918.csv&quot;, header = TRUE)
+
+print(&quot;m2&quot;)</code></pre>
+<pre><code>[1] &quot;m2&quot;</code></pre>
+<pre class="r"><code>load(&quot;output/condi.m2.qtl.out.RData&quot;)
+
+#genome-wide results
+pdf(file = paste0(&quot;output/conditional_m2.Novelty_residuals_RankNormal_datarelease_07302918&quot;, &quot;_genomescan.pdf&quot;), width = 14)
+for(i in names(condi.m2.qtl.out)){
+  par(mar=c(5.1, 4.1, 1.1, 1.1))
+  ymx &lt;- maxlod(condi.m2.qtl.out[[i]]) # overall maximum LOD score
+  plot(condi.m2.qtl.out[[i]], gm_DO2437_qc$gmap, lodcolumn=1,
+       col=&quot;slateblue&quot;, ylim=c(0, ymx*1.02),
+       main=i)
+}
+dev.off()</code></pre>
+<pre><code>png 
+  2 </code></pre>
+<pre class="r"><code>par(mar=c(5.1, 4.1, 1.1, 1.1))
+ymx &lt;- maxlod(condi.m2.qtl.out[[i]]) # overall maximum LOD score
+plot(condi.m2.qtl.out[[i]], gm_DO2437_qc$gmap, lodcolumn=1,
+     col=&quot;slateblue&quot;, ylim=c(0, ymx*1.02),
+     main=i)</code></pre>
+<p><img src="figure/13_plot_conditional_m2_qtlmapping.Rmd/plot%20scan%20result%20for%20conditional_m2.Novelty_residuals_RankNormal_datarelease_07302918-1.png" width="1344" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.3.2 (2016-10-31)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: CentOS release 6.5 (Final)
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  base     
+
+other attached packages:
+[1] ggplot2_3.1.0 qtl2_0.18    
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.2        pillar_1.3.1      git2r_0.23.0     
+ [4] plyr_1.8.4        workflowr_1.4.0   methods_3.3.2    
+ [7] tools_3.3.2       digest_0.6.18     bit_1.1-14       
+[10] RSQLite_2.1.1     evaluate_0.10     memoise_1.1.0    
+[13] tibble_2.1.3      gtable_0.2.0      pkgconfig_2.0.1  
+[16] rlang_0.4.0       DBI_1.0.0         yaml_2.2.0       
+[19] parallel_3.3.2    withr_2.1.2       stringr_1.3.1    
+[22] dplyr_0.8.3       knitr_1.20        fs_1.2.6         
+[25] rprojroot_1.3-2   bit64_0.9-7       grid_3.3.2       
+[28] tidyselect_0.2.5  glue_1.3.1        data.table_1.11.4
+[31] R6_2.4.0          rmarkdown_1.11    purrr_0.3.2      
+[34] blob_1.1.1        magrittr_1.5      whisker_0.3-2    
+[37] backports_1.1.2   scales_1.0.0      htmltools_0.3.6  
+[40] assertthat_0.2.1  colorspace_1.4-0  stringi_1.2.4    
+[43] lazyeval_0.2.1    munsell_0.5.0     crayon_1.3.4     </code></pre>
 </div>
-<div id="this-script-performs-plotting-on-qtl-conditional-mapping-for-do-mice-m2-novelty_residuals_ranknormal_datarelease_07302918" class="section level1">
-<h1>This script performs plotting on qtl conditional mapping for DO mice m2, Novelty_residuals_RankNormal_datarelease_07302918</h1>
-<p>library(qtl2) library(ggplot2) load(“data/Jackson_Lab_Bubier_MURGIGV01/gm_DO2437_qc.RData”) pheno &lt;- read.csv(“data/pheno/Novelty_residuals_RankNormal_datarelease_07302918.csv”, header = TRUE)</p>
-<p>print(“m2”) load(“output/condi.m2.qtl.out.RData”)</p>
-</div>
-<div id="genome-wide-results" class="section level1">
-<h1>genome-wide results</h1>
-<p>pdf(file = paste0(“output/conditional_m2.Novelty_residuals_RankNormal_datarelease_07302918”, “_genomescan.pdf“), width = 14) for(i in names(condi.m2.qtl.out)){ par(mar=c(5.1, 4.1, 1.1, 1.1)) ymx &lt;- maxlod(condi.m2.qtl.out[[i]]) # overall maximum LOD score plot(condi.m2.qtl.out[[i]], gm_DO2437_qc$gmap, lodcolumn=1, col=”slateblue“, ylim=c(0, ymx*1.02), main=i) } dev.off()</p>
-<p>par(mar=c(5.1, 4.1, 1.1, 1.1)) ymx &lt;- maxlod(condi.m2.qtl.out[[i]]) # overall maximum LOD score plot(condi.m2.qtl.out[[i]], gm_DO2437_qc$gmap, lodcolumn=1, col=“slateblue”, ylim=c(0, ymx*1.02), main=i)</p>
 </div>
 
 
