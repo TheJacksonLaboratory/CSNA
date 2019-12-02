@@ -35,7 +35,7 @@ gm
 ```
 
 # Missing data per sample
-```{r Missing data per sample,fig.height=12, fig.width=12, eval=TRUE}
+```{r Missing data per sample,fig.height=12, fig.width=20, eval=TRUE}
 gm
 
 percent_missing <- n_missing(gm, "ind", "prop")*100
@@ -43,7 +43,7 @@ setScreenSize(height=100, width=300)
 labels <- paste0(names(percent_missing), " (", round(percent_missing,2), "%)")
 iplot(seq_along(percent_missing), percent_missing, indID=labels,
       chartOpts=list(xlab="Mouse", ylab="Percent missing genotype data",
-                     ylim=c(0, 60)))
+                     ylim=c(0, 80)))
 
 #save into pdf
 pdf(file = "output/Percent_missing_genotype_data.pdf", width = 20, height = 20)
@@ -375,6 +375,7 @@ qc_info <- merge(qc_info,
 qc_info$remove.id.duplicated <- ifelse(qc_info$id %in% summary.cg$remove.id, TRUE,FALSE)
 
 bad.sample <- qc_info[qc_info$ngen ==1 | qc_info$Number_crossovers <= 200 | qc_info$Number_crossovers >=1000 | qc_info$percent_missing >= 10 | qc_info$genotype_erros >= 1 | qc_info$remove.id.duplicated == TRUE,]
+bad.sample
 
 save(qc_info, bad.sample, file = "data/Jackson_Lab_11_batches/qc_info_bad_sample.RData")
 
@@ -400,7 +401,8 @@ save(bad_markers, file = "data/Jackson_Lab_11_batches/bad_markers.RData")
 gm_after_qc <- drop_markers(gm.no.bad, names(errors_mar)[errors_mar > 5])
 
 gm_after_qc
+gm_DO2816_qc <- gm_after_qc
 
-save(gm_after_qc, file = "data/Jackson_Lab_11_batches/gm_after_qc.RData")
+save(gm_DO2816_qc, file = "data/Jackson_Lab_11_batches/gm_DO2816_qc.RData")
 save(e,g,snpg, file = "data/Jackson_Lab_11_batches/e_g_snpg_qc.RData")
 ```
