@@ -1,5 +1,5 @@
 ---
-title: "plot_qtl_mapping_Novelty_resids_datarelease_07302918"
+title: "plot_qtl_mapping_Novelty_resids_datarelease_12182019"
 author: "Hao He"
 date: "`r Sys.Date()`"
 output: html_document
@@ -15,21 +15,21 @@ This script will plot the qtl mapping results.
 ```{r library, message=FALSE}
 library(qtl2)
 library(ggplot2)
-load("data/Jackson_Lab_Bubier_MURGIGV01/gm_DO2437_qc.RData")
+load("data/Jackson_Lab_11_batches/gm_DO2816_qc.RData")
 ```
 
-# plot scan result for m1 Novelty_resids_datarelease_07302918
-```{r plot scan result for m1 Novelty_resids_datarelease_07302918, fig.height=14, fig.width=14, eval=TRUE}
-pheno <- read.csv("data/pheno/Novelty_resids_datarelease_07302918.csv", header = TRUE)
+# plot scan result for m1 Novelty_resids_datarelease_12182019
+```{r plot scan result for m1 Novelty_resids_datarelease_12182019, fig.height=14, fig.width=14, eval=TRUE}
+pheno <- read.csv("data/pheno/Novelty_resids_datarelease_12182019.csv", header = TRUE)
 
 print("m1")
-load("output/m1.Novelty_resids_datarelease_07302918.RData")
+load("output/m1.Novelty_resids_datarelease_12182019.RData")
 
 #permutation results
 #The default is to return the 5% significance thresholds. Thresholds for other (or for multiple) significance levels can be obtained via the alpha argument.
 # operm <- list()
 # for(i in 3:5){
-#   operm[[i]] <- get(load(paste0("output/permu/m1_Novelty_resids_datarelease_07302918_", colnames(pheno)[14], "_", i, ".RData")))
+#   operm[[i]] <- get(load(paste0("output/permu/m1_Novelty_resids_datarelease_12182019_", colnames(pheno)[14], "_", i, ".RData")))
 #   operm[[i]] <- operm[[i]]$OFA.total.distance.traveled
 # }
 # operm <- matrix(do.call(rbind, operm[3:5]),ncol = 1)
@@ -37,11 +37,11 @@ load("output/m1.Novelty_resids_datarelease_07302918.RData")
 # cutoff <- summary(operm, c(0.05, 0.1))[,1]
 
 #genome-wide results
-pdf(file = paste0("output/m1.Novelty_resids_datarelease_07302918", "_genomescan.pdf"), width = 14)
+pdf(file = paste0("output/m1.Novelty_resids_datarelease_12182019", "_genomescan.pdf"), width = 14)
 for(i in names(m1.qtl.out)){
   par(mar=c(5.1, 4.1, 1.1, 1.1))
   ymx <- maxlod(m1.qtl.out[[i]]) # overall maximum LOD score
-  plot(m1.qtl.out[[i]], gm_DO2437_qc$gmap, lodcolumn=1,
+  plot(m1.qtl.out[[i]], gm_DO2816_qc$gmap, lodcolumn=1,
        col="slateblue", ylim=c(0, ymx*1.02),
        main=i)
   # abline(h=cutoff[1], col="red",lty=2) # 0.05 cutoff
@@ -52,7 +52,7 @@ dev.off()
 for(i in names(m1.qtl.out)){
   par(mar=c(5.1, 4.1, 1.1, 1.1))
   ymx <- maxlod(m1.qtl.out[[i]]) # overall maximum LOD score
-  plot(m1.qtl.out[[i]], gm_DO2437_qc$gmap, lodcolumn=1,
+  plot(m1.qtl.out[[i]], gm_DO2816_qc$gmap, lodcolumn=1,
        col="slateblue", ylim=c(0, ymx*1.02),
        main=i)
   # abline(h=cutoff[1], col="red",lty=2) # 0.05 cutoff
@@ -62,45 +62,45 @@ for(i in names(m1.qtl.out)){
 #load blup results
 x <- list()
 for(i in colnames(pheno)[14:41]){
-  y <- get(load(paste0("output/blup/m1_blup_Novelty_resids_datarelease_07302918_",i,".RData")))
+  y <- get(load(paste0("output/blup/m1_blup_Novelty_resids_datarelease_12182019_",i,".RData")))
   x[[i]] <- y[[i]]
 }
 m1.blup = x
 
 #coeffects plot
-#pdf(file = paste0("output/m1.Novelty_resids_datarelease_07302918", "_coeffgeneplot.pdf"), width = 14)
+pdf(file = paste0("output/m1.Novelty_resids_datarelease_12182019", "_coeffgeneplot.pdf"), width = 14)
 for(i in names(m1.qtl.out)){
   chr <- as.character(m1.peak[[i]][m1.peak[[i]]$lodcolumn == i,"chr"])
   par(mar=c(4.1, 4.1, 1.6, 1.6))
   plot_coefCC(m1.coef[[i]], 
-              gm_DO2437_qc$gmap[chr], 
+              gm_DO2816_qc$gmap[chr], 
               scan1_output=m1.qtl.out[[i]], 
               bgcolor="gray95", #legend="bottomleft", 
               main =i)
   plot_coefCC(m1.blup[[i]], 
-              gm_DO2437_qc$gmap[chr], 
+              gm_DO2816_qc$gmap[chr], 
               scan1_output=m1.qtl.out[[i]], 
               bgcolor="gray95", #legend="bottomleft", 
               main =i)
-  plot(m1.snps[[i]]$lod, 
-       m1.snps[[i]]$snpinfo, 
-       drop_hilit=1.5, 
-       genes=m1.genes[[i]],
-       main = i)
+#  plot(m1.snps[[i]]$lod, 
+#       m1.snps[[i]]$snpinfo, 
+#       drop_hilit=1.5, 
+#       genes=m1.genes[[i]],
+#       main = i)
 }
-#dev.off()
+dev.off()
 ```
 
-# plot scan result for m2 Novelty_resids_datarelease_07302918
-```{r plot scan result for m2 Novelty_resids_datarelease_07302918,fig.height=14, fig.width=14, eval=TRUE}
+# plot scan result for m2 Novelty_resids_datarelease_12182019
+```{r plot scan result for m2 Novelty_resids_datarelease_12182019,fig.height=14, fig.width=14, eval=TRUE}
 print("m2")
-load("output/m2.Novelty_resids_datarelease_07302918.RData")
+load("output/m2.Novelty_resids_datarelease_12182019.RData")
 
 #permutation results
 #The default is to return the 5% significance thresholds. Thresholds for other (or for multiple) significance levels can be obtained via the alpha argument.
 # operm <- list()
 # for(i in 3:5){
-#   operm[[i]] <- get(load(paste0("output/permu/m2_Novelty_resids_datarelease_07302918_", colnames(pheno)[14], "_", i, ".RData")))
+#   operm[[i]] <- get(load(paste0("output/permu/m2_Novelty_resids_datarelease_12182019_", colnames(pheno)[14], "_", i, ".RData")))
 #   operm[[i]] <- operm[[i]]$OFA.total.distance.traveled
 # }
 # operm <- matrix(do.call(rbind, operm[3:5]),ncol = 1)
@@ -108,11 +108,11 @@ load("output/m2.Novelty_resids_datarelease_07302918.RData")
 # cutoff <- summary(operm, c(0.05, 0.1))[,1]
 
 #genome-wide results
-pdf(file = paste0("output/m2.Novelty_resids_datarelease_07302918", "_genomescan.pdf"), width = 14)
+pdf(file = paste0("output/m2.Novelty_resids_datarelease_12182019", "_genomescan.pdf"), width = 14)
 for(i in names(m2.qtl.out)){
   par(mar=c(5.1, 4.1, 1.1, 1.1))
   ymx <- maxlod(m2.qtl.out[[i]]) # overall maximum LOD score
-  plot(m2.qtl.out[[i]], gm_DO2437_qc$gmap, lodcolumn=1,
+  plot(m2.qtl.out[[i]], gm_DO2816_qc$gmap, lodcolumn=1,
        col="slateblue", ylim=c(0, ymx*1.02),
        main=i)
   # abline(h=cutoff[1], col="red",lty=2) # 0.05 cutoff
@@ -123,7 +123,7 @@ dev.off()
 for(i in names(m2.qtl.out)){
   par(mar=c(5.1, 4.1, 1.1, 1.1))
   ymx <- maxlod(m2.qtl.out[[i]]) # overall maximum LOD score
-  plot(m2.qtl.out[[i]], gm_DO2437_qc$gmap, lodcolumn=1,
+  plot(m2.qtl.out[[i]], gm_DO2816_qc$gmap, lodcolumn=1,
        col="slateblue", ylim=c(0, ymx*1.02),
        main=i)
   # abline(h=cutoff[1], col="red",lty=2) # 0.05 cutoff
@@ -133,45 +133,45 @@ for(i in names(m2.qtl.out)){
 #load blup results
 x <- list()
 for(i in colnames(pheno)[14:41]){
-  y <- get(load(paste0("output/blup/m2_blup_Novelty_resids_datarelease_07302918_",i,".RData")))
+  y <- get(load(paste0("output/blup/m2_blup_Novelty_resids_datarelease_12182019_",i,".RData")))
   x[[i]] <- y[[i]]
 }
 m2.blup = x
 
 #coeffects plot
-#pdf(file = paste0("output/m2.Novelty_resids_datarelease_07302918", "_coeffgeneplot.pdf"), width = 14)
+pdf(file = paste0("output/m2.Novelty_resids_datarelease_12182019", "_coeffgeneplot.pdf"), width = 14)
 for(i in names(m2.qtl.out)){
   chr <- as.character(m2.peak[[i]][m2.peak[[i]]$lodcolumn == i,"chr"])
   par(mar=c(4.1, 4.1, 1.6, 1.6))
   plot_coefCC(m2.coef[[i]], 
-              gm_DO2437_qc$gmap[chr], 
+              gm_DO2816_qc$gmap[chr], 
               scan1_output=m2.qtl.out[[i]], 
               bgcolor="gray95", #legend="bottomleft", 
               main =i)
   plot_coefCC(m2.blup[[i]], 
-              gm_DO2437_qc$gmap[chr], 
+              gm_DO2816_qc$gmap[chr], 
               scan1_output=m2.qtl.out[[i]], 
               bgcolor="gray95", #legend="bottomleft", 
               main =i)
-  plot(m2.snps[[i]]$lod, 
-       m2.snps[[i]]$snpinfo, 
-       drop_hilit=1.5, 
-       genes=m2.genes[[i]],
-       main = i)
+#  plot(m2.snps[[i]]$lod, 
+#       m2.snps[[i]]$snpinfo, 
+#       drop_hilit=1.5, 
+#       genes=m2.genes[[i]],
+#       main = i)
 }
-#dev.off()
+dev.off()
 ```
 
-# plot scan result for m3 Novelty_resids_datarelease_07302918
-```{r plot scan result for m3 Novelty_resids_datarelease_07302918, fig.height=14, fig.width=14, eval=TRUE}
+# plot scan result for m3 Novelty_resids_datarelease_12182019
+```{r plot scan result for m3 Novelty_resids_datarelease_12182019, fig.height=14, fig.width=14, eval=TRUE}
 print("m3")
-load("output/m3.Novelty_resids_datarelease_07302918.RData")
+load("output/m3.Novelty_resids_datarelease_12182019.RData")
 
 #permutation results
 #The default is to return the 5% significance thresholds. Thresholds for other (or for multiple) significance levels can be obtained via the alpha argument.
 # operm <- list()
 # for(i in 3:5){
-#   operm[[i]] <- get(load(paste0("output/permu/m3_Novelty_resids_datarelease_07302918_", colnames(pheno)[14], "_", i, ".RData")))
+#   operm[[i]] <- get(load(paste0("output/permu/m3_Novelty_resids_datarelease_12182019_", colnames(pheno)[14], "_", i, ".RData")))
 #   operm[[i]] <- operm[[i]]$OFA.total.distance.traveled
 # }
 # operm <- matrix(do.call(rbind, operm[3:5]),ncol = 1)
@@ -179,11 +179,11 @@ load("output/m3.Novelty_resids_datarelease_07302918.RData")
 # cutoff <- summary(operm, c(0.05, 0.1))[,1]
 
 #genome-wide results
-pdf(file = paste0("output/m3.Novelty_resids_datarelease_07302918", "_genomescan.pdf"), width = 14)
+pdf(file = paste0("output/m3.Novelty_resids_datarelease_12182019", "_genomescan.pdf"), width = 14)
 for(i in names(m3.qtl.out)){
   par(mar=c(5.1, 4.1, 1.1, 1.1))
   ymx <- maxlod(m3.qtl.out[[i]]) # overall maximum LOD score
-  plot(m3.qtl.out[[i]], gm_DO2437_qc$gmap, lodcolumn=1,
+  plot(m3.qtl.out[[i]], gm_DO2816_qc$gmap, lodcolumn=1,
        col="slateblue", ylim=c(0, ymx*1.02),
        main=i)
   # abline(h=cutoff[1], col="red",lty=2) # 0.05 cutoff
@@ -194,7 +194,7 @@ dev.off()
 for(i in names(m3.qtl.out)){
   par(mar=c(5.1, 4.1, 1.1, 1.1))
   ymx <- maxlod(m3.qtl.out[[i]]) # overall maximum LOD score
-  plot(m3.qtl.out[[i]], gm_DO2437_qc$gmap, lodcolumn=1,
+  plot(m3.qtl.out[[i]], gm_DO2816_qc$gmap, lodcolumn=1,
        col="slateblue", ylim=c(0, ymx*1.02),
        main=i)
   # abline(h=cutoff[1], col="red",lty=2) # 0.05 cutoff
@@ -204,31 +204,31 @@ for(i in names(m3.qtl.out)){
 #load blup results
 x <- list()
 for(i in colnames(pheno)[14:41]){
-  y <- get(load(paste0("output/blup/m3_blup_Novelty_resids_datarelease_07302918_",i,".RData")))
+  y <- get(load(paste0("output/blup/m3_blup_Novelty_resids_datarelease_12182019_",i,".RData")))
   x[[i]] <- y[[i]]
 }
 m3.blup = x
 
 #coeffects plot
-#pdf(file = paste0("output/m3.Novelty_resids_datarelease_07302918", "_coeffgeneplot.pdf"), width = 14)
+pdf(file = paste0("output/m3.Novelty_resids_datarelease_12182019", "_coeffgeneplot.pdf"), width = 14)
 for(i in names(m3.qtl.out)){
   chr <- as.character(m3.peak[[i]][m3.peak[[i]]$lodcolumn == i,"chr"])
   par(mar=c(4.1, 4.1, 1.6, 1.6))
   plot_coefCC(m3.coef[[i]], 
-              gm_DO2437_qc$gmap[chr], 
+              gm_DO2816_qc$gmap[chr], 
               scan1_output=m3.qtl.out[[i]], 
               bgcolor="gray95", #legend="bottomleft", 
               main =i)
   plot_coefCC(m3.blup[[i]], 
-              gm_DO2437_qc$gmap[chr], 
+              gm_DO2816_qc$gmap[chr], 
               scan1_output=m3.qtl.out[[i]], 
               bgcolor="gray95", #legend="bottomleft", 
               main =i)
-  plot(m3.snps[[i]]$lod, 
-       m3.snps[[i]]$snpinfo, 
-       drop_hilit=1.5, 
-       genes=m3.genes[[i]],
-       main = i)
+#  plot(m3.snps[[i]]$lod, 
+#       m3.snps[[i]]$snpinfo, 
+#       drop_hilit=1.5, 
+#       genes=m3.genes[[i]],
+#       main = i)
 }
-#dev.off()
+dev.off()
 ```
