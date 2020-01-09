@@ -439,10 +439,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtree0294e575e3193a19c35e7b67f287caf66b54a232targetblank0294e57a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/0294e575e3193a19c35e7b67f287caf66b54a232" target="_blank">0294e57</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtree756b79a54cda14d350bbc55a47e08db3a3c47b09targetblank756b79aa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/756b79a54cda14d350bbc55a47e08db3a3c47b09" target="_blank">756b79a</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtree0294e575e3193a19c35e7b67f287caf66b54a232targetblank0294e57a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtree756b79a54cda14d350bbc55a47e08db3a3c47b09targetblank756b79aa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -1586,6 +1586,7 @@ Untracked files:
     Untracked:  output/Proportion_matching_genotypes_after_removal_of_bad_samples.pdf
     Untracked:  output/Proportion_matching_genotypes_before_removal_of_bad_samples.pdf
     Untracked:  output/blup/
+    Untracked:  output/condi.m2.Novelty_residuals_RankNormal_datarelease_12182019_genomescan.pdf
     Untracked:  output/condi.m2.qtl.blup_Novelty_residuals_RankNormal_datarelease_12182019_coeffgeneplot.pdf
     Untracked:  output/condi.m2.qtl.out.RData
     Untracked:  output/conditional_m2.Novelty_residuals_RankNormal_datarelease_07302918_genomescan.pdf
@@ -1691,6 +1692,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/756b79a54cda14d350bbc55a47e08db3a3c47b09/analysis/13_plot_conditional_m2_qtlmapping.Rmd" target="_blank">756b79a</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-01-09
+</td>
+<td>
+13_plot_conditional_m2_qtlmapping.Rmd
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/1b2c84993f1fa4f603de0f53015eebedf167549c/docs/13_plot_conditional_m2_qtlmapping.html" target="_blank">1b2c849</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-01-09
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1892,7 +1927,7 @@ class(operm) &lt;- c(&quot;scan1perm&quot;, &quot;matrix&quot;)
 cutoff &lt;- summary(operm, c(0.05, 0.1))[,1]
 
 #genome-wide results
-pdf(file = paste0(&quot;output/m2.Novelty_residuals_RankNormal_datarelease_12182019&quot;, &quot;_genomescan.pdf&quot;), width = 14)
+pdf(file = paste0(&quot;output/condi.m2.Novelty_residuals_RankNormal_datarelease_12182019&quot;, &quot;_genomescan.pdf&quot;), width = 14)
 for(i in names(condi.m2.qtl.out)){
   par(mar=c(5.1, 4.1, 1.1, 1.1))
   ymx &lt;- maxlod(condi.m2.qtl.out[[i]]) # overall maximum LOD score
@@ -1939,6 +1974,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/1b2c84993f1fa4f603de0f53015eebedf167549c/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-1.png" target="_blank">1b2c849</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-01-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8d8f9b4230e34e3065e3359fcf3fdce76f2f5508/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-1.png" target="_blank">8d8f9b4</a>
 </td>
 <td>
@@ -1975,6 +2021,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/1b2c84993f1fa4f603de0f53015eebedf167549c/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-2.png" target="_blank">1b2c849</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-01-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8d8f9b4230e34e3065e3359fcf3fdce76f2f5508/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-2.png" target="_blank">8d8f9b4</a>
@@ -2015,6 +2072,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/1b2c84993f1fa4f603de0f53015eebedf167549c/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-3.png" target="_blank">1b2c849</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-01-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8d8f9b4230e34e3065e3359fcf3fdce76f2f5508/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-3.png" target="_blank">8d8f9b4</a>
 </td>
 <td>
@@ -2051,6 +2119,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/1b2c84993f1fa4f603de0f53015eebedf167549c/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-4.png" target="_blank">1b2c849</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-01-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8d8f9b4230e34e3065e3359fcf3fdce76f2f5508/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-4.png" target="_blank">8d8f9b4</a>
@@ -2091,6 +2170,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/1b2c84993f1fa4f603de0f53015eebedf167549c/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-5.png" target="_blank">1b2c849</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-01-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8d8f9b4230e34e3065e3359fcf3fdce76f2f5508/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-5.png" target="_blank">8d8f9b4</a>
 </td>
 <td>
@@ -2127,6 +2217,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/1b2c84993f1fa4f603de0f53015eebedf167549c/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-6.png" target="_blank">1b2c849</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-01-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8d8f9b4230e34e3065e3359fcf3fdce76f2f5508/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-6.png" target="_blank">8d8f9b4</a>
@@ -2167,6 +2268,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/1b2c84993f1fa4f603de0f53015eebedf167549c/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-7.png" target="_blank">1b2c849</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-01-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8d8f9b4230e34e3065e3359fcf3fdce76f2f5508/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-7.png" target="_blank">8d8f9b4</a>
 </td>
 <td>
@@ -2203,6 +2315,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/1b2c84993f1fa4f603de0f53015eebedf167549c/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-8.png" target="_blank">1b2c849</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-01-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8d8f9b4230e34e3065e3359fcf3fdce76f2f5508/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-8.png" target="_blank">8d8f9b4</a>
@@ -2243,6 +2366,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/1b2c84993f1fa4f603de0f53015eebedf167549c/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-9.png" target="_blank">1b2c849</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-01-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8d8f9b4230e34e3065e3359fcf3fdce76f2f5508/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-9.png" target="_blank">8d8f9b4</a>
 </td>
 <td>
@@ -2279,6 +2413,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/1b2c84993f1fa4f603de0f53015eebedf167549c/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-10.png" target="_blank">1b2c849</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-01-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8d8f9b4230e34e3065e3359fcf3fdce76f2f5508/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-10.png" target="_blank">8d8f9b4</a>
@@ -2357,6 +2502,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/1b2c84993f1fa4f603de0f53015eebedf167549c/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-12.png" target="_blank">1b2c849</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-01-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8d8f9b4230e34e3065e3359fcf3fdce76f2f5508/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-12.png" target="_blank">8d8f9b4</a>
 </td>
 <td>
@@ -2393,6 +2549,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/1b2c84993f1fa4f603de0f53015eebedf167549c/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-13.png" target="_blank">1b2c849</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-01-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8d8f9b4230e34e3065e3359fcf3fdce76f2f5508/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-13.png" target="_blank">8d8f9b4</a>
@@ -2471,6 +2638,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/1b2c84993f1fa4f603de0f53015eebedf167549c/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-15.png" target="_blank">1b2c849</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-01-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8d8f9b4230e34e3065e3359fcf3fdce76f2f5508/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-15.png" target="_blank">8d8f9b4</a>
 </td>
 <td>
@@ -2507,6 +2685,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/1b2c84993f1fa4f603de0f53015eebedf167549c/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-16.png" target="_blank">1b2c849</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-01-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8d8f9b4230e34e3065e3359fcf3fdce76f2f5508/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-16.png" target="_blank">8d8f9b4</a>
@@ -2547,6 +2736,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/1b2c84993f1fa4f603de0f53015eebedf167549c/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-17.png" target="_blank">1b2c849</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-01-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8d8f9b4230e34e3065e3359fcf3fdce76f2f5508/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-17.png" target="_blank">8d8f9b4</a>
 </td>
 <td>
@@ -2583,6 +2783,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/1b2c84993f1fa4f603de0f53015eebedf167549c/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-18.png" target="_blank">1b2c849</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-01-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8d8f9b4230e34e3065e3359fcf3fdce76f2f5508/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-18.png" target="_blank">8d8f9b4</a>
@@ -2737,6 +2948,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/1b2c84993f1fa4f603de0f53015eebedf167549c/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-22.png" target="_blank">1b2c849</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-01-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8d8f9b4230e34e3065e3359fcf3fdce76f2f5508/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-22.png" target="_blank">8d8f9b4</a>
 </td>
 <td>
@@ -2775,6 +2997,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/1b2c84993f1fa4f603de0f53015eebedf167549c/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-23.png" target="_blank">1b2c849</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-01-09
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8d8f9b4230e34e3065e3359fcf3fdce76f2f5508/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-23.png" target="_blank">8d8f9b4</a>
 </td>
 <td>
@@ -2811,6 +3044,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/1b2c84993f1fa4f603de0f53015eebedf167549c/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-24.png" target="_blank">1b2c849</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-01-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8d8f9b4230e34e3065e3359fcf3fdce76f2f5508/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-24.png" target="_blank">8d8f9b4</a>
@@ -2887,6 +3131,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/1b2c84993f1fa4f603de0f53015eebedf167549c/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-26.png" target="_blank">1b2c849</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-01-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8d8f9b4230e34e3065e3359fcf3fdce76f2f5508/docs/figure/13_plot_conditional_m2_qtlmapping.Rmd/plot scan result for conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019-26.png" target="_blank">8d8f9b4</a>
@@ -2981,17 +3236,17 @@ xhyuo
 <pre class="r"><code>#load blup results
 x &lt;- list()
 #colnames(pheno)[14:41]
-for(i in c(&quot;HB.Novel.Entries&quot;)){
-  y &lt;- get(load(paste0(&quot;output/blup/condi.m2.qtl.blup_Novelty_residuals_RankNormal_datarelease_12182019_&quot;,i,&quot;.RData&quot;)))
+for(i in colnames(pheno)[14:41]){
+  y &lt;- get(load(paste0(&quot;output/blup/condi.m2.qtl.blup_Novelty_residuals_RankNormal_datarelease_12182019.csv_&quot;,i,&quot;.RData&quot;)))
   x[[i]] &lt;- y[[i]]
 }
-m2.blup = x
+condi.m2.qtl.blup = x
 
 #coeffects plot
 condi.m2.qtl.peak &lt;- list()
 pdf(file = paste0(&quot;output/condi.m2.qtl.blup_Novelty_residuals_RankNormal_datarelease_12182019&quot;, &quot;_coeffgeneplot.pdf&quot;), width = 14)
 #names(condi.m2.qtl.out)
-for(i in c(&quot;HB.Novel.Entries&quot;)){
+for(i in names(condi.m2.qtl.out)){
   #peak
   condi.m2.qtl.peak[[i]] &lt;- find_peaks(condi.m2.qtl.out[[i]], gm_DO2816_qc$gmap,
                                        threshold=maxlod(condi.m2.qtl.out[[i]])-0.001,
@@ -3017,8 +3272,82 @@ for(i in c(&quot;HB.Novel.Entries&quot;)){
   #       genes=m2.genes[[i]],
   #       main = i)
 }</code></pre>
+<pre><code>  lodindex                   lodcolumn chr    pos      lod ci_lo  ci_hi
+1        1 OFA.total.distance.traveled  10 76.513 8.446601 73.92 77.149</code></pre>
+<pre><code>  lodindex                   lodcolumn chr    pos     lod  ci_lo  ci_hi
+1        1 OFA.distance.traveled.slope  18 16.723 7.81814 16.071 23.093</code></pre>
+<pre><code>  lodindex                lodcolumn chr   pos      lod  ci_lo  ci_hi
+1        1 OFA.total.time.in.corner   2 49.76 8.521552 49.072 50.588</code></pre>
+<pre><code>  lodindex                   lodcolumn chr    pos      lod ci_lo  ci_hi
+1        1 OFA.total.time.in.perimeter  10 74.106 9.784588 73.92 74.503</code></pre>
+<pre><code>  lodindex                lodcolumn chr    pos      lod  ci_lo  ci_hi
+1        1 OFA.total.time.in.center   6 46.518 8.016775 46.052 46.975</code></pre>
+<pre><code>  lodindex                 lodcolumn chr    pos      lod ci_lo  ci_hi
+1        1 OFA.total.ambulatory.time  10 73.985 8.645845 73.92 76.531</code></pre>
+<pre><code>  lodindex                                lodcolumn chr    pos     lod
+1        1 OFA.total.distance.traveled.in.perimeter  10 74.074 10.7076
+  ci_lo  ci_hi
+1 73.92 77.088</code></pre>
+<pre><code>  lodindex                             lodcolumn chr    pos      lod ci_lo
+1        1 OFA.total.distance.traveled.in.center   6 46.616 7.217382 2.535
+   ci_hi
+1 47.044</code></pre>
+<pre><code>  lodindex                             lodcolumn chr    pos      lod
+1        1 OFA.total.distance.traveled.in.corner  16 16.709 8.297126
+   ci_lo  ci_hi
+1 16.266 16.814</code></pre>
+<pre><code>  lodindex           lodcolumn chr    pos      lod  ci_lo  ci_hi
+1        1 OFA.pct.dist.center   1 33.365 8.069328 31.582 33.554</code></pre>
+<pre><code>  lodindex           lodcolumn chr    pos      lod  ci_lo  ci_hi
+1        1 OFA.pct.dist.corner   7 18.789 6.848906 17.664 19.714</code></pre>
+<pre><code>  lodindex              lodcolumn chr    pos      lod  ci_lo  ci_hi
+1        1 OFA.pct.dist.perimeter  15 18.073 7.496348 17.764 18.631</code></pre>
+<pre><code>  lodindex           lodcolumn chr   pos      lod ci_lo  ci_hi
+1        1 OFA.pct.time.center   6 3.237 7.695909 2.682 46.972</code></pre>
+<pre><code>  lodindex           lodcolumn chr   pos      lod ci_lo  ci_hi
+1        1 OFA.pct.time.corner   6 8.797 6.995772 5.276 46.975</code></pre>
+<pre><code>  lodindex              lodcolumn chr    pos      lod ci_lo  ci_hi
+1        1 OFA.pct.time.perimeter   6 46.478 8.170896 3.031 46.972</code></pre>
+<pre><code>  lodindex                        lodcolumn chr    pos      lod ci_lo
+1        1 OFA.distance.traveled.first.five  10 73.985 11.43961 73.92
+   ci_hi
+1 74.248</code></pre>
+<pre><code>  lodindex                       lodcolumn chr    pos      lod  ci_lo
+1        1 OFA.distance.traveled.last.five   4 34.524 7.379972 34.028
+   ci_hi
+1 40.123</code></pre>
+<pre><code>  lodindex                         lodcolumn chr    pos      lod  ci_lo
+1        1 LD.pct.distance.traveled.in.light  15 34.548 7.257033 33.831
+   ci_hi
+1 34.552</code></pre>
+<pre><code>  lodindex                       lodcolumn chr    pos      lod ci_lo
+1        1 LD.pct.ambulatory.time.in.light   8 23.078 6.753169 19.37
+   ci_hi
+1 24.497</code></pre>
+<pre><code>  lodindex                    lodcolumn chr   pos      lod ci_lo ci_hi
+1        1 LD.pct.resting.time.in.light  10 6.973 6.706699 5.865 7.626</code></pre>
+<pre><code>  lodindex            lodcolumn chr    pos      lod  ci_lo  ci_hi
+1        1 LD.pct.time.in.light  15 34.078 6.881954 32.361 34.552</code></pre>
+<pre><code>  lodindex                         lodcolumn chr    pos      lod ci_lo
+1        1 LD.pct.ambulatory.Counts.in.light   8 23.078 7.111158 19.37
+   ci_hi
+1 23.517</code></pre>
+<pre><code>  lodindex            lodcolumn chr   pos      lod  ci_lo  ci_hi
+1        1 LD.total.transitions  14 58.29 7.482694 56.834 59.133</code></pre>
+<pre><code>  lodindex        lodcolumn chr    pos      lod  ci_lo  ci_hi
+1        1 HB.Total.Entries   5 41.319 7.228139 40.899 41.336</code></pre>
 <pre><code>  lodindex        lodcolumn chr   pos      lod  ci_lo  ci_hi
 1        1 HB.Novel.Entries  18 21.29 6.400137 21.017 21.893</code></pre>
+<pre><code>  lodindex         lodcolumn chr    pos      lod  ci_lo  ci_hi
+1        1 HB.Repeat.Entries  10 35.016 7.079492 34.809 35.152</code></pre>
+<pre><code>  lodindex                                         lodcolumn chr    pos
+1        1 NPP.NoveltyPreference.ZoneTime_WhiteVsBlack_Total  15 29.422
+       lod ci_lo  ci_hi
+1 6.060925 3.302 29.515</code></pre>
+<pre><code>  lodindex                                           lodcolumn chr    pos
+1        1 NPP.NoveltyPreference.ZoneTime_GreyWhiteBlack_Total   9 13.044
+       lod  ci_lo  ci_hi
+1 6.675271 11.594 51.992</code></pre>
 <pre class="r"><code>dev.off()</code></pre>
 <pre><code>png 
   2 </code></pre>
@@ -3035,35 +3364,30 @@ Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: CentOS release 6.5 (Final)
 
 locale:
- [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
- [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
- [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
- [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
- [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+[1] C
 
 attached base packages:
-[1] stats     graphics  grDevices utils     datasets  base     
+[1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
 [1] ggplot2_3.1.0 qtl2_0.18    
 
 loaded via a namespace (and not attached):
  [1] Rcpp_1.0.2        pillar_1.3.1      git2r_0.23.0     
- [4] plyr_1.8.4        workflowr_1.4.0   methods_3.3.2    
- [7] tools_3.3.2       digest_0.6.18     bit_1.1-14       
-[10] RSQLite_2.1.1     evaluate_0.10     memoise_1.1.0    
-[13] tibble_2.1.3      gtable_0.2.0      pkgconfig_2.0.1  
-[16] rlang_0.4.0       DBI_1.0.0         yaml_2.2.0       
-[19] parallel_3.3.2    withr_2.1.2       stringr_1.3.1    
-[22] dplyr_0.8.3       knitr_1.20        fs_1.2.6         
-[25] rprojroot_1.3-2   bit64_0.9-7       grid_3.3.2       
-[28] tidyselect_0.2.5  glue_1.3.1        data.table_1.11.4
-[31] R6_2.4.0          rmarkdown_1.11    purrr_0.3.2      
-[34] blob_1.1.1        magrittr_1.5      whisker_0.3-2    
-[37] backports_1.1.2   scales_1.0.0      htmltools_0.3.6  
-[40] assertthat_0.2.1  colorspace_1.4-0  stringi_1.2.4    
-[43] lazyeval_0.2.1    munsell_0.5.0     crayon_1.3.4     </code></pre>
+ [4] plyr_1.8.4        workflowr_1.4.0   tools_3.3.2      
+ [7] digest_0.6.18     bit_1.1-14        RSQLite_2.1.1    
+[10] evaluate_0.10     memoise_1.1.0     tibble_2.1.3     
+[13] gtable_0.2.0      pkgconfig_2.0.1   rlang_0.4.0      
+[16] DBI_1.0.0         yaml_2.2.0        parallel_3.3.2   
+[19] withr_2.1.2       stringr_1.3.1     dplyr_0.8.3      
+[22] knitr_1.20        fs_1.2.6          rprojroot_1.3-2  
+[25] bit64_0.9-7       grid_3.3.2        tidyselect_0.2.5 
+[28] glue_1.3.1        data.table_1.11.4 R6_2.4.0         
+[31] rmarkdown_1.11    purrr_0.3.2       blob_1.1.1       
+[34] magrittr_1.5      whisker_0.3-2     backports_1.1.2  
+[37] scales_1.0.0      htmltools_0.3.6   assertthat_0.2.1 
+[40] colorspace_1.4-0  stringi_1.2.4     lazyeval_0.2.1   
+[43] munsell_0.5.0     crayon_1.3.4     </code></pre>
 </div>
 </div>
 
