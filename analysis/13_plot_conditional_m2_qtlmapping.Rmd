@@ -28,7 +28,7 @@ class(operm) <- c("scan1perm", "matrix")
 cutoff <- summary(operm, c(0.05, 0.1))[,1]
 
 #genome-wide results
-pdf(file = paste0("output/m2.Novelty_residuals_RankNormal_datarelease_12182019", "_genomescan.pdf"), width = 14)
+pdf(file = paste0("output/condi.m2.Novelty_residuals_RankNormal_datarelease_12182019", "_genomescan.pdf"), width = 14)
 for(i in names(condi.m2.qtl.out)){
   par(mar=c(5.1, 4.1, 1.1, 1.1))
   ymx <- maxlod(condi.m2.qtl.out[[i]]) # overall maximum LOD score
@@ -53,17 +53,17 @@ for(i in names(condi.m2.qtl.out)){
 #load blup results
 x <- list()
 #colnames(pheno)[14:41]
-for(i in c("HB.Novel.Entries")){
-  y <- get(load(paste0("output/blup/condi.m2.qtl.blup_Novelty_residuals_RankNormal_datarelease_12182019_",i,".RData")))
+for(i in colnames(pheno)[14:41]){
+  y <- get(load(paste0("output/blup/condi.m2.qtl.blup_Novelty_residuals_RankNormal_datarelease_12182019.csv_",i,".RData")))
   x[[i]] <- y[[i]]
 }
-m2.blup = x
+condi.m2.qtl.blup = x
 
 #coeffects plot
 condi.m2.qtl.peak <- list()
 pdf(file = paste0("output/condi.m2.qtl.blup_Novelty_residuals_RankNormal_datarelease_12182019", "_coeffgeneplot.pdf"), width = 14)
 #names(condi.m2.qtl.out)
-for(i in c("HB.Novel.Entries")){
+for(i in names(condi.m2.qtl.out)){
   #peak
   condi.m2.qtl.peak[[i]] <- find_peaks(condi.m2.qtl.out[[i]], gm_DO2816_qc$gmap,
                                        threshold=maxlod(condi.m2.qtl.out[[i]])-0.001,
