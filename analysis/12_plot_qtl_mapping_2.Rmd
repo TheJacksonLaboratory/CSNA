@@ -16,12 +16,11 @@ This script will plot the qtl mapping results.
 library(qtl2)
 library(ggplot2)
 load("data/Jackson_Lab_11_batches/gm_DO2816_qc.RData")
+pheno <- read.csv("data/pheno/Novelty_residuals_RankNormal_datarelease_12182019.csv", header = TRUE)
 ```
 
 # plot scan result for m1 Novelty_residuals_RankNormal_datarelease_12182019
-```{r plot scan result for m1 Novelty_residuals_RankNormal_datarelease_12182019, fig.height=14, fig.width=14, eval=TRUE}
-pheno <- read.csv("data/pheno/Novelty_residuals_RankNormal_datarelease_12182019.csv", header = TRUE)
-
+```{r plot scan result for m1 Novelty_residuals_RankNormal_datarelease_12182019, fig.height=14, fig.width=14, eval=F}
 print("m1")
 load("output/m1.Novelty_residuals_RankNormal_datarelease_12182019.RData")
 
@@ -98,14 +97,14 @@ load("output/m2.Novelty_residuals_RankNormal_datarelease_12182019.RData")
 
 #permutation results
 #The default is to return the 5% significance thresholds. Thresholds for other (or for multiple) significance levels can be obtained via the alpha argument.
-# operm <- list()
-# for(i in 3:5){
-#   operm[[i]] <- get(load(paste0("output/permu/m2_Novelty_residuals_RankNormal_datarelease_12182019_", colnames(pheno)[14], "_", i, ".RData")))
-#   operm[[i]] <- operm[[i]]$OFA.total.distance.traveled
-# }
-# operm <- matrix(do.call(rbind, operm[3:5]),ncol = 1)
-# class(operm) <- c("scan1perm", "matrix")
-# cutoff <- summary(operm, c(0.05, 0.1))[,1]
+operm <- list()
+for(i in 1:50){
+ operm[[i]] <- get(load(paste0("output/permu/m2_Novelty_residuals_RankNormal_datarelease_12182019_", colnames(pheno)[14], "_", i, ".RData")))
+ operm[[i]] <- operm[[i]]$OFA.total.distance.traveled
+}
+operm <- matrix(do.call(rbind, operm[1:50]),ncol = 1)
+class(operm) <- c("scan1perm", "matrix")
+cutoff <- summary(operm, c(0.05, 0.1))[,1]
 
 #genome-wide results
 pdf(file = paste0("output/m2.Novelty_residuals_RankNormal_datarelease_12182019", "_genomescan.pdf"), width = 14)
@@ -115,8 +114,8 @@ for(i in names(m2.qtl.out)){
   plot(m2.qtl.out[[i]], gm_DO2816_qc$gmap, lodcolumn=1,
        col="slateblue", ylim=c(0, ymx*1.02),
        main=i)
-  # abline(h=cutoff[1], col="red",lty=2) # 0.05 cutoff
-  # abline(h=cutoff[2], col="red",lty=1) # 0.1 cutoff
+  abline(h=cutoff[1], col="red",lty=2) # 0.05 cutoff
+  abline(h=cutoff[2], col="red",lty=1) # 0.1 cutoff
 }
 dev.off()
 
@@ -126,8 +125,8 @@ for(i in names(m2.qtl.out)){
   plot(m2.qtl.out[[i]], gm_DO2816_qc$gmap, lodcolumn=1,
        col="slateblue", ylim=c(0, ymx*1.02),
        main=i)
-  # abline(h=cutoff[1], col="red",lty=2) # 0.05 cutoff
-  # abline(h=cutoff[2], col="red",lty=1) # 0.1 cutoff
+  abline(h=cutoff[1], col="red",lty=2) # 0.05 cutoff
+  abline(h=cutoff[2], col="red",lty=1) # 0.1 cutoff
 }
 
 #load blup results
@@ -153,17 +152,17 @@ for(i in names(m2.qtl.out)){
               scan1_output=m2.qtl.out[[i]], 
               bgcolor="gray95", #legend="bottomleft", 
               main =i)
-#  plot(m2.snps[[i]]$lod, 
-#       m2.snps[[i]]$snpinfo, 
-#       drop_hilit=1.5, 
-#       genes=m2.genes[[i]],
-#       main = i)
+  plot(m2.snps[[i]]$lod, 
+       m2.snps[[i]]$snpinfo, 
+       drop_hilit=1.5, 
+       genes=m2.genes[[i]],
+       main = i)
 }
 dev.off()
 ```
 
 # plot scan result for m3 Novelty_residuals_RankNormal_datarelease_12182019
-```{r plot scan result for m3 Novelty_residuals_RankNormal_datarelease_12182019, fig.height=14, fig.width=14, eval=TRUE}
+```{r plot scan result for m3 Novelty_residuals_RankNormal_datarelease_12182019, fig.height=14, fig.width=14, eval=F}
 print("m3")
 load("output/m3.Novelty_residuals_RankNormal_datarelease_12182019.RData")
 
