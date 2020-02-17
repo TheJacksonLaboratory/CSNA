@@ -11,8 +11,9 @@
 
 <meta name="author" content="Hao He" />
 
+<meta name="date" content="2020-02-17" />
 
-<title>CSNA_workflow</title>
+<title>17_plot_qtl_mapping</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -315,29 +316,19 @@ div.section {
 
 
 
-<h1 class="title toc-ignore">CSNA_workflow</h1>
+<h1 class="title toc-ignore">17_plot_qtl_mapping</h1>
 <h4 class="author"><em>Hao He</em></h4>
+<h4 class="date"><em>2020-02-17</em></h4>
 
 </div>
 
 <div id="TOC">
 <ul>
-<li><a href="#data-transformation-from-finalreport.txt-to-qtl2-for-11-batches-of-jackson_lab_bubier">1 Data transformation from Finalreport.txt to qtl2 for 11 batches of Jackson_Lab_Bubier</a></li>
-<li><a href="#grab-intensities-from-geneseek-finalreport.txt-files-convert-them-to-a-single-big-data-frame">2 Grab intensities from GeneSeek FinalReport.txt files convert them to a single big data frame</a></li>
-<li><a href="#first-time-to-calculate-genoprobs-maxmarg-crossover-errorlod-snpg-for-the-qc-diagnositics">3 First time to calculate genoprobs, maxmarg, crossover, errorlod, snpg for the qc diagnositics</a></li>
-<li><a href="#genotype-diagnostics-for-diversity-outbred-mice-of-batches">4 Genotype diagnostics for diversity outbred mice of batches</a></li>
-<li><a href="#after-qc-genotype-diagnostics">5 After QC, genotype diagnostics</a></li>
-<li><a href="#calculation-of-the-genoprobs-after-qc-and-do-interpolatino-to-69k-grid">6 Calculation of the genoprobs after qc and do interpolatino to 69K grid</a></li>
-<li><a href="#plot-the-recombination-block-size-and-founder-props-across-all-generations">7 Plot the recombination block size and founder props across all generations</a></li>
-<li><a href="#gcta-heritability">8 GCTA heritability</a></li>
-<li><a href="#qtl-mapping">9 qtl mapping</a></li>
-<li><a href="#qtl-permutation">10 qtl permutation</a></li>
-<li><a href="#qtl-blup">11 qtl blup</a></li>
-<li><a href="#plot-qtl-mapping">12 plot qtl mapping</a></li>
-<li><a href="#conditional_m2_qtlmapping">13 conditional_m2_qtlmapping</a></li>
-<li><a href="#geneseek2qtl2fst_gagnon">14 geneseek2qtl2fst_Gagnon</a></li>
-<li><a href="#firstgm2genoprobs_gagnon">15 firstgm2genoprobs_Gagnon</a></li>
-<li><a href="#diagnosis_qc_gigamuga_gagnon">16 diagnosis_qc_gigamuga_gagnon</a></li>
+<li><a href="#library">library</a></li>
+<li><a href="#plot-scan-result-for-m2-prj01_rl-acquisition_preqc_02142020.csv">plot scan result for m2 Prj01_RL-Acquisition_preqc_02142020.csv</a></li>
+<li><a href="#plot-scan-result-for-m2-prj01_rl-reversal_preqc_02142020.csv">plot scan result for m2 Prj01_RL-Reversal_preqc_02142020.csv</a></li>
+<li><a href="#plot-scan-result-for-m2-prj02_sensitization_preqc_02142020.csv">plot scan result for m2 Prj02_Sensitization_preqc_02142020.csv</a></li>
+<li><a href="#plot-scan-result-for-m2-prj04_ivsa_preqc_02142020.csv">plot scan result for m2 Prj04_IVSA_preqc_02142020.csv</a></li>
 </ul>
 </div>
 
@@ -364,7 +355,7 @@ div.section {
 <strong>Last updated:</strong> 2020-02-17
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>csna_workflow/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
@@ -386,6 +377,66 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
 <div class="panel-body">
 <p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20190918code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20190918)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20190918code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20190918)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
 </div>
 </div>
 </div>
@@ -872,580 +923,19 @@ Message
 <tbody>
 <tr>
 <td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/d977cdc19eab6afa2b4d05fc9e88456424436b82/docs/index.html" target="_blank">d977cdc</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2020-02-16
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/6861ae73fa9c54567eec7190f86b62f9827f303f/docs/index.html" target="_blank">6861ae7</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2020-02-16
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/a2f202a3bf3f23ec2323e324d0b64fbbaccecae0/docs/index.html" target="_blank">a2f202a</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2020-01-09
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/1b2c84993f1fa4f603de0f53015eebedf167549c/docs/index.html" target="_blank">1b2c849</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2020-01-09
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/c5ca735760c442dba355e805532d83983a13e0c6/docs/index.html" target="_blank">c5ca735</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2020-01-07
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/626668d6004cd9658e35319050fa2fa8d28b608e/docs/index.html" target="_blank">626668d</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2020-01-07
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/8d8f9b4230e34e3065e3359fcf3fdce76f2f5508/docs/index.html" target="_blank">8d8f9b4</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2019-12-27
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/2c6b5635d202dd938105c4334a64cdcb63fff372/docs/index.html" target="_blank">2c6b563</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2019-12-03
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/81802a2660d2a340a8ca751226b35d873e8a9f58/docs/index.html" target="_blank">81802a2</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2019-12-02
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
 Rmd
 </td>
 <td>
-<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/63c62843b2d8e06a513cde4085224b5791795700/analysis/index.Rmd" target="_blank">63c6284</a>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/0cbb8de36ee1e0e425d022d62f7d7f677a28b1d5/analysis/17_plot_qtl_mapping.Rmd" target="_blank">0cbb8de</a>
 </td>
 <td>
 xhyuo
 </td>
 <td>
-2019-12-02
+2020-02-17
 </td>
 <td>
-04_diagnosis_qc_gigamuga_11_batches.Rmd
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/a7547b3d45a62d6db3b0d16516020bd75220d4ff/docs/index.html" target="_blank">a7547b3</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2019-12-01
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/2e2a83781e68a801f18fbf85708ea215c270013d/analysis/index.Rmd" target="_blank">2e2a837</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2019-12-01
-</td>
-<td>
-04_diagnosis_qc_gigamuga_11_batches.Rmd
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/efed06b90051d37b076aa4728682439356b6d8c7/docs/index.html" target="_blank">efed06b</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2019-10-21
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/f187b9966748583771866baa95e9cd4340805056/docs/index.html" target="_blank">f187b99</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2019-10-21
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/d25bab6450bafb744e64c878fa0311710260a1f8/docs/index.html" target="_blank">d25bab6</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2019-10-21
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/45cb7a724673a3e314e93d818f62e9c95dfd02f4/analysis/index.Rmd" target="_blank">45cb7a7</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2019-10-21
-</td>
-<td>
-13_plot_conditional_m2_qtlmapping.Rmd
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/58d4c4e21b62b1859e20fbd760e8d6eda584a733/docs/index.html" target="_blank">58d4c4e</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2019-10-20
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/51b872f7ff81e94c05406e4e0994753d3cfeb4a8/docs/index.html" target="_blank">51b872f</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2019-10-20
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/6c3b9fc19a34ba983235e167e6b4ef442695ad6a/analysis/index.Rmd" target="_blank">6c3b9fc</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2019-10-20
-</td>
-<td>
-wflow_publish(files = file)
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/a6d688627c717e885ff4355857bed5f52edaf577/docs/index.html" target="_blank">a6d6886</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2019-10-20
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/e899cf15008af4993a62d5de2732bf9e32127c52/docs/index.html" target="_blank">e899cf1</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2019-10-04
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/7b693e9bd4fe46c62467c257970719255f77b359/docs/index.html" target="_blank">7b693e9</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2019-10-02
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/463afa3190e76a21b2a0beedd4a561d97e5fbfe2/docs/index.html" target="_blank">463afa3</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2019-10-02
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/a28dfe6d698866b9d5ebdb3f096ed40c1f1e8122/docs/index.html" target="_blank">a28dfe6</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2019-10-02
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/e79d270039d8e2458add5233f8e728ccfbcdf624/docs/index.html" target="_blank">e79d270</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2019-10-02
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/13d7e2957ee94a88b85dbf82462c017d6f463263/docs/index.html" target="_blank">13d7e29</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2019-10-02
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/c3ee11a150f3eedf5cf3c7fede84c3fbfaaacd3c/docs/index.html" target="_blank">c3ee11a</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2019-09-23
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/97188bc6892400711418899a25e52e3ef0ebed6e/docs/index.html" target="_blank">97188bc</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2019-09-23
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/0d002796967eadfd8e12dbb6ab0b27965feaa825/docs/index.html" target="_blank">0d00279</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2019-09-23
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/27c1d860b515e69ec25e7275872ccb757954ae89/docs/index.html" target="_blank">27c1d86</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2019-09-23
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/e27133058fbeb9671f5e5658bb14fbb488489e9c/docs/index.html" target="_blank">e271330</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2019-09-22
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/1e4e3f711b8f33d111258c586c50a2382ab84142/docs/index.html" target="_blank">1e4e3f7</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2019-09-22
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/ed97ced7c03945e06e1448353f4cbcbac1d16938/analysis/index.Rmd" target="_blank">ed97ced</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2019-09-22
-</td>
-<td>
-wflow_publish(c(“analysis/index.Rmd”, “analysis/about.Rmd”,
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/898ff80e7a88c046ed3b5a1fabac19eaf3a71ef3/analysis/index.Rmd" target="_blank">898ff80</a>
-</td>
-<td>
-xhyuo
-</td>
-<td>
-2019-09-22
-</td>
-<td>
-Start workflowr project.
+17_plot_qtl_mapping.Rmd
 </td>
 </tr>
 </tbody>
@@ -1455,105 +945,581 @@ Start workflowr project.
 </div>
 </div>
 </div>
-<div id="data-transformation-from-finalreport.txt-to-qtl2-for-11-batches-of-jackson_lab_bubier" class="section level3">
-<h3>1 Data transformation from Finalreport.txt to qtl2 for 11 batches of Jackson_Lab_Bubier</h3>
-<ul>
-<li>[01_geneseek2qtl2.R]</li>
-</ul>
+<p>This script will plot the qtl mapping results.</p>
+<div id="library" class="section level1">
+<h1>library</h1>
+<pre class="r"><code>library(qtl2)
+library(ggplot2)
+load(&quot;data/Jackson_Lab_11_batches/gm_DO2816_qc.RData&quot;)</code></pre>
 </div>
-<div id="grab-intensities-from-geneseek-finalreport.txt-files-convert-them-to-a-single-big-data-frame" class="section level3">
-<h3>2 Grab intensities from GeneSeek FinalReport.txt files convert them to a single big data frame</h3>
-<ul>
-<li>[02_geneseek2intensity.R]</li>
-</ul>
+<div id="plot-scan-result-for-m2-prj01_rl-acquisition_preqc_02142020.csv" class="section level1">
+<h1>plot scan result for m2 Prj01_RL-Acquisition_preqc_02142020.csv</h1>
+<pre class="r"><code>pheno &lt;- read.csv(&quot;data/pheno/preqc/Prj01_RL-Acquisition_preqc_02142020.csv&quot;, header = TRUE)
+print(&quot;m2&quot;)</code></pre>
+<pre><code>[1] &quot;m2&quot;</code></pre>
+<pre class="r"><code>load(&quot;output/m2.Prj01_RL-Acquisition_preqc_02142020.RData&quot;)
+
+#genome-wide results output/
+pdf(file = paste0(&quot;output/m2.Prj01_RL-Acquisition_preqc_02142020&quot;, &quot;_qtl2scan.pdf&quot;), width = 14)
+for(i in names(m2.qtl.out)){
+  par(mar=c(5.1, 4.1, 1.1, 1.1))
+  ymx &lt;- maxlod(m2.qtl.out[[i]]) # overall maximum LOD score
+  plot(m2.qtl.out[[i]], gm_DO2816_qc$gmap, lodcolumn=1,
+       col=&quot;slateblue&quot;, ylim=c(0, ymx*1.02),
+       main=i)
+  abline(h=summary(m2.permu[[i]], c(0.05, 0.1))[,1][1], col=&quot;red&quot;,lty=2) # 0.05 cutoff
+  abline(h=summary(m2.permu[[i]], c(0.05, 0.1))[,1][2], col=&quot;red&quot;,lty=1) # 0.1 cutoff
+  #effect plot
+  chr &lt;- as.character(m2.peak[[i]][m2.peak[[i]]$lodcolumn == i,&quot;chr&quot;])
+  par(mar=c(4.1, 4.1, 1.6, 1.6))
+  plot_coefCC(m2.coef[[i]], 
+              gm_DO2816_qc$gmap[chr], 
+              scan1_output=m2.qtl.out[[i]], 
+              bgcolor=&quot;gray95&quot;, #legend=&quot;bottomleft&quot;, 
+              main =i)
+  plot_coefCC(m2.blup[[i]], 
+              gm_DO2816_qc$gmap[chr], 
+              scan1_output=m2.qtl.out[[i]], 
+              bgcolor=&quot;gray95&quot;, #legend=&quot;bottomleft&quot;, 
+              main =i)
+ # plot(m2.snps[[i]]$lod, 
+ #      m2.snps[[i]]$snpinfo, 
+ #      drop_hilit=1.5, 
+ #      genes=m2.genes[[i]],
+ #      main = i)
+}
+dev.off()</code></pre>
+<pre><code>png 
+  2 </code></pre>
+<pre class="r"><code>for(i in names(m2.qtl.out)){
+  print(i)
+  top_1 &lt;- data.frame(pheno = i)
+  top &lt;- top_snps(m2.snps[[i]]$lod, m2.snps[[i]]$snpinfo)
+  top &lt;- cbind(top_1, top)
+  write.table(top, file = &quot;output/Prj01_RL-Acquisition_preqc_02142020-variantlist.csv&quot;, sep = &quot;,&quot;,
+            row.names = F, col.names = T, append = TRUE)
+
+  if(dim(m2.genes[[i]]) == 0){
+    m2.genes[[i]] = NA
+  }
+  
+  topgene &lt;- cbind(top_1, m2.genes[[i]])
+  write.table(topgene, file = &quot;output/Prj01_RL-Acquisition_preqc_02142020-genelist.csv&quot;, sep = &quot;,&quot;,
+              row.names = F, col.names = T, append = TRUE)
+}</code></pre>
+<pre><code>[1] &quot;Days.To.Criteria&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj01_RL-
+Acquisition_preqc_02142020-variantlist.csv&quot;, : appending column names to
+file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj01_RL-
+Acquisition_preqc_02142020-genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;Total.Trials&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj01_RL-
+Acquisition_preqc_02142020-variantlist.csv&quot;, : appending column names to
+file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj01_RL-
+Acquisition_preqc_02142020-genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;Total.Correct&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj01_RL-
+Acquisition_preqc_02142020-variantlist.csv&quot;, : appending column names to
+file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj01_RL-
+Acquisition_preqc_02142020-genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;Total.Omit&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj01_RL-
+Acquisition_preqc_02142020-variantlist.csv&quot;, : appending column names to
+file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj01_RL-
+Acquisition_preqc_02142020-genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;Percent.Correct&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj01_RL-
+Acquisition_preqc_02142020-variantlist.csv&quot;, : appending column names to
+file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj01_RL-
+Acquisition_preqc_02142020-genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;Percent.Omit&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj01_RL-
+Acquisition_preqc_02142020-variantlist.csv&quot;, : appending column names to
+file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj01_RL-
+Acquisition_preqc_02142020-genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;Total.Time&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj01_RL-
+Acquisition_preqc_02142020-variantlist.csv&quot;, : appending column names to
+file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj01_RL-
+Acquisition_preqc_02142020-genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;Latency&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj01_RL-
+Acquisition_preqc_02142020-variantlist.csv&quot;, : appending column names to
+file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj01_RL-
+Acquisition_preqc_02142020-genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;Trial.Initiation.Latency&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj01_RL-
+Acquisition_preqc_02142020-variantlist.csv&quot;, : appending column names to
+file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj01_RL-
+Acquisition_preqc_02142020-genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;retrieval&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj01_RL-
+Acquisition_preqc_02142020-variantlist.csv&quot;, : appending column names to
+file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj01_RL-
+Acquisition_preqc_02142020-genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;Reward.Retrieval.Time&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj01_RL-
+Acquisition_preqc_02142020-variantlist.csv&quot;, : appending column names to
+file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj01_RL-
+Acquisition_preqc_02142020-genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;Left.Anti&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj01_RL-
+Acquisition_preqc_02142020-variantlist.csv&quot;, : appending column names to
+file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj01_RL-
+Acquisition_preqc_02142020-genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;Right.Anti&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj01_RL-
+Acquisition_preqc_02142020-variantlist.csv&quot;, : appending column names to
+file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj01_RL-
+Acquisition_preqc_02142020-genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;Anticipatory.Correct.Responses&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj01_RL-
+Acquisition_preqc_02142020-variantlist.csv&quot;, : appending column names to
+file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj01_RL-
+Acquisition_preqc_02142020-genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;Anticipatory.Incorrect.Responses&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj01_RL-
+Acquisition_preqc_02142020-variantlist.csv&quot;, : appending column names to
+file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj01_RL-
+Acquisition_preqc_02142020-genelist.csv&quot;, : appending column names to file</code></pre>
 </div>
-<div id="first-time-to-calculate-genoprobs-maxmarg-crossover-errorlod-snpg-for-the-qc-diagnositics" class="section level3">
-<h3>3 First time to calculate genoprobs, maxmarg, crossover, errorlod, snpg for the qc diagnositics</h3>
-<ul>
-<li>[03_firstgm2genoprobs.R]</li>
-</ul>
+<div id="plot-scan-result-for-m2-prj01_rl-reversal_preqc_02142020.csv" class="section level1">
+<h1>plot scan result for m2 Prj01_RL-Reversal_preqc_02142020.csv</h1>
+<pre class="r"><code>pheno &lt;- read.csv(&quot;data/pheno/preqc/Prj01_RL-Reversal_preqc_02142020.csv&quot;, header = TRUE)
+print(&quot;m2&quot;)</code></pre>
+<pre><code>[1] &quot;m2&quot;</code></pre>
+<pre class="r"><code>load(&quot;output/m2.Prj01_RL-Reversal_preqc_02142020.RData&quot;)
+
+#genome-wide results output/
+pdf(file = paste0(&quot;output/m2.Prj01_RL-Reversal_preqc_02142020&quot;, &quot;_qtl2scan.pdf&quot;), width = 14)
+for(i in names(m2.qtl.out)){
+  par(mar=c(5.1, 4.1, 1.1, 1.1))
+  ymx &lt;- maxlod(m2.qtl.out[[i]]) # overall maximum LOD score
+  plot(m2.qtl.out[[i]], gm_DO2816_qc$gmap, lodcolumn=1,
+       col=&quot;slateblue&quot;, ylim=c(0, ymx*1.02),
+       main=i)
+  abline(h=summary(m2.permu[[i]], c(0.05, 0.1))[,1][1], col=&quot;red&quot;,lty=2) # 0.05 cutoff
+  abline(h=summary(m2.permu[[i]], c(0.05, 0.1))[,1][2], col=&quot;red&quot;,lty=1) # 0.1 cutoff
+  #effect plot
+  chr &lt;- as.character(m2.peak[[i]][m2.peak[[i]]$lodcolumn == i,&quot;chr&quot;])
+  par(mar=c(4.1, 4.1, 1.6, 1.6))
+  plot_coefCC(m2.coef[[i]], 
+              gm_DO2816_qc$gmap[chr], 
+              scan1_output=m2.qtl.out[[i]], 
+              bgcolor=&quot;gray95&quot;, #legend=&quot;bottomleft&quot;, 
+              main =i)
+  plot_coefCC(m2.blup[[i]], 
+              gm_DO2816_qc$gmap[chr], 
+              scan1_output=m2.qtl.out[[i]], 
+              bgcolor=&quot;gray95&quot;, #legend=&quot;bottomleft&quot;, 
+              main =i)
+ # plot(m2.snps[[i]]$lod, 
+ #      m2.snps[[i]]$snpinfo, 
+ #      drop_hilit=1.5, 
+ #      genes=m2.genes[[i]],
+ #      main = i)
+}
+dev.off()</code></pre>
+<pre><code>png 
+  2 </code></pre>
+<pre class="r"><code>for(i in names(m2.qtl.out)){
+  print(i)
+  top_1 &lt;- data.frame(pheno = i)
+  top &lt;- top_snps(m2.snps[[i]]$lod, m2.snps[[i]]$snpinfo)
+  top &lt;- cbind(top_1, top)
+  write.table(top, file = &quot;output/Prj01_RL-Reversal_preqc_02142020-variantlist.csv&quot;, sep = &quot;,&quot;,
+            row.names = F, col.names = T, append = TRUE)
+
+  if(dim(m2.genes[[i]]) == 0){
+    m2.genes[[i]] = NA
+  }
+  
+  topgene &lt;- cbind(top_1, m2.genes[[i]])
+  write.table(topgene, file = &quot;output/Prj01_RL-Reversal_preqc_02142020-genelist.csv&quot;, sep = &quot;,&quot;,
+              row.names = F, col.names = T, append = TRUE)
+}</code></pre>
+<pre><code>[1] &quot;Days.To.Criteria&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj01_RL-
+Reversal_preqc_02142020-variantlist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj01_RL-
+Reversal_preqc_02142020-genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;Total.Trials&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj01_RL-
+Reversal_preqc_02142020-variantlist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj01_RL-
+Reversal_preqc_02142020-genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;Total.Correct&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj01_RL-
+Reversal_preqc_02142020-variantlist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj01_RL-
+Reversal_preqc_02142020-genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;Total.Omit&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj01_RL-
+Reversal_preqc_02142020-variantlist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj01_RL-
+Reversal_preqc_02142020-genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;Percent.Correct&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj01_RL-
+Reversal_preqc_02142020-variantlist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj01_RL-
+Reversal_preqc_02142020-genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;Percent.Omit&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj01_RL-
+Reversal_preqc_02142020-variantlist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj01_RL-
+Reversal_preqc_02142020-genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;Total.Time&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj01_RL-
+Reversal_preqc_02142020-variantlist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj01_RL-
+Reversal_preqc_02142020-genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;Latency&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj01_RL-
+Reversal_preqc_02142020-variantlist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj01_RL-
+Reversal_preqc_02142020-genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;Trial.Initiation.Latency&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj01_RL-
+Reversal_preqc_02142020-variantlist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj01_RL-
+Reversal_preqc_02142020-genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;retrieval&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj01_RL-
+Reversal_preqc_02142020-variantlist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj01_RL-
+Reversal_preqc_02142020-genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;Reward.Retrieval.Time&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj01_RL-
+Reversal_preqc_02142020-variantlist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj01_RL-
+Reversal_preqc_02142020-genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;Left.Anti&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj01_RL-
+Reversal_preqc_02142020-variantlist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj01_RL-
+Reversal_preqc_02142020-genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;Right.Anti&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj01_RL-
+Reversal_preqc_02142020-variantlist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj01_RL-
+Reversal_preqc_02142020-genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;Anticipatory.Correct.Responses&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj01_RL-
+Reversal_preqc_02142020-variantlist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj01_RL-
+Reversal_preqc_02142020-genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;Anticipatory.Incorrect.Responses&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj01_RL-
+Reversal_preqc_02142020-variantlist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj01_RL-
+Reversal_preqc_02142020-genelist.csv&quot;, : appending column names to file</code></pre>
 </div>
-<div id="genotype-diagnostics-for-diversity-outbred-mice-of-batches" class="section level3">
-<h3>4 Genotype diagnostics for diversity outbred mice of batches</h3>
-<ul>
-<li><a href="04_diagnosis_qc_gigamuga_nine_batches.html">04_diagnosis_qc_gigamuga_nine_batches.Rmd</a></li>
-<li><a href="04_diagnosis_qc_gigamuga_11_batches.html">04_diagnosis_qc_gigamuga_11_batches.Rmd</a></li>
-</ul>
+<div id="plot-scan-result-for-m2-prj02_sensitization_preqc_02142020.csv" class="section level1">
+<h1>plot scan result for m2 Prj02_Sensitization_preqc_02142020.csv</h1>
+<pre class="r"><code>pheno &lt;- read.csv(&quot;data/pheno/preqc/Prj02_Sensitization_preqc_02142020.csv&quot;, header = TRUE)
+print(&quot;m2&quot;)</code></pre>
+<pre><code>[1] &quot;m2&quot;</code></pre>
+<pre class="r"><code>load(&quot;output/m2.Prj02_Sensitization_preqc_02142020.RData&quot;)
+
+#genome-wide results output/
+pdf(file = paste0(&quot;output/m2.Prj02_Sensitization_preqc_02142020&quot;, &quot;_qtl2scan.pdf&quot;), width = 14)
+for(i in names(m2.qtl.out)){
+  par(mar=c(5.1, 4.1, 1.1, 1.1))
+  ymx &lt;- maxlod(m2.qtl.out[[i]]) # overall maximum LOD score
+  plot(m2.qtl.out[[i]], gm_DO2816_qc$gmap, lodcolumn=1,
+       col=&quot;slateblue&quot;, ylim=c(0, ymx*1.02),
+       main=i)
+  abline(h=summary(m2.permu[[i]], c(0.05, 0.1))[,1][1], col=&quot;red&quot;,lty=2) # 0.05 cutoff
+  abline(h=summary(m2.permu[[i]], c(0.05, 0.1))[,1][2], col=&quot;red&quot;,lty=1) # 0.1 cutoff
+  #effect plot
+  chr &lt;- as.character(m2.peak[[i]][m2.peak[[i]]$lodcolumn == i,&quot;chr&quot;])
+  par(mar=c(4.1, 4.1, 1.6, 1.6))
+  plot_coefCC(m2.coef[[i]], 
+              gm_DO2816_qc$gmap[chr], 
+              scan1_output=m2.qtl.out[[i]], 
+              bgcolor=&quot;gray95&quot;, #legend=&quot;bottomleft&quot;, 
+              main =i)
+  plot_coefCC(m2.blup[[i]], 
+              gm_DO2816_qc$gmap[chr], 
+              scan1_output=m2.qtl.out[[i]], 
+              bgcolor=&quot;gray95&quot;, #legend=&quot;bottomleft&quot;, 
+              main =i)
+ # plot(m2.snps[[i]]$lod, 
+ #      m2.snps[[i]]$snpinfo, 
+ #      drop_hilit=1.5, 
+ #      genes=m2.genes[[i]],
+ #      main = i)
+}
+dev.off()</code></pre>
+<pre><code>png 
+  2 </code></pre>
+<pre class="r"><code>for(i in names(m2.qtl.out)){
+  print(i)
+  top_1 &lt;- data.frame(pheno = i)
+  top &lt;- top_snps(m2.snps[[i]]$lod, m2.snps[[i]]$snpinfo)
+  top &lt;- cbind(top_1, top)
+  write.table(top, file = &quot;output/Prj02_Sensitization_preqc_02142020-variantlist.csv&quot;, sep = &quot;,&quot;,
+            row.names = F, col.names = T, append = TRUE)
+  
+  if(dim(m2.genes[[i]]) == 0){
+    m2.genes[[i]] = NA
+  }
+
+  topgene &lt;- cbind(top_1, m2.genes[[i]])
+  write.table(topgene, file = &quot;output/Prj02_Sensitization_preqc_02142020-genelist.csv&quot;, sep = &quot;,&quot;,
+              row.names = F, col.names = T, append = TRUE)
+}</code></pre>
+<pre><code>[1] &quot;D3_D2&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/
+Prj02_Sensitization_preqc_02142020-variantlist.csv&quot;, : appending column
+names to file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/
+Prj02_Sensitization_preqc_02142020-genelist.csv&quot;, : appending column names
+to file</code></pre>
+<pre><code>[1] &quot;D5_D3&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/
+Prj02_Sensitization_preqc_02142020-variantlist.csv&quot;, : appending column
+names to file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/
+Prj02_Sensitization_preqc_02142020-genelist.csv&quot;, : appending column names
+to file</code></pre>
+<pre><code>[1] &quot;D11_D3&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/
+Prj02_Sensitization_preqc_02142020-variantlist.csv&quot;, : appending column
+names to file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/
+Prj02_Sensitization_preqc_02142020-genelist.csv&quot;, : appending column names
+to file</code></pre>
+<pre><code>[1] &quot;D12_D2&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/
+Prj02_Sensitization_preqc_02142020-variantlist.csv&quot;, : appending column
+names to file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/
+Prj02_Sensitization_preqc_02142020-genelist.csv&quot;, : appending column names
+to file</code></pre>
+<pre><code>[1] &quot;D19_D11&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/
+Prj02_Sensitization_preqc_02142020-variantlist.csv&quot;, : appending column
+names to file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/
+Prj02_Sensitization_preqc_02142020-genelist.csv&quot;, : appending column names
+to file</code></pre>
+<pre><code>[1] &quot;AUC&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/
+Prj02_Sensitization_preqc_02142020-variantlist.csv&quot;, : appending column
+names to file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/
+Prj02_Sensitization_preqc_02142020-genelist.csv&quot;, : appending column names
+to file</code></pre>
 </div>
-<div id="after-qc-genotype-diagnostics" class="section level3">
-<h3>5 After QC, genotype diagnostics</h3>
-<ul>
-<li><a href="05_after_diagnosis_qc_gigamuga_nine_batches.html">05_after_diagnosis_qc_gigamuga_nine_batches.Rmd</a></li>
-<li><a href="05_after_diagnosis_qc_gigamuga_11_batches.html">05_after_diagnosis_qc_gigamuga_11_batches.Rmd</a></li>
-</ul>
+<div id="plot-scan-result-for-m2-prj04_ivsa_preqc_02142020.csv" class="section level1">
+<h1>plot scan result for m2 Prj04_IVSA_preqc_02142020.csv</h1>
+<pre class="r"><code>pheno &lt;- read.csv(&quot;data/pheno/preqc/Prj04_IVSA_preqc_02142020.csv&quot;, header = TRUE)
+print(&quot;m2&quot;)</code></pre>
+<pre><code>[1] &quot;m2&quot;</code></pre>
+<pre class="r"><code>load(&quot;output/m2.Prj04_IVSA_preqc_02142020.RData&quot;)
+
+#genome-wide results output/
+pdf(file = paste0(&quot;output/m2.Prj04_IVSA_preqc_02142020&quot;, &quot;_qtl2scan.pdf&quot;), width = 14)
+for(i in names(m2.qtl.out)){
+  par(mar=c(5.1, 4.1, 1.1, 1.1))
+  ymx &lt;- maxlod(m2.qtl.out[[i]]) # overall maximum LOD score
+  plot(m2.qtl.out[[i]], gm_DO2816_qc$gmap, lodcolumn=1,
+       col=&quot;slateblue&quot;, ylim=c(0, ymx*1.02),
+       main=i)
+  abline(h=summary(m2.permu[[i]], c(0.05, 0.1))[,1][1], col=&quot;red&quot;,lty=2) # 0.05 cutoff
+  abline(h=summary(m2.permu[[i]], c(0.05, 0.1))[,1][2], col=&quot;red&quot;,lty=1) # 0.1 cutoff
+  #effect plot
+  chr &lt;- as.character(m2.peak[[i]][m2.peak[[i]]$lodcolumn == i,&quot;chr&quot;])
+  par(mar=c(4.1, 4.1, 1.6, 1.6))
+  plot_coefCC(m2.coef[[i]], 
+              gm_DO2816_qc$gmap[chr], 
+              scan1_output=m2.qtl.out[[i]], 
+              bgcolor=&quot;gray95&quot;, #legend=&quot;bottomleft&quot;, 
+              main =i)
+  plot_coefCC(m2.blup[[i]], 
+              gm_DO2816_qc$gmap[chr], 
+              scan1_output=m2.qtl.out[[i]], 
+              bgcolor=&quot;gray95&quot;, #legend=&quot;bottomleft&quot;, 
+              main =i)
+ # plot(m2.snps[[i]]$lod, 
+ #      m2.snps[[i]]$snpinfo, 
+ #      drop_hilit=1.5, 
+ #      genes=m2.genes[[i]],
+ #      main = i)
+}
+dev.off()</code></pre>
+<pre><code>png 
+  2 </code></pre>
+<pre class="r"><code>for(i in names(m2.qtl.out)){
+  print(i)
+  top_1 &lt;- data.frame(pheno = i)
+  top &lt;- top_snps(m2.snps[[i]]$lod, m2.snps[[i]]$snpinfo)
+  top &lt;- cbind(top_1, top)
+  write.table(top, file = &quot;output/Prj04_IVSA_preqc_02142020-variantlist.csv&quot;, sep = &quot;,&quot;,
+            row.names = F, col.names = T, append = TRUE)
+
+  if(dim(m2.genes[[i]]) == 0){
+    m2.genes[[i]] = NA
+  }
+  
+  topgene &lt;- cbind(top_1, m2.genes[[i]])
+  write.table(topgene, file = &quot;output/Prj04_IVSA_preqc_02142020-genelist.csv&quot;, sep = &quot;,&quot;,
+              row.names = F, col.names = T, append = TRUE)
+}</code></pre>
+<pre><code>[1] &quot;AQ_SessionsToAcquisition&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj04_IVSA_preqc_02142020-
+variantlist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj04_IVSA_preqc_02142020-
+genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;DR_Inf_Total_1p0mgkg&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj04_IVSA_preqc_02142020-
+variantlist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj04_IVSA_preqc_02142020-
+genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;RI_Inf_Total_s01&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj04_IVSA_preqc_02142020-
+variantlist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj04_IVSA_preqc_02142020-
+genelist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>[1] &quot;RI_Inf_Total_s02&quot;</code></pre>
+<pre><code>Warning in write.table(top, file = &quot;output/Prj04_IVSA_preqc_02142020-
+variantlist.csv&quot;, : appending column names to file</code></pre>
+<pre><code>Warning in if (dim(m2.genes[[i]]) == 0) {: the condition has length &gt; 1 and
+only the first element will be used</code></pre>
+<pre><code>Warning in write.table(topgene, file = &quot;output/Prj04_IVSA_preqc_02142020-
+genelist.csv&quot;, : appending column names to file</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.3.2 (2016-10-31)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: CentOS release 6.5 (Final)
+
+locale:
+[1] C
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] ggplot2_3.1.0 qtl2_0.18    
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.2        pillar_1.3.1      git2r_0.23.0     
+ [4] plyr_1.8.4        workflowr_1.4.0   tools_3.3.2      
+ [7] digest_0.6.18     bit_1.1-14        RSQLite_2.1.1    
+[10] evaluate_0.10     memoise_1.1.0     tibble_2.1.3     
+[13] gtable_0.2.0      pkgconfig_2.0.1   rlang_0.4.0      
+[16] DBI_1.0.0         yaml_2.2.0        parallel_3.3.2   
+[19] withr_2.1.2       stringr_1.3.1     dplyr_0.8.3      
+[22] knitr_1.20        fs_1.2.6          rprojroot_1.3-2  
+[25] bit64_0.9-7       grid_3.3.2        tidyselect_0.2.5 
+[28] glue_1.3.1        data.table_1.11.4 R6_2.4.0         
+[31] rmarkdown_1.11    purrr_0.3.2       blob_1.1.1       
+[34] magrittr_1.5      whisker_0.3-2     backports_1.1.2  
+[37] scales_1.0.0      htmltools_0.3.6   assertthat_0.2.1 
+[40] colorspace_1.4-0  stringi_1.2.4     lazyeval_0.2.1   
+[43] munsell_0.5.0     crayon_1.3.4     </code></pre>
 </div>
-<div id="calculation-of-the-genoprobs-after-qc-and-do-interpolatino-to-69k-grid" class="section level3">
-<h3>6 Calculation of the genoprobs after qc and do interpolatino to 69K grid</h3>
-<ul>
-<li>[06_final_pr_apr_69K.R]</li>
-</ul>
-</div>
-<div id="plot-the-recombination-block-size-and-founder-props-across-all-generations" class="section level3">
-<h3>7 Plot the recombination block size and founder props across all generations</h3>
-<ul>
-<li><a href="07_recomb_size_founder_prop.html">07_recomb_size_founder_prop.Rmd</a></li>
-</ul>
-</div>
-<div id="gcta-heritability" class="section level3">
-<h3>8 GCTA heritability</h3>
-<ul>
-<li>[08_gcta_herit.R]</li>
-</ul>
-</div>
-<div id="qtl-mapping" class="section level3">
-<h3>9 qtl mapping</h3>
-<ul>
-<li>[09_qtlmapping.R]</li>
-</ul>
-</div>
-<div id="qtl-permutation" class="section level3">
-<h3>10 qtl permutation</h3>
-<ul>
-<li>[10_qtl_permu.R]</li>
-</ul>
-</div>
-<div id="qtl-blup" class="section level3">
-<h3>11 qtl blup</h3>
-<ul>
-<li>[11_qtl_blup.R]</li>
-</ul>
-</div>
-<div id="plot-qtl-mapping" class="section level3">
-<h3>12 plot qtl mapping</h3>
-<ul>
-<li><a href="12_plot_qtl_mapping_1.html">12_plot_qtl_mapping_1.Rmd</a></li>
-<li><a href="12_plot_qtl_mapping_2.html">12_plot_qtl_mapping_2.Rmd</a></li>
-</ul>
-</div>
-<div id="conditional_m2_qtlmapping" class="section level3">
-<h3>13 conditional_m2_qtlmapping</h3>
-<ul>
-<li>[13_conditional_m2_qtlmapping.R]</li>
-<li><a href="13_plot_conditional_m2_qtlmapping.html">13_plot_conditional_m2_qtlmapping.Rmd</a></li>
-</ul>
-</div>
-<div id="geneseek2qtl2fst_gagnon" class="section level3">
-<h3>14 geneseek2qtl2fst_Gagnon</h3>
-<ul>
-<li>[14_geneseek2qtl2fst_Gagnon.R]</li>
-</ul>
-</div>
-<div id="firstgm2genoprobs_gagnon" class="section level3">
-<h3>15 firstgm2genoprobs_Gagnon</h3>
-<ul>
-<li>[15_firstgm2genoprobs_Gagnon.R]</li>
-</ul>
-</div>
-<div id="diagnosis_qc_gigamuga_gagnon" class="section level3">
-<h3>16 diagnosis_qc_gigamuga_gagnon</h3>
-<ul>
-<li><a href="16_diagnosis_qc_gigamuga_gagnon.html">16_diagnosis_qc_gigamuga_gagnon.Rmd</a></li>
-</ul>
 </div>
 
 
