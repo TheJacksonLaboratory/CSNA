@@ -37,11 +37,11 @@ for(i in names(m2.qtl.out)){
   #effect plot
   chr <- as.character(m2.peak[[i]][m2.peak[[i]]$lodcolumn == i,"chr"])
   par(mar=c(4.1, 4.1, 1.6, 1.6))
-  plot_coefCC(m2.coef[[i]], 
-              gm_DO2816_qc$gmap[chr], 
-              scan1_output=m2.qtl.out[[i]], 
-              bgcolor="gray95", #legend="bottomleft", 
-              main =i)
+#  plot_coefCC(m2.coef[[i]], 
+#              gm_DO2816_qc$gmap[chr], 
+#              scan1_output=m2.qtl.out[[i]], 
+#              bgcolor="gray95", #legend="bottomleft", 
+#              main =i)
   plot_coefCC(m2.blup[[i]], 
               gm_DO2816_qc$gmap[chr], 
               scan1_output=m2.qtl.out[[i]], 
@@ -92,11 +92,11 @@ for(i in names(m2.qtl.out)){
   #effect plot
   chr <- as.character(m2.peak[[i]][m2.peak[[i]]$lodcolumn == i,"chr"])
   par(mar=c(4.1, 4.1, 1.6, 1.6))
-  plot_coefCC(m2.coef[[i]], 
-              gm_DO2816_qc$gmap[chr], 
-              scan1_output=m2.qtl.out[[i]], 
-              bgcolor="gray95", #legend="bottomleft", 
-              main =i)
+#  plot_coefCC(m2.coef[[i]], 
+#              gm_DO2816_qc$gmap[chr], 
+#              scan1_output=m2.qtl.out[[i]], 
+#              bgcolor="gray95", #legend="bottomleft", 
+#              main =i)
   plot_coefCC(m2.blup[[i]], 
               gm_DO2816_qc$gmap[chr], 
               scan1_output=m2.qtl.out[[i]], 
@@ -147,11 +147,11 @@ for(i in names(m2.qtl.out)){
   #effect plot
   chr <- as.character(m2.peak[[i]][m2.peak[[i]]$lodcolumn == i,"chr"])
   par(mar=c(4.1, 4.1, 1.6, 1.6))
-  plot_coefCC(m2.coef[[i]], 
-              gm_DO2816_qc$gmap[chr], 
-              scan1_output=m2.qtl.out[[i]], 
-              bgcolor="gray95", #legend="bottomleft", 
-              main =i)
+ # plot_coefCC(m2.coef[[i]], 
+ #             gm_DO2816_qc$gmap[chr], 
+ #             scan1_output=m2.qtl.out[[i]], 
+ #             bgcolor="gray95", #legend="bottomleft", 
+ #             main =i)
   plot_coefCC(m2.blup[[i]], 
               gm_DO2816_qc$gmap[chr], 
               scan1_output=m2.qtl.out[[i]], 
@@ -203,11 +203,11 @@ for(i in names(m2.qtl.out)){
   #effect plot
   chr <- as.character(m2.peak[[i]][m2.peak[[i]]$lodcolumn == i,"chr"])
   par(mar=c(4.1, 4.1, 1.6, 1.6))
-  plot_coefCC(m2.coef[[i]], 
-              gm_DO2816_qc$gmap[chr], 
-              scan1_output=m2.qtl.out[[i]], 
-              bgcolor="gray95", #legend="bottomleft", 
-              main =i)
+  #plot_coefCC(m2.coef[[i]], 
+  #            gm_DO2816_qc$gmap[chr], 
+  #            scan1_output=m2.qtl.out[[i]], 
+  #            bgcolor="gray95", #legend="bottomleft", 
+  #            main =i)
   plot_coefCC(m2.blup[[i]], 
               gm_DO2816_qc$gmap[chr], 
               scan1_output=m2.qtl.out[[i]], 
