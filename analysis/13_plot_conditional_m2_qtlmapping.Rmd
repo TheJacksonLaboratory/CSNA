@@ -14,21 +14,21 @@ load("data/Jackson_Lab_11_batches/gm_DO2816_qc.RData")
 pheno <- read.csv("data/pheno/Novelty_residuals_RankNormal_datarelease_12182019.csv", header = TRUE)
 
 print("m2")
-load("output/condi.m2.qtl.out.RData")
+load("output/conditional.m2.Novelty_residuals_RankNormal_datarelease_12182019.RData")
 
 #permutation results
 #The default is to return the 5% significance thresholds. Thresholds for other (or for multiple) significance levels can be obtained via the alpha argument.
 operm <- list()
-for(i in c(1:3,5:50)){
+for(i in c(1:50)){
   operm[[i]] <- get(load(paste0("output/permu/m2_Novelty_residuals_RankNormal_datarelease_12182019_", colnames(pheno)[14], "_", i, ".RData")))
   operm[[i]] <- operm[[i]]$OFA.total.distance.traveled
 }
-operm <- matrix(do.call(rbind, operm[c(1:3,5:50)]),ncol = 1)
+operm <- matrix(do.call(rbind, operm[c(1:50)]),ncol = 1)
 class(operm) <- c("scan1perm", "matrix")
 cutoff <- summary(operm, c(0.05, 0.1))[,1]
 
 #genome-wide results
-pdf(file = paste0("output/condi.m2.Novelty_residuals_RankNormal_datarelease_12182019", "_genomescan.pdf"), width = 14)
+pdf(file = paste0("output/conditional.m2.Novelty_residuals_RankNormal_datarelease_12182019", "_genomescan.pdf"), width = 14)
 for(i in names(condi.m2.qtl.out)){
   par(mar=c(5.1, 4.1, 1.1, 1.1))
   ymx <- maxlod(condi.m2.qtl.out[[i]]) # overall maximum LOD score
@@ -54,14 +54,14 @@ for(i in names(condi.m2.qtl.out)){
 x <- list()
 #colnames(pheno)[14:41]
 for(i in colnames(pheno)[14:41]){
-  y <- get(load(paste0("output/blup/condi.m2.qtl.blup_Novelty_residuals_RankNormal_datarelease_12182019.csv_",i,".RData")))
+  y <- get(load(paste0("output/blup/conditional.m2.blup_Novelty_residuals_RankNormal_datarelease_12182019_",i,".RData")))
   x[[i]] <- y[[i]]
 }
 condi.m2.qtl.blup = x
 
 #coeffects plot
 condi.m2.qtl.peak <- list()
-pdf(file = paste0("output/condi.m2.qtl.blup_Novelty_residuals_RankNormal_datarelease_12182019", "_coeffgeneplot.pdf"), width = 14)
+pdf(file = paste0("output/conditional.m2.Novelty_residuals_RankNormal_datarelease_12182019", "_coeffgeneplot.pdf"), width = 14)
 #names(condi.m2.qtl.out)
 for(i in names(condi.m2.qtl.out)){
   #peak
@@ -73,21 +73,21 @@ for(i in names(condi.m2.qtl.out)){
   
   chr <- as.character(condi.m2.qtl.peak[[i]][condi.m2.qtl.peak[[i]]$lodcolumn == i,"chr"])
   par(mar=c(4.1, 4.1, 1.6, 1.6))
-  # plot_coefCC(m2.coef[[i]],
-  #             gm_DO2816_qc$gmap[chr],
-  #             scan1_output=condi.m2.qtl.out[[i]],
-  #             bgcolor="gray95", #legend="bottomleft",
-  #             main =i)
+  plot_coefCC(condi.m2.coef[[i]],
+               gm_DO2816_qc$gmap[chr],
+               scan1_output=condi.m2.qtl.out[[i]],
+               bgcolor="gray95", #legend="bottomleft",
+               main =i)
   plot_coefCC(condi.m2.qtl.blup[[i]],
               gm_DO2816_qc$gmap[chr],
               scan1_output=condi.m2.qtl.out[[i]],
               bgcolor="gray95", #legend="bottomleft",
               main =i)
-  #  plot(m2.snps[[i]]$lod,
-  #       m2.snps[[i]]$snpinfo,
-  #       drop_hilit=1.5,
-  #       genes=m2.genes[[i]],
-  #       main = i)
+#   plot(condi.m2.snps[[i]]$lod,
+#         condi.m2.snps[[i]]$snpinfo,
+#         drop_hilit=1.5,
+#         genes=condi.m2.genes[[i]],
+#         main = i)
 }
 dev.off()
 ```
