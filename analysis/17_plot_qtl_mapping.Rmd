@@ -30,7 +30,7 @@ for(i in names(m2.qtl.out)){
   par(mar=c(5.1, 4.1, 1.1, 1.1))
   ymx <- maxlod(m2.qtl.out[[i]]) # overall maximum LOD score
   plot(m2.qtl.out[[i]], gm_DO2816_qc$gmap, lodcolumn=1,
-       col="slateblue", ylim=c(0, summary(m2.permu[[i]], c(0.05, 0.1))[,1][2]*1.1),
+       col="slateblue", ylim=c(0, summary(m2.permu[[i]], c(0.05, 0.1))[,1][2]*1.2),
        main=i)
   abline(h=summary(m2.permu[[i]], c(0.05, 0.1))[,1][1], col="red",lty=2) # 0.05 cutoff
   abline(h=summary(m2.permu[[i]], c(0.05, 0.1))[,1][2], col="red",lty=1) # 0.1 cutoff
@@ -85,7 +85,7 @@ for(i in names(m2.qtl.out)){
   par(mar=c(5.1, 4.1, 1.1, 1.1))
   ymx <- maxlod(m2.qtl.out[[i]]) # overall maximum LOD score
   plot(m2.qtl.out[[i]], gm_DO2816_qc$gmap, lodcolumn=1,
-       col="slateblue", ylim=c(0, summary(m2.permu[[i]], c(0.05, 0.1))[,1][2]*1.1),
+       col="slateblue", ylim=c(0, summary(m2.permu[[i]], c(0.05, 0.1))[,1][2]*1.2),
        main=i)
   abline(h=summary(m2.permu[[i]], c(0.05, 0.1))[,1][1], col="red",lty=2) # 0.05 cutoff
   abline(h=summary(m2.permu[[i]], c(0.05, 0.1))[,1][2], col="red",lty=1) # 0.1 cutoff
@@ -140,7 +140,7 @@ for(i in names(m2.qtl.out)){
   par(mar=c(5.1, 4.1, 1.1, 1.1))
   ymx <- maxlod(m2.qtl.out[[i]]) # overall maximum LOD score
   plot(m2.qtl.out[[i]], gm_DO2816_qc$gmap, lodcolumn=1,
-       col="slateblue", ylim=c(0, summary(m2.permu[[i]], c(0.05, 0.1))[,1][2]*1.1),
+       col="slateblue", ylim=c(0, summary(m2.permu[[i]], c(0.05, 0.1))[,1][2]*1.2),
        main=i)
   abline(h=summary(m2.permu[[i]], c(0.05, 0.1))[,1][1], col="red",lty=2) # 0.05 cutoff
   abline(h=summary(m2.permu[[i]], c(0.05, 0.1))[,1][2], col="red",lty=1) # 0.1 cutoff
@@ -196,7 +196,7 @@ for(i in names(m2.qtl.out)){
   par(mar=c(5.1, 4.1, 1.1, 1.1))
   ymx <- maxlod(m2.qtl.out[[i]]) # overall maximum LOD score
   plot(m2.qtl.out[[i]], gm_DO2816_qc$gmap, lodcolumn=1,
-       col="slateblue", ylim=c(0, summary(m2.permu[[i]], c(0.05, 0.1))[,1][2]*1.1),
+       col="slateblue", ylim=c(0, summary(m2.permu[[i]], c(0.05, 0.1))[,1][2]*1.2),
        main=i)
   abline(h=summary(m2.permu[[i]], c(0.05, 0.1))[,1][1], col="red",lty=2) # 0.05 cutoff
   abline(h=summary(m2.permu[[i]], c(0.05, 0.1))[,1][2], col="red",lty=1) # 0.1 cutoff
