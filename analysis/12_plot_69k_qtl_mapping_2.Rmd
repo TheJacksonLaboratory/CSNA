@@ -39,9 +39,10 @@ cutoff <- summary(operm, c(0.05, 0.1))[,1]
 pdf(file = paste0("output/m2.69k.Novelty_residuals_RankNormal_datarelease_12182019", "_genomescan.pdf"), width = 14)
 for(i in names(m2.qtl.out)){
   par(mar=c(5.1, 4.1, 1.1, 1.1))
-  ymx <- maxlod(m2.qtl.out[[i]]) # overall maximum LOD score
+  ymx <- maxlod(m2.qtl.out[[i]])*1.2 # overall maximum LOD score
+  ymax <- ifelse(ymx > cutoff[1]*1.2, ymx, cutoff[1]*1.2)
   plot(m2.qtl.out[[i]], gmap, lodcolumn=1,
-       col="slateblue", ylim=c(0, ymx*1.02),
+       col="slateblue", ylim=c(0, ymax),
        main=i)
   abline(h=cutoff[1], col="red",lty=2) # 0.05 cutoff
   abline(h=cutoff[2], col="red",lty=1) # 0.1 cutoff
