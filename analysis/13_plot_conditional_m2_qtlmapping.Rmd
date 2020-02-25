@@ -33,7 +33,7 @@ for(i in names(condi.m2.qtl.out)){
   par(mar=c(5.1, 4.1, 1.1, 1.1))
   ymx <- maxlod(condi.m2.qtl.out[[i]]) # overall maximum LOD score
   plot(condi.m2.qtl.out[[i]], gm_DO2816_qc$gmap, lodcolumn=1,
-       col="slateblue", ylim=c(0, ymx*1.02),
+       col="slateblue", ylim=c(0, cutoff[2]*1.02),
        main=i)
   abline(h=cutoff[1], col="red",lty=2) # 0.05 cutoff
   abline(h=cutoff[2], col="red",lty=1) # 0.1 cutoff
@@ -44,7 +44,7 @@ for(i in names(condi.m2.qtl.out)){
   par(mar=c(5.1, 4.1, 1.1, 1.1))
   ymx <- maxlod(condi.m2.qtl.out[[i]]) # overall maximum LOD score
   plot(condi.m2.qtl.out[[i]], gm_DO2816_qc$gmap, lodcolumn=1,
-       col="slateblue", ylim=c(0, ymx*1.02),
+       col="slateblue", ylim=c(0, cutoff[2]*1.02),
        main=i)
   abline(h=cutoff[1], col="red",lty=2) # 0.05 cutoff
   abline(h=cutoff[2], col="red",lty=1) # 0.1 cutoff
@@ -73,11 +73,11 @@ for(i in names(condi.m2.qtl.out)){
   
   chr <- as.character(condi.m2.qtl.peak[[i]][condi.m2.qtl.peak[[i]]$lodcolumn == i,"chr"])
   par(mar=c(4.1, 4.1, 1.6, 1.6))
-  plot_coefCC(condi.m2.coef[[i]],
-               gm_DO2816_qc$gmap[chr],
-               scan1_output=condi.m2.qtl.out[[i]],
-               bgcolor="gray95", #legend="bottomleft",
-               main =i)
+#  plot_coefCC(condi.m2.coef[[i]],
+#               gm_DO2816_qc$gmap[chr],
+#               scan1_output=condi.m2.qtl.out[[i]],
+#               bgcolor="gray95", #legend="bottomleft",
+#               main =i)
   plot_coefCC(condi.m2.qtl.blup[[i]],
               gm_DO2816_qc$gmap[chr],
               scan1_output=condi.m2.qtl.out[[i]],
@@ -90,4 +90,19 @@ for(i in names(condi.m2.qtl.out)){
 #         main = i)
 }
 dev.off()
+
+for(i in names(condi.m2.qtl.out)){
+  print(i)
+  if(is.null(condi.m2.snps[[i]]))
+   next
+  top_1 <- data.frame(pheno = i)
+  top <- top_snps(condi.m2.snps[[i]]$lod, condi.m2.snps[[i]]$snpinfo)
+  top <- cbind(top_1, top)
+  write.table(top, file = "output/conditional.Novelty_residuals_RankNormal_datarelease_12182019-variantlist.csv", sep = ",",
+              row.names = F, col.names = T, append = TRUE)
+  
+  topgene <- cbind(top_1, condi.m2.genes[[i]])
+  write.table(topgene, file = "output/conditional.Novelty_residuals_RankNormal_datarelease_12182019-genelist.csv", sep = ",",
+              row.names = F, col.names = T, append = TRUE)
+}
 ```
