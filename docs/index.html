@@ -316,10 +316,10 @@ $(document).ready(function () {
 
 <div id="TOC">
 <ul>
-<li><a href="#data-transformation-from-finalreport.txt-to-qtl2-for-11-batches-of-jackson_lab_bubier">1 Data transformation from Finalreport.txt to qtl2 for 11 batches of Jackson_Lab_Bubier</a></li>
+<li><a href="#data-transformation-from-finalreport.txt-to-qtl2-for-12-batches">1 Data transformation from Finalreport.txt to qtl2 for 12 batches</a></li>
 <li><a href="#grab-intensities-from-geneseek-finalreport.txt-files-convert-them-to-a-single-big-data-frame">2 Grab intensities from GeneSeek FinalReport.txt files convert them to a single big data frame</a></li>
 <li><a href="#first-time-to-calculate-genoprobs-maxmarg-crossover-errorlod-snpg-for-the-qc-diagnositics">3 First time to calculate genoprobs, maxmarg, crossover, errorlod, snpg for the qc diagnositics</a></li>
-<li><a href="#genotype-diagnostics-for-diversity-outbred-mice-of-batches">4 Genotype diagnostics for diversity outbred mice of batches</a></li>
+<li><a href="#genotype-diagnostics-for-diversity-outbred-mice-of-12-batches">4 Genotype diagnostics for diversity outbred mice of 12 batches</a></li>
 <li><a href="#after-qc-genotype-diagnostics">5 After QC, genotype diagnostics</a></li>
 <li><a href="#calculation-of-the-genoprobs-after-qc-and-do-interpolatino-to-69k-grid">6 Calculation of the genoprobs after qc and do interpolatino to 69K grid</a></li>
 <li><a href="#plot-the-recombination-block-size-and-founder-props-across-all-generations">7 Plot the recombination block size and founder props across all generations</a></li>
@@ -355,7 +355,7 @@ $(document).ready(function () {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-10-19
+<strong>Last updated:</strong> 2020-10-21
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -386,16 +386,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtree166111588588ada6dd3b6aa85e0c6e71de252d79targetblank1661115a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/166111588588ada6dd3b6aa85e0c6e71de252d79" target="_blank">1661115</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtreef290bffa02dca7130956e4269fc8e1513f1f79adtargetblankf290bffa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/f290bffa02dca7130956e4269fc8e1513f1f79ad" target="_blank">f290bff</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtree166111588588ada6dd3b6aa85e0c6e71de252d79targetblank1661115a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtreef290bffa02dca7130956e4269fc8e1513f1f79adtargetblankf290bffa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/166111588588ada6dd3b6aa85e0c6e71de252d79" target="_blank">1661115</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/f290bffa02dca7130956e4269fc8e1513f1f79ad" target="_blank">f290bff</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -406,543 +406,38 @@ Ignored files:
     Ignored:    analysis/.Rhistory
 
 Untracked files:
-    Untracked:  analysis/#14_geneseek2qtl2fst_Gagnon2.R#
     Untracked:  analysis/.nfs0000000135a08b9b00002448
     Untracked:  analysis/.nfs0000000135a08ba50000244a
-    Untracked:  analysis/01_geneseek2qtl2.script
-    Untracked:  analysis/02_geneseek2intensity.script
-    Untracked:  analysis/03_2_firstgm2genoprobs.R
-    Untracked:  analysis/03_2_firstgm2genoprobs.script
-    Untracked:  analysis/03_firstgm2genoprobs.script
-    Untracked:  analysis/04_diagnosis_qc_gigamuga_11_batches.R
-    Untracked:  analysis/04_diagnosis_qc_gigamuga_11_batches.script
-    Untracked:  analysis/04_diagnosis_qc_gigamuga_nine_batches.script
-    Untracked:  analysis/05_after_diagnosis_qc_gigamuga_11_batches.R
-    Untracked:  analysis/05_after_diagnosis_qc_gigamuga_11_batches.script
-    Untracked:  analysis/05_after_diagnosis_qc_gigamuga_nine_batches.script
-    Untracked:  analysis/06_final_pr_apr_69K.script
-    Untracked:  analysis/07.1_html_founder_prop.script
-    Untracked:  analysis/07_recomb_size_founder_prop.script
-    Untracked:  analysis/08.0_11_batches_gcta.sh
-    Untracked:  analysis/08.1_11_batches_merge_plink.sh
-    Untracked:  analysis/08.1_11_batches_merge_plink.sh.e11230968
-    Untracked:  analysis/08.1_11_batches_merge_plink.sh.o11230968
-    Untracked:  analysis/08_gcta_herit_2.R
-    Untracked:  analysis/09_69k_qtlmapping.R
-    Untracked:  analysis/10_69k_qtl_permu.R
-    Untracked:  analysis/11_69k_qtl_blup.R
-    Untracked:  analysis/12_plot_69k_qtl_mapping.R
-    Untracked:  analysis/12_plot_69k_qtl_mapping.script
-    Untracked:  analysis/12_plot_qtl_mapping.R
-    Untracked:  analysis/12_plot_qtl_mapping.script
-    Untracked:  analysis/13_all_plot.R
-    Untracked:  analysis/13_all_plot.script
-    Untracked:  analysis/13_conditional_69k_blup.R
-    Untracked:  analysis/13_conditional_69k_qtlmapping.R
-    Untracked:  analysis/13_conditional_blup.R
-    Untracked:  analysis/13_conditional_m2_qtlmapping.R
-    Untracked:  analysis/13_conditional_m2_qtlmapping.script
-    Untracked:  analysis/13_conditional_qtlmapping.R
-    Untracked:  analysis/13_plot_69k_conditional_m2_qtlmapping.R
-    Untracked:  analysis/13_plot_69k_conditional_m2_qtlmapping.script
-    Untracked:  analysis/13_plot_conditional_m2_qtlmapping.R
-    Untracked:  analysis/13_plot_conditional_m2_qtlmapping.script
-    Untracked:  analysis/14_geneseek2qtl2fst_Gagnon.R
-    Untracked:  analysis/14_geneseek2qtl2fst_Gagnon.script
-    Untracked:  analysis/14_geneseek2qtl2fst_Gagnon2.R
-    Untracked:  analysis/14_geneseek2qtl2fst_Gagnon2.Rout
-    Untracked:  analysis/14_geneseek2qtl2fst_Gagnon2.err
-    Untracked:  analysis/14_geneseek2qtl2fst_Gagnon2.out
-    Untracked:  analysis/14_geneseek2qtl2fst_Gagnon2.sh
-    Untracked:  analysis/15_firstgm2genoprobs_Gagnon.R
-    Untracked:  analysis/15_firstgm2genoprobs_Gagnon.script
-    Untracked:  analysis/15_firstgm2genoprobs_Gagnon2.R
-    Untracked:  analysis/15_firstgm2genoprobs_Gagnon2.Rout
-    Untracked:  analysis/15_firstgm2genoprobs_Gagnon2.R~
-    Untracked:  analysis/15_firstgm2genoprobs_Gagnon2.err
-    Untracked:  analysis/15_firstgm2genoprobs_Gagnon2.out
-    Untracked:  analysis/15_firstgm2genoprobs_Gagnon2.sh
-    Untracked:  analysis/16_diagnosis_qc_gigamuga_gagnon.R
-    Untracked:  analysis/16_diagnosis_qc_gigamuga_gagnon.script
-    Untracked:  analysis/16_diagnosis_qc_gigamuga_gagnon2.R
-    Untracked:  analysis/16_diagnosis_qc_gigamuga_gagnon2.err
-    Untracked:  analysis/16_diagnosis_qc_gigamuga_gagnon2.out
-    Untracked:  analysis/16_diagnosis_qc_gigamuga_gagnon2.sh
-    Untracked:  analysis/17_69k_qtlmapping.R
-    Untracked:  analysis/17_plot_qtl_mapping.R
-    Untracked:  analysis/17_plot_qtl_mapping.script
-    Untracked:  analysis/17_qtlmapping.R
-    Untracked:  analysis/18_qtl_analysis_RTG.R
-    Untracked:  analysis/18_qtl_analysis_RTG_G.R
-    Untracked:  analysis/18_qtl_analysis_RTG_G.err
-    Untracked:  analysis/18_qtl_analysis_RTG_G.out
-    Untracked:  analysis/18_qtl_analysis_RTG_G_a1.R
-    Untracked:  analysis/18_qtl_analysis_RTG_G_a1.err
-    Untracked:  analysis/18_qtl_analysis_RTG_G_a1.out
-    Untracked:  analysis/18_qtl_analysis_RTG_G_a2.R
-    Untracked:  analysis/18_qtl_analysis_RTG_G_a2.err
-    Untracked:  analysis/18_qtl_analysis_RTG_G_a2.out
-    Untracked:  analysis/18_qtl_analysis_RTG_G_a2_chr18.R
-    Untracked:  analysis/18_qtl_analysis_RTG_G_a2_chr18.err
-    Untracked:  analysis/18_qtl_analysis_RTG_G_a2_chr18.out
-    Untracked:  analysis/18_qtl_analysis_RTG_G_a2_chr4.R
-    Untracked:  analysis/18_qtl_analysis_RTG_G_a2_chr4.err
-    Untracked:  analysis/18_qtl_analysis_RTG_G_a2_chr4.out
-    Untracked:  analysis/18_qtl_analysis_RTG_G_a3.R
-    Untracked:  analysis/18_qtl_analysis_RTG_G_a3.err
-    Untracked:  analysis/18_qtl_analysis_RTG_G_a3.out
-    Untracked:  analysis/18_qtl_analysis_RTG_m0.R
-    Untracked:  analysis/18_qtl_analysis_RTG_m0.err
-    Untracked:  analysis/18_qtl_analysis_RTG_m0.out
-    Untracked:  analysis/18_qtl_analysis_RTG_m0_a1.R
-    Untracked:  analysis/18_qtl_analysis_RTG_m0_a1.err
-    Untracked:  analysis/18_qtl_analysis_RTG_m0_a1.out
-    Untracked:  analysis/18_qtl_analysis_RTG_m0_a2.R
-    Untracked:  analysis/18_qtl_analysis_RTG_m0_a2.err
-    Untracked:  analysis/18_qtl_analysis_RTG_m0_a2.out
-    Untracked:  analysis/18_qtl_analysis_RTG_m0_a3.R
-    Untracked:  analysis/18_qtl_analysis_RTG_m0_a3.err
-    Untracked:  analysis/18_qtl_analysis_RTG_m0_a3.out
-    Untracked:  analysis/18_qtl_analysis_RTG_m3.R
-    Untracked:  analysis/Novelty_no_outliers_datarelease_12182019.gcta.script
-    Untracked:  analysis/Novelty_raw_datarelease_12182019.gcta.script
-    Untracked:  analysis/Novelty_resids_datarelease_12182019.gcta.script
-    Untracked:  analysis/Novelty_resids_datarelease_12182019_m1.script
-    Untracked:  analysis/Novelty_resids_datarelease_12182019_m2.script
-    Untracked:  analysis/Novelty_resids_datarelease_12182019_m3.script
-    Untracked:  analysis/Novelty_residuals_RankNormal_datarelease_12182019.gcta.script
-    Untracked:  analysis/Novelty_residuals_RankNormal_datarelease_12182019_69k_m2.script
-    Untracked:  analysis/Novelty_residuals_RankNormal_datarelease_12182019_m1.script
-    Untracked:  analysis/Novelty_residuals_RankNormal_datarelease_12182019_m2.script
-    Untracked:  analysis/Novelty_residuals_RankNormal_datarelease_12182019_m3.script
-    Untracked:  analysis/Prj01_RL-Acquisition_preqc_02142020.gcta.script
-    Untracked:  analysis/Prj01_RL-Acquisition_preqc_02142020_69k_m2.script
-    Untracked:  analysis/Prj01_RL-Acquisition_preqc_02142020_m2.script
-    Untracked:  analysis/Prj01_RL-Reversal_preqc_02142020.gcta.script
-    Untracked:  analysis/Prj01_RL-Reversal_preqc_02142020_69k_m2.script
-    Untracked:  analysis/Prj01_RL-Reversal_preqc_02142020_m2.script
-    Untracked:  analysis/Prj02_Sensitization_preqc_02142020.gcta.script
-    Untracked:  analysis/Prj02_Sensitization_preqc_02142020_69k_m2.script
-    Untracked:  analysis/Prj02_Sensitization_preqc_02142020_m2.script
-    Untracked:  analysis/Prj04_IVSA_preqc_02142020.gcta.script
-    Untracked:  analysis/Prj04_IVSA_preqc_02142020_69k_m2.script
-    Untracked:  analysis/Prj04_IVSA_preqc_02142020_m2.script
-    Untracked:  analysis/blup_14_m1_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_14_m1_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_14_m2_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_14_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_14_m3_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_14_m3_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_15_m1_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_15_m1_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_15_m2_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_15_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_15_m3_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_15_m3_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_16_m1_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_16_m1_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_16_m2_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_16_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_16_m3_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_16_m3_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_17_m1_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_17_m1_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_17_m2_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_17_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_17_m3_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_17_m3_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_18_m1_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_18_m1_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_18_m2_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_18_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_18_m3_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_18_m3_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_19_m1_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_19_m1_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_19_m2_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_19_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_19_m3_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_19_m3_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_20_m1_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_20_m1_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_20_m2_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_20_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_20_m3_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_20_m3_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_21_m1_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_21_m1_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_21_m2_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_21_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_21_m3_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_21_m3_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_22_m1_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_22_m1_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_22_m2_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_22_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_22_m3_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_22_m3_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_23_m1_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_23_m1_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_23_m2_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_23_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_23_m3_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_23_m3_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_24_m1_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_24_m1_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_24_m2_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_24_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_24_m3_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_24_m3_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_25_m1_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_25_m1_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_25_m2_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_25_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_25_m3_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_25_m3_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_26_m1_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_26_m1_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_26_m2_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_26_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_26_m3_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_26_m3_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_27_m1_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_27_m1_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_27_m2_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_27_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_27_m3_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_27_m3_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_28_m1_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_28_m1_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_28_m2_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_28_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_28_m3_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_28_m3_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_29_m1_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_29_m1_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_29_m2_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_29_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_29_m3_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_29_m3_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_30_m1_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_30_m1_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_30_m2_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_30_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_30_m3_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_30_m3_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_31_m1_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_31_m1_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_31_m2_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_31_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_31_m3_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_31_m3_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_32_m1_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_32_m1_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_32_m2_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_32_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_32_m3_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_32_m3_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_33_m1_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_33_m1_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_33_m2_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_33_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_33_m3_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_33_m3_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_34_m1_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_34_m1_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_34_m2_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_34_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_34_m3_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_34_m3_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_35_m1_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_35_m1_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_35_m2_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_35_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_35_m3_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_35_m3_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_36_m1_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_36_m1_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_36_m2_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_36_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_36_m3_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_36_m3_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_37_m1_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_37_m1_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_37_m2_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_37_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_37_m3_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_37_m3_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_38_m1_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_38_m1_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_38_m2_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_38_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_38_m3_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_38_m3_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_39_m1_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_39_m1_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_39_m2_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_39_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_39_m3_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_39_m3_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_40_m1_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_40_m1_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_40_m2_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_40_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_40_m3_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_40_m3_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_41_m1_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_41_m1_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_41_m2_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_41_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_41_m3_Novelty_resids_datarelease_12182019.script
-    Untracked:  analysis/blup_41_m3_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_69k_14_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_69k_15_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_69k_16_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_69k_17_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_69k_18_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_69k_19_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_69k_20_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_69k_21_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_69k_22_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_69k_23_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_69k_24_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_69k_25_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_69k_26_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_69k_27_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_69k_28_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_69k_29_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_69k_30_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_69k_31_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_69k_32_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_69k_33_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_69k_34_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_69k_35_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_69k_36_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_69k_37_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_69k_38_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_69k_39_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_69k_40_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/blup_69k_41_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_69k_Novelty_residuals_RankNormal_datarelease_12182019_m2.script
-    Untracked:  analysis/conditional_69k_blup_14_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_69k_blup_15_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_69k_blup_16_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_69k_blup_17_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_69k_blup_18_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_69k_blup_19_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_69k_blup_20_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_69k_blup_21_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_69k_blup_22_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_69k_blup_23_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_69k_blup_24_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_69k_blup_25_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_69k_blup_26_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_69k_blup_27_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_69k_blup_28_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_69k_blup_29_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_69k_blup_30_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_69k_blup_31_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_69k_blup_32_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_69k_blup_33_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_69k_blup_34_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_69k_blup_35_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_69k_blup_36_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_69k_blup_37_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_69k_blup_38_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_69k_blup_39_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_69k_blup_40_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_69k_blup_41_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_Novelty_residuals_RankNormal_datarelease_12182019_m2.script
-    Untracked:  analysis/conditional_blup_14_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_blup_15_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_blup_16_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_blup_17_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_blup_18_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_blup_19_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_blup_20_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_blup_21_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_blup_22_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_blup_23_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_blup_24_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_blup_25_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_blup_26_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_blup_27_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_blup_28_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_blup_29_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_blup_30_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_blup_31_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_blup_32_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_blup_33_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_blup_34_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_blup_35_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_blup_36_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_blup_37_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_blup_38_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_blup_39_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_blup_40_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/conditional_blup_41_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
+    Untracked:  analysis/19_qtl_analysis_RTG20_G_a1.R
+    Untracked:  analysis/19_qtl_analysis_RTG20_G_a1.err
+    Untracked:  analysis/19_qtl_analysis_RTG20_G_a1.out
+    Untracked:  analysis/19_qtl_analysis_RTG20_G_a1.sh
+    Untracked:  analysis/19_qtl_analysis_RTG20_G_a2.R
+    Untracked:  analysis/19_qtl_analysis_RTG20_G_a2.err
+    Untracked:  analysis/19_qtl_analysis_RTG20_G_a2.out
+    Untracked:  analysis/19_qtl_analysis_RTG20_G_a2.sh
+    Untracked:  analysis/19_qtl_analysis_RTG20_G_a3.R
+    Untracked:  analysis/19_qtl_analysis_RTG20_G_a3.err
+    Untracked:  analysis/19_qtl_analysis_RTG20_G_a3.out
+    Untracked:  analysis/19_qtl_analysis_RTG20_G_a3.sh
+    Untracked:  analysis/19_qtl_analysis_RTG20_G_a4.R
+    Untracked:  analysis/19_qtl_analysis_RTG20_G_a4.err
+    Untracked:  analysis/19_qtl_analysis_RTG20_G_a4.out
+    Untracked:  analysis/19_qtl_analysis_RTG20_G_a4.sh
     Untracked:  analysis/csna_image.sif
-    Untracked:  analysis/permu_10_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_11_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_12_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_13_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_14_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_15_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_16_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_17_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_18_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_19_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_1_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_20_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_21_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_22_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_23_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_24_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_25_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_26_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_27_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_28_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_29_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_2_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_30_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_31_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_32_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_33_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_34_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_35_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_36_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_37_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_38_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_39_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_3_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_40_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_41_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_42_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_43_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_44_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_45_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_46_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_47_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_48_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_49_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_4_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_50_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_5_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_10_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_11_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_12_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_13_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_14_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_15_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_16_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_17_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_18_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_19_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_1_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_20_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_21_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_22_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_23_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_24_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_25_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_26_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_27_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_28_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_29_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_2_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_30_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_31_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_32_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_33_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_34_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_35_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_36_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_37_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_38_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_39_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_3_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_40_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_41_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_42_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_43_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_44_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_45_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_46_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_47_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_48_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_49_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_4_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_50_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_5_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_6_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_7_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_8_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_69k_9_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_6_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_7_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_8_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/permu_9_m2_Novelty_residuals_RankNormal_datarelease_12182019.script
-    Untracked:  analysis/run_04_diagnosis_qc_gigamuga_11_batches.R
-    Untracked:  analysis/run_05_after_diagnosis_qc_gigamuga_11_batches.R
-    Untracked:  analysis/run_09_69k_qtlmapping.R
-    Untracked:  analysis/run_10_69k_qtl_permu.R
-    Untracked:  analysis/run_10_69k_qtl_permu.e11543283
-    Untracked:  analysis/run_10_69k_qtl_permu.e11548985
-    Untracked:  analysis/run_10_69k_qtl_permu.o11543283
-    Untracked:  analysis/run_10_69k_qtl_permu.o11548985
-    Untracked:  analysis/run_10_qtl_permu.o11472940
-    Untracked:  analysis/run_11_69k_qtl_blup.R
-    Untracked:  analysis/run_11_69k_qtl_blup.e11543288
-    Untracked:  analysis/run_11_69k_qtl_blup.e11560161
-    Untracked:  analysis/run_11_69k_qtl_blup.o11543288
-    Untracked:  analysis/run_11_69k_qtl_blup.o11560161
-    Untracked:  analysis/run_12_plot_qtl_mapping.R
-    Untracked:  analysis/run_13_conditional_69k_blup.R
-    Untracked:  analysis/run_13_conditional_69k_qtlmapping.R
-    Untracked:  analysis/run_13_conditional_69k_qtlmapping.R.e11560365
-    Untracked:  analysis/run_13_conditional_69k_qtlmapping.R.o11560365
-    Untracked:  analysis/run_13_conditional_blup.R
-    Untracked:  analysis/run_13_conditional_qtlmapping.R
-    Untracked:  analysis/run_13_conditional_qtlmapping.R.e11509917
-    Untracked:  analysis/run_13_conditional_qtlmapping.R.o11509917
-    Untracked:  analysis/run_13_plot_conditional_m2_qtlmapping.R
-    Untracked:  analysis/run_14_geneseek2qtl2fst_Gagnon.R
-    Untracked:  analysis/run_15_firstgm2genoprobs_Gagnon.R
-    Untracked:  analysis/run_16_diagnosis_qc_gigamuga_gagnon.R
-    Untracked:  analysis/run_17_69k_qtlmapping.R
-    Untracked:  analysis/run_17_gcta_herit.R
-    Untracked:  analysis/run_17_qtlmapping.R
-    Untracked:  analysis/run_18_qtl_analysis_RTG.script
-    Untracked:  analysis/run_18_qtl_analysis_RTG_G.script
-    Untracked:  analysis/run_18_qtl_analysis_RTG_G_a1.script
-    Untracked:  analysis/run_18_qtl_analysis_RTG_G_a2.script
-    Untracked:  analysis/run_18_qtl_analysis_RTG_G_a2_chr18.script
-    Untracked:  analysis/run_18_qtl_analysis_RTG_G_a2_chr4.script
-    Untracked:  analysis/run_18_qtl_analysis_RTG_G_a3.script
-    Untracked:  analysis/run_18_qtl_analysis_RTG_m0.script
-    Untracked:  analysis/run_18_qtl_analysis_RTG_m0_a1.script
-    Untracked:  analysis/run_18_qtl_analysis_RTG_m0_a2.script
-    Untracked:  analysis/run_18_qtl_analysis_RTG_m0_a3.script
-    Untracked:  analysis/run_18_qtl_analysis_RTG_m3.script
-    Untracked:  analysis/run_run_09_qtlmapping.script
-    Untracked:  analysis/run_run_10_69k_qtl_permu.script
-    Untracked:  analysis/run_run_10_qtl_permu.script
-    Untracked:  analysis/run_run_11_69k_qtl_blup.script
-    Untracked:  analysis/run_run_11_qtl_blup.script
-    Untracked:  analysis/run_run_13_conditional_69k_blup.script
-    Untracked:  analysis/run_run_13_conditional_blup.script
-    Untracked:  analysis/scriptout/
+    Untracked:  analysis/scripts/
+    Untracked:  analysis/temp/
     Untracked:  code/reconst_utils.R
     Untracked:  data/69k_grid_pgmap.RData
     Untracked:  data/FinalReport/
     Untracked:  data/GCTA/
     Untracked:  data/GM/
     Untracked:  data/Jackson_Lab_11_batches/
+    Untracked:  data/Jackson_Lab_12_batches/
     Untracked:  data/Jackson_Lab_Bubier_MURGIGV01/
     Untracked:  data/Jackson_Lab_Gagnon/
     Untracked:  data/RTG/
     Untracked:  data/cc_variants.sqlite
-    Untracked:  data/forVK/
     Untracked:  data/marker_grid_0.02cM_plus.txt
     Untracked:  data/mouse_genes_mgi.sqlite
     Untracked:  data/pheno/
@@ -1076,30 +571,43 @@ Untracked files:
 Unstaged changes:
     Modified:   README.md
     Modified:   _workflowr.yml
-    Modified:   analysis/01_geneseek2qtl2.R
-    Modified:   analysis/02_geneseek2intensity.R
-    Modified:   analysis/03_firstgm2genoprobs.R
-    Modified:   analysis/04_diagnosis_qc_gigamuga_nine_batches.R
-    Modified:   analysis/06_final_pr_apr_69K.R
-    Modified:   analysis/07.1_html_founder_prop.R
-    Modified:   analysis/07_recomb_size_founder_prop.R
-    Modified:   analysis/08_gcta_herit.R
-    Modified:   analysis/09_qtlmapping.R
-    Modified:   analysis/10_qtl_permu.R
-    Modified:   analysis/11_qtl_blup.R
-    Modified:   analysis/12_plot_69k_qtl_mapping_2.Rmd
-    Modified:   analysis/run_01_geneseek2qtl2.R
-    Modified:   analysis/run_02_geneseek2intensity.R
-    Modified:   analysis/run_03_firstgm2genoprobs.R
-    Modified:   analysis/run_04_diagnosis_qc_gigamuga_nine_batches.R
-    Modified:   analysis/run_05_after_diagnosis_qc_gigamuga_nine_batches.R
-    Modified:   analysis/run_06_final_pr_apr_69K.R
-    Modified:   analysis/run_07.1_html_founder_prop.R
-    Modified:   analysis/run_07_recomb_size_founder_prop.R
-    Modified:   analysis/run_08_gcta_herit.R
-    Modified:   analysis/run_09_qtlmapping.R
-    Modified:   analysis/run_10_qtl_permu.R
-    Modified:   analysis/run_11_qtl_blup.R
+    Deleted:    analysis/01_geneseek2qtl2.R
+    Deleted:    analysis/02_geneseek2intensity.R
+    Deleted:    analysis/03_firstgm2genoprobs.R
+    Deleted:    analysis/04_diagnosis_qc_gigamuga_11_batches.Rmd
+    Deleted:    analysis/04_diagnosis_qc_gigamuga_nine_batches.R
+    Deleted:    analysis/04_diagnosis_qc_gigamuga_nine_batches.Rmd
+    Deleted:    analysis/05_after_diagnosis_qc_gigamuga_11_batches.Rmd
+    Deleted:    analysis/05_after_diagnosis_qc_gigamuga_nine_batches.R
+    Deleted:    analysis/05_after_diagnosis_qc_gigamuga_nine_batches.Rmd
+    Deleted:    analysis/06_final_pr_apr_69K.R
+    Deleted:    analysis/07.1_html_founder_prop.R
+    Deleted:    analysis/07_recomb_size_founder_prop.R
+    Deleted:    analysis/07_recomb_size_founder_prop.Rmd
+    Deleted:    analysis/08_gcta_herit.R
+    Deleted:    analysis/09_qtlmapping.R
+    Deleted:    analysis/10_qtl_permu.R
+    Deleted:    analysis/11_qtl_blup.R
+    Deleted:    analysis/12_plot_69k_qtl_mapping_2.Rmd
+    Deleted:    analysis/12_plot_qtl_mapping_1.Rmd
+    Deleted:    analysis/12_plot_qtl_mapping_2.Rmd
+    Deleted:    analysis/13_plot_69k_conditional_m2_qtlmapping.Rmd
+    Deleted:    analysis/13_plot_conditional_m2_qtlmapping.Rmd
+    Deleted:    analysis/16_diagnosis_qc_gigamuga_gagnon.Rmd
+    Deleted:    analysis/16_diagnosis_qc_gigamuga_gagnon2.Rmd
+    Deleted:    analysis/17_plot_qtl_mapping.Rmd
+    Deleted:    analysis/run_01_geneseek2qtl2.R
+    Deleted:    analysis/run_02_geneseek2intensity.R
+    Deleted:    analysis/run_03_firstgm2genoprobs.R
+    Deleted:    analysis/run_04_diagnosis_qc_gigamuga_nine_batches.R
+    Deleted:    analysis/run_05_after_diagnosis_qc_gigamuga_nine_batches.R
+    Deleted:    analysis/run_06_final_pr_apr_69K.R
+    Deleted:    analysis/run_07.1_html_founder_prop.R
+    Deleted:    analysis/run_07_recomb_size_founder_prop.R
+    Deleted:    analysis/run_08_gcta_herit.R
+    Deleted:    analysis/run_09_qtlmapping.R
+    Deleted:    analysis/run_10_qtl_permu.R
+    Deleted:    analysis/run_11_qtl_blup.R
 
 </code></pre>
 <p>
@@ -1138,6 +646,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/f290bffa02dca7130956e4269fc8e1513f1f79ad/analysis/index.Rmd" target="_blank">f290bff</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-10-21
+</td>
+<td>
+new
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/d8fe998c3d55e8a8da88739ba3ded3d9a0d8dd8a/docs/index.html" target="_blank">d8fe998</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-10-19
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1927,16 +1469,16 @@ Start workflowr project.
 </div>
 </div>
 </div>
-<div id="data-transformation-from-finalreport.txt-to-qtl2-for-11-batches-of-jackson_lab_bubier" class="section level3">
-<h3>1 Data transformation from Finalreport.txt to qtl2 for 11 batches of Jackson_Lab_Bubier</h3>
+<div id="data-transformation-from-finalreport.txt-to-qtl2-for-12-batches" class="section level3">
+<h3>1 Data transformation from Finalreport.txt to qtl2 for 12 batches</h3>
 <ul>
-<li>[01_geneseek2qtl2.R]</li>
+<li>[01_FinalReport2qtl2.R]</li>
 </ul>
 </div>
 <div id="grab-intensities-from-geneseek-finalreport.txt-files-convert-them-to-a-single-big-data-frame" class="section level3">
 <h3>2 Grab intensities from GeneSeek FinalReport.txt files convert them to a single big data frame</h3>
 <ul>
-<li>[02_geneseek2intensity.R]</li>
+<li>[02_FinalReport2intensity.R]</li>
 </ul>
 </div>
 <div id="first-time-to-calculate-genoprobs-maxmarg-crossover-errorlod-snpg-for-the-qc-diagnositics" class="section level3">
@@ -1945,8 +1487,8 @@ Start workflowr project.
 <li>[03_firstgm2genoprobs.R]</li>
 </ul>
 </div>
-<div id="genotype-diagnostics-for-diversity-outbred-mice-of-batches" class="section level3">
-<h3>4 Genotype diagnostics for diversity outbred mice of batches</h3>
+<div id="genotype-diagnostics-for-diversity-outbred-mice-of-12-batches" class="section level3">
+<h3>4 Genotype diagnostics for diversity outbred mice of 12 batches</h3>
 <ul>
 <li><a href="04_diagnosis_qc_gigamuga_nine_batches.html">04_diagnosis_qc_gigamuga_nine_batches.Rmd</a></li>
 <li><a href="04_diagnosis_qc_gigamuga_11_batches.html">04_diagnosis_qc_gigamuga_11_batches.Rmd</a></li>
