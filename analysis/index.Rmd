@@ -7,16 +7,16 @@ output:
     toc: true
 ---
 
-### 1 Data transformation from Finalreport.txt to qtl2 for 11 batches of Jackson_Lab_Bubier
-* [01_geneseek2qtl2.R]
+### 1 Data transformation from Finalreport.txt to qtl2 for 12 batches
+* [01_FinalReport2qtl2.R]
 
 ### 2 Grab intensities from GeneSeek FinalReport.txt files convert them to a single big data frame
-* [02_geneseek2intensity.R]
+* [02_FinalReport2intensity.R]
 
 ### 3 First time to calculate genoprobs, maxmarg, crossover, errorlod, snpg for the qc diagnositics
 * [03_firstgm2genoprobs.R]
 
-### 4 Genotype diagnostics for diversity outbred mice of batches
+### 4 Genotype diagnostics for diversity outbred mice of 12 batches
 * [04_diagnosis_qc_gigamuga_nine_batches.Rmd](04_diagnosis_qc_gigamuga_nine_batches.html)
 * [04_diagnosis_qc_gigamuga_11_batches.Rmd](04_diagnosis_qc_gigamuga_11_batches.html)
 
