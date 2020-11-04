@@ -55,7 +55,6 @@ miss_dat <- miss_dat %>%
   ))
 
 #iplot
-setScreenSize(height=100, width=150)
 iplot(miss_dat$Mouse, 
       miss_dat$Percent_missing_genotype_data, 
       indID=paste0(miss_dat$labels, " (", round(miss_dat$Percent_missing_genotype_data,2), "%)"),
@@ -449,8 +448,8 @@ qc_info <- qc_info %>%
 #add duplicated id to be remove
 qc_info <- qc_info %>%
   mutate(remove.id.duplicated = case_when(
-    id %in% unique(c(filtered.summary.cg$ind1, filtered.summary.cg$ind2)) ~ TRUE,
-    !(id %in% unique(c(filtered.summary.cg$ind1, filtered.summary.cg$ind2))) ~ FALSE
+    id %in% unique(c(filtered.summary.cg$remove.id)) ~ TRUE,
+    !(id %in% unique(c(filtered.summary.cg$remove.id))) ~ FALSE
   ))
 
 #bad sample label
@@ -460,6 +459,10 @@ qc_info <- qc_info %>%
       TRUE ~ FALSE
     ))
 save(qc_info, file = "data/Jackson_Lab_12_batches/qc_info.RData")
+
+#display qc_info
+DT::datatable(qc_info,
+              options = list(pageLength = 40, scrollY = "300px", scrollX = "40px"))
 
 #remove bad samples
 gm.no.bad <- gm[paste0("-",as.character(qc_info[qc_info$bad.sample == TRUE, "id"])),]
