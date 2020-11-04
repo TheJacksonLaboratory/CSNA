@@ -23,6 +23,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
@@ -33,6 +35,15 @@ div.section {
   padding-top: 12px;
 }
 </style>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -355,7 +366,7 @@ $(document).ready(function () {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-10-21
+<strong>Last updated:</strong> 2020-11-04
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -386,16 +397,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtreef290bffa02dca7130956e4269fc8e1513f1f79adtargetblankf290bffa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/f290bffa02dca7130956e4269fc8e1513f1f79ad" target="_blank">f290bff</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtree2f3a962e679aac242c299584938772694600b7e2targetblank2f3a962a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/2f3a962e679aac242c299584938772694600b7e2" target="_blank">2f3a962</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtreef290bffa02dca7130956e4269fc8e1513f1f79adtargetblankf290bffa" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtree2f3a962e679aac242c299584938772694600b7e2targetblank2f3a962a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/f290bffa02dca7130956e4269fc8e1513f1f79ad" target="_blank">f290bff</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/2f3a962e679aac242c299584938772694600b7e2" target="_blank">2f3a962</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -404,10 +415,27 @@ Note that you need to be careful to ensure that all relevant files for the analy
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    analysis/.Rhistory
+    Ignored:    analysis/figure/
 
 Untracked files:
     Untracked:  analysis/.nfs0000000135a08b9b00002448
     Untracked:  analysis/.nfs0000000135a08ba50000244a
+    Untracked:  analysis/19_qtl_analysis_RTG20_GS_a1.R
+    Untracked:  analysis/19_qtl_analysis_RTG20_GS_a1.err
+    Untracked:  analysis/19_qtl_analysis_RTG20_GS_a1.out
+    Untracked:  analysis/19_qtl_analysis_RTG20_GS_a1.sh
+    Untracked:  analysis/19_qtl_analysis_RTG20_GS_a2.R
+    Untracked:  analysis/19_qtl_analysis_RTG20_GS_a2.err
+    Untracked:  analysis/19_qtl_analysis_RTG20_GS_a2.out
+    Untracked:  analysis/19_qtl_analysis_RTG20_GS_a2.sh
+    Untracked:  analysis/19_qtl_analysis_RTG20_GS_a3.R
+    Untracked:  analysis/19_qtl_analysis_RTG20_GS_a3.err
+    Untracked:  analysis/19_qtl_analysis_RTG20_GS_a3.out
+    Untracked:  analysis/19_qtl_analysis_RTG20_GS_a3.sh
+    Untracked:  analysis/19_qtl_analysis_RTG20_GS_a4.R
+    Untracked:  analysis/19_qtl_analysis_RTG20_GS_a4.err
+    Untracked:  analysis/19_qtl_analysis_RTG20_GS_a4.out
+    Untracked:  analysis/19_qtl_analysis_RTG20_GS_a4.sh
     Untracked:  analysis/19_qtl_analysis_RTG20_G_a1.R
     Untracked:  analysis/19_qtl_analysis_RTG20_G_a1.err
     Untracked:  analysis/19_qtl_analysis_RTG20_G_a1.out
@@ -427,6 +455,10 @@ Untracked files:
     Untracked:  analysis/csna_image.sif
     Untracked:  analysis/scripts/
     Untracked:  analysis/temp/
+    Untracked:  analysis/workflow_proc.R
+    Untracked:  analysis/workflow_proc.sh
+    Untracked:  analysis/workflow_proc.stderr
+    Untracked:  analysis/workflow_proc.stdout
     Untracked:  code/reconst_utils.R
     Untracked:  data/69k_grid_pgmap.RData
     Untracked:  data/FinalReport/
@@ -493,7 +525,9 @@ Untracked files:
     Untracked:  output/Percent_missing_genotype_data.pdf
     Untracked:  output/Percent_missing_genotype_data_per_marker.pdf
     Untracked:  output/Proportion_matching_genotypes_after_removal_of_bad_samples.pdf
+    Untracked:  output/Proportion_matching_genotypes_after_removal_samples_percent_missing_5.pdf
     Untracked:  output/Proportion_matching_genotypes_before_removal_of_bad_samples.pdf
+    Untracked:  output/Proportion_matching_genotypes_before_removal_samples.pdf
     Untracked:  output/RTG/
     Untracked:  output/blup/
     Untracked:  output/condi.m2.Novelty_residuals_RankNormal_datarelease_12182019_genomescan.pdf
@@ -646,6 +680,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/2f3a962e679aac242c299584938772694600b7e2/analysis/index.Rmd" target="_blank">2f3a962</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-04
+</td>
+<td>
+12_batches
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/4794cfedac6708a9ce38642c5bd469581c5ac6f3/docs/index.html" target="_blank">4794cfe</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-10-21
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1492,6 +1560,7 @@ Start workflowr project.
 <ul>
 <li><a href="04_diagnosis_qc_gigamuga_nine_batches.html">04_diagnosis_qc_gigamuga_nine_batches.Rmd</a></li>
 <li><a href="04_diagnosis_qc_gigamuga_11_batches.html">04_diagnosis_qc_gigamuga_11_batches.Rmd</a></li>
+<li><a href="04_diagnosis_qc_gigamuga_12_batches.html">04_diagnosis_qc_gigamuga_12_batches.Rmd</a></li>
 </ul>
 </div>
 <div id="after-qc-genotype-diagnostics" class="section level3">
@@ -1592,7 +1661,7 @@ footer is added to webpages before the MathJax javascript. -->
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();
