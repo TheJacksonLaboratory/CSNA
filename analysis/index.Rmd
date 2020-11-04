@@ -19,6 +19,7 @@ output:
 ### 4 Genotype diagnostics for diversity outbred mice of 12 batches
 * [04_diagnosis_qc_gigamuga_nine_batches.Rmd](04_diagnosis_qc_gigamuga_nine_batches.html)
 * [04_diagnosis_qc_gigamuga_11_batches.Rmd](04_diagnosis_qc_gigamuga_11_batches.html)
+* [04_diagnosis_qc_gigamuga_12_batches.Rmd](04_diagnosis_qc_gigamuga_12_batches.html)
 
 ### 5 After QC, genotype diagnostics
 * [05_after_diagnosis_qc_gigamuga_nine_batches.Rmd](05_after_diagnosis_qc_gigamuga_nine_batches.html)
