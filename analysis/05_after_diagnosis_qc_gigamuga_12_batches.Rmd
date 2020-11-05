@@ -121,7 +121,7 @@ iplot(xint_ave, phetX, group=sex, indID=labels,
 # Sample duplicates
 ```{r Sample duplicates, eval=T}
 cg <- compare_geno(gm, cores=10)
-summary.cg <- summary(cg)
+summary.cg <- summary(cg, threshold = 0.65)
 #get the name and missing percentage
 summary.cg$Name.ind1 <- str_split_fixed(summary.cg$ind1, "_",7)[,6]
 summary.cg$Name.ind2 <- str_split_fixed(summary.cg$ind2, "_",7)[,6]
@@ -130,7 +130,7 @@ summary.cg$miss.ind2 <- percent_missing[match(summary.cg$ind2, names(percent_mis
 summary.cg$remove.id <- ifelse(summary.cg$miss.ind1 > summary.cg$miss.ind2, summary.cg$ind1, summary.cg$ind2)
 
 #display summary.cg
-DT::datatable(summary.cg,
+DT::datatable(summary.cg, filter = list(position = 'top', clear = FALSE),
               options = list(pageLength = 40, scrollY = "300px", scrollX = "40px"))
 
 pdf(file = "data/Jackson_Lab_12_batches/AfterQC_Proportion_matching_genotypes_before_removal_of_bad_samples.pdf", width = 20, height = 20) 

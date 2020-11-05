@@ -156,7 +156,7 @@ save(filtered.summary.cg,
      file = "data/Jackson_Lab_12_batches/filtered.summary.cg.RData")
 
 #display filtered.summary.cg
-DT::datatable(filtered.summary.cg,
+DT::datatable(filtered.summary.cg, filter = list(position = 'top', clear = FALSE),
               options = list(pageLength = 40, scrollY = "300px", scrollX = "40px"))
 
 #plot prop matrix for same.sample = false and prop_match >= 0.85
@@ -232,7 +232,7 @@ miss_dat_5 <- miss_dat %>%
   filter(labels2 != "")
 dim(miss_dat_5)
 #display miss_dat
-DT::datatable(miss_dat_5,
+DT::datatable(miss_dat_5,filter = list(position = 'top', clear = FALSE),
               options = list(pageLength = 40, scrollY = "300px", scrollX = "40px"))
 ```
 
@@ -327,7 +327,7 @@ p
 #Here are the crossover counts for those  mice with percent_missing >= 5:
 tmp <- cbind(percent_missing=round(percent_missing,2), total_xo=totxo)[percent_missing >= 5,]
 #display miss_dat
-DT::datatable(tmp[order(tmp[,1]),],
+DT::datatable(tmp[order(tmp[,1]),], filter = list(position = 'top', clear = FALSE),
               options = list(pageLength = 40, scrollY = "300px", scrollX = "40px"))
 
 # Genotyping error LOD scores
@@ -461,7 +461,7 @@ qc_info <- qc_info %>%
 save(qc_info, file = "data/Jackson_Lab_12_batches/qc_info.RData")
 
 #display qc_info
-DT::datatable(qc_info,
+DT::datatable(qc_info, filter = list(position = 'top', clear = FALSE),
               options = list(pageLength = 40, scrollY = "300px", scrollX = "40px"))
 
 #remove bad samples
