@@ -24,6 +24,7 @@ output:
 ### 5 After QC, genotype diagnostics
 * [05_after_diagnosis_qc_gigamuga_nine_batches.Rmd](05_after_diagnosis_qc_gigamuga_nine_batches.html)
 * [05_after_diagnosis_qc_gigamuga_11_batches.Rmd](05_after_diagnosis_qc_gigamuga_11_batches.html)
+* [05_after_diagnosis_qc_gigamuga_12_batches.Rmd](05_after_diagnosis_qc_gigamuga_12_batches.html)
 
 ### 6 Calculation of the genoprobs after qc and do interpolatino to 69K grid
 * [06_final_pr_apr_69K.R]

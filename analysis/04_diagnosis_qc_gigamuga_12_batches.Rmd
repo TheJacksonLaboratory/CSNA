@@ -63,7 +63,7 @@ iplot(miss_dat$Mouse,
                      ylim=c(0, 100)))
 
 #save into pdf
-pdf(file = "output/Percent_missing_genotype_data.pdf", width = 20, height = 20)
+pdf(file = "data/Jackson_Lab_12_batches/Percent_missing_genotype_data.pdf", width = 20, height = 20)
 # Change point shapes and colors
 p <- ggplot(data = miss_dat, 
         aes(x=Mouse, y=Percent_missing_genotype_data, color = batch)) +
@@ -200,7 +200,7 @@ p <- ggplot(data = melted_cormat, aes(Var2, Var1, fill = value))+
  coord_fixed()
 p
 
-pdf(file = "output/Proportion_matching_genotypes_before_removal_samples.pdf", width = 20, height = 20) 
+pdf(file = "data/Jackson_Lab_12_batches/Proportion_matching_genotypes_before_removal_samples.pdf", width = 20, height = 20) 
 par(mar=c(5.1,0.6,0.6, 0.6))
 hist(cg[upper.tri(cg)], breaks=seq(0, 1, length=201),
      main="", yaxt="n", ylab="", xlab="Proportion matching genotypes")
@@ -212,7 +212,7 @@ hist(cg[upper.tri(cg)], breaks=seq(0, 1, length=201),
      main="", yaxt="n", ylab="", xlab="Proportion matching genotypes")
 rug(cg[upper.tri(cg)])
 
-pdf(file = "output/Proportion_matching_genotypes_after_removal_samples_percent_missing_5.pdf",width = 20, height = 20) 
+pdf(file = "data/Jackson_Lab_12_batches/Proportion_matching_genotypes_after_removal_samples_percent_missing_5.pdf",width = 20, height = 20) 
 cgsub <- cg[percent_missing < 5, percent_missing < 5]
 par(mar=c(5.1,0.6,0.6, 0.6))
 hist(cgsub[upper.tri(cgsub)], breaks=seq(0, 1, length=201),
@@ -311,7 +311,7 @@ iplot(seq_along(totxo),
                      axispos=list(xtitle=25,ytitle=50,xlabel=5,ylabel=5)))
 
 #save crossover into pdf
-pdf(file = "output/number_crossover.pdf")
+pdf(file = "data/Jackson_Lab_12_batches/number_crossover.pdf")
 cross_over <- data.frame(Mouse = seq_along(totxo), Number_crossovers = totxo, generation = gm$covar$ngen)
 names(totxo) <- as.character(do.call(rbind.data.frame, strsplit(names(totxo), "V01_"))[,2])
 names(totxo)[totxo <= 800 & totxo >= 400] = ""
@@ -355,7 +355,7 @@ grayplot(errors_ind_0, err_direct,
          xlim=c(0, 2), ylim=c(0, 2))
 abline(0,1,lty=2, col="gray60")
 
-pdf(file = "output/Percent_genotype_errors_obs_vs_predicted.pdf",width = 20, height = 20) 
+pdf(file = "data/Jackson_Lab_12_batches/Percent_genotype_errors_obs_vs_predicted.pdf",width = 20, height = 20) 
 par(pty="s")
 err_direct <- rowMeans(snpg != gobs, na.rm=TRUE)*100
 errors_ind_0 <- rowSums(e > 0)/n_typed(gm)*100
@@ -379,7 +379,7 @@ hist(pmis_mar, breaks=seq(0, 100, length=201),
      main="", yaxt="n", ylab="", xlab="Percent missing genotypes")
 rug(pmis_mar)
 
-pdf(file = "output/Percent_missing_genotype_data_per_marker.pdf")
+pdf(file = "data/Jackson_Lab_12_batches/Percent_missing_genotype_data_per_marker.pdf")
 par(mar=c(5.1,0.6,0.6, 0.6))
 hist(pmis_mar, breaks=seq(0, 100, length=201),
      main="", yaxt="n", ylab="", xlab="Percent missing genotypes")
@@ -390,7 +390,7 @@ dev.off()
 gf_mar <- t(apply(g, 2, function(a) table(factor(a, 1:3))/sum(a != 0)))
 gn_mar <- t(apply(g, 2, function(a) table(factor(a, 1:3))))
 
-pdf(file = "output/genotype_frequency_marker.pdf")
+pdf(file = "data/Jackson_Lab_12_batches/genotype_frequency_marker.pdf")
 par(mfrow=c(2,2), mar=c(0.6, 0.6, 2.6, 0.6))
 for(i in 1:4) {
   triplot(c("AA", "AB", "BB"), main=paste0("MAF = ", i, "/8"))
@@ -416,7 +416,7 @@ errors_mar <- colSums(e>2)/n_typed(gm, "marker")*100
 grayplot(pmis_mar, errors_mar,
          xlab="Proportion missing", ylab="Proportion genotyping errors")
 
-pdf(file = "output/genotype_error_marker.pdf")
+pdf(file = "data/Jackson_Lab_12_batches/genotype_error_marker.pdf")
 grayplot(pmis_mar, errors_mar,
          xlab="Proportion missing", ylab="Proportion genotyping errors")
 dev.off()
