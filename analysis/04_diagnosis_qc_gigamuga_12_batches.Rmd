@@ -483,7 +483,14 @@ save(bad_markers, file = "data/Jackson_Lab_12_batches/bad_markers.RData")
 gm_after_qc <- drop_markers(gm.no.bad, names(errors_mar)[errors_mar > 5])
 
 gm_after_qc
-
 save(gm_after_qc, file = paste0("data/Jackson_Lab_12_batches/gm_DO", length(ind_ids(gm_after_qc)) ,"_qc.RData"))
 save(e,g,snpg, file = "data/Jackson_Lab_12_batches/e_g_snpg_qc.RData")
+
+#replace id
+new.id <- str_split_fixed(ind_ids(gm_after_qc), "_",7)[,6]
+names(new.id) <- ind_ids(gm_after_qc)
+gm_after_qc <- replace_ids(gm_after_qc, new.id)
+gm_after_qc
+
+save(gm_after_qc, file = paste0("data/Jackson_Lab_12_batches/gm_DO", length(ind_ids(gm_after_qc)) ,"_qc_newid.RData"))
 ```

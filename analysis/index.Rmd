@@ -29,8 +29,10 @@ output:
 ### 6 Calculation of the genoprobs after qc and do interpolatino to 69K grid
 * [06_final_pr_apr_69K.R]
 
-### 7 Plot the recombination block size and founder props across all generations
-* [07_recomb_size_founder_prop.Rmd](07_recomb_size_founder_prop.html)
+### 7 DO Diversity Report
+* [07_do_diversity_report.R]
+* [07_do_diversity_report.Rmd](07_do_diversity_report.html)
+* [07_recomb_size_founder_prop.Rmd]
 
 ### 8 GCTA heritability 
 * [08_gcta_herit.R]
