@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Hao He" />
+
+<meta name="date" content="2020-11-08" />
+
+<title>DO_Diversity_Report</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
+<link href="site_libs/table1-1.0/table1_defaults.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">CSNA_workflow</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+<li>
+  <a href="https://github.com/TheJacksonLaboratory/CSNA">GitHub</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/TheJacksonLaboratory/CSNA">
+    <span class="fa fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">DO_Diversity_Report</h1>
+<h4 class="author">Hao He</h4>
+<h4 class="date">2020-11-08</h4>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#diversity-report-for-diversity-outbred-mice">Diversity report for diversity outbred mice</a></li>
+<li><a href="#library">library</a></li>
+</ul>
+</div>
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2020-11-08
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>csna_workflow/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20190922code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20190922)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20190922code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20190922)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtree04001f623edb9d1099f5a48f3d203b0f3cf71577targetblank04001f6a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/04001f623edb9d1099f5a48f3d203b0f3cf71577" target="_blank">04001f6</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtree04001f623edb9d1099f5a48f3d203b0f3cf71577targetblank04001f6a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/04001f623edb9d1099f5a48f3d203b0f3cf71577" target="_blank">04001f6</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    analysis/.Rhistory
+
+Untracked files:
+    Untracked:  analysis/.nfs0000000135a08b9b00002448
+    Untracked:  analysis/.nfs0000000135a08ba50000244a
+    Untracked:  analysis/csna_image.sif
+    Untracked:  analysis/scripts/
+    Untracked:  analysis/temp/
+    Untracked:  analysis/temp2/
+    Untracked:  analysis/workflow_proc.R
+    Untracked:  analysis/workflow_proc.sh
+    Untracked:  analysis/workflow_proc.stderr
+    Untracked:  analysis/workflow_proc.stdout
+    Untracked:  code/reconst_utils.R
+    Untracked:  data/69k_grid_pgmap.RData
+    Untracked:  data/FinalReport/
+    Untracked:  data/GCTA/
+    Untracked:  data/GM/
+    Untracked:  data/Jackson_Lab_11_batches/
+    Untracked:  data/Jackson_Lab_12_batches/
+    Untracked:  data/Jackson_Lab_Bubier_MURGIGV01/
+    Untracked:  data/Jackson_Lab_Gagnon/
+    Untracked:  data/RTG/
+    Untracked:  data/cc_variants.sqlite
+    Untracked:  data/marker_grid_0.02cM_plus.txt
+    Untracked:  data/mouse_genes_mgi.sqlite
+    Untracked:  data/pheno/
+    Untracked:  output/AfterQC_Percent_missing_genotype_data.pdf
+    Untracked:  output/AfterQC_Proportion_matching_genotypes_after_removal_of_bad_samples.pdf
+    Untracked:  output/AfterQC_Proportion_matching_genotypes_before_removal_of_bad_samples.pdf
+    Untracked:  output/AfterQC_number_crossover.pdf
+    Untracked:  output/DO_Gigamuga_chr2_WSB_G21.png
+    Untracked:  output/DO_Gigamuga_chr2_WSB_G22.png
+    Untracked:  output/DO_Gigamuga_chr2_WSB_G23.png
+    Untracked:  output/DO_Gigamuga_chr2_WSB_G25.png
+    Untracked:  output/DO_Gigamuga_chr2_WSB_G29.png
+    Untracked:  output/DO_Gigamuga_chr2_WSB_G30.png
+    Untracked:  output/DO_Gigamuga_chr2_WSB_G31.png
+    Untracked:  output/DO_Gigamuga_chr2_WSB_G32.png
+    Untracked:  output/DO_Gigamuga_chr2_WSB_G33.png
+    Untracked:  output/DO_Gigamuga_founder_proportions_G21.png
+    Untracked:  output/DO_Gigamuga_founder_proportions_G22.png
+    Untracked:  output/DO_Gigamuga_founder_proportions_G23.png
+    Untracked:  output/DO_Gigamuga_founder_proportions_G25.png
+    Untracked:  output/DO_Gigamuga_founder_proportions_G29.png
+    Untracked:  output/DO_Gigamuga_founder_proportions_G30.png
+    Untracked:  output/DO_Gigamuga_founder_proportions_G31.png
+    Untracked:  output/DO_Gigamuga_founder_proportions_G32.png
+    Untracked:  output/DO_Gigamuga_founder_proportions_G33.png
+    Untracked:  output/DO_Gigamuga_founder_proportions_chr2_G21.png
+    Untracked:  output/DO_Gigamuga_founder_proportions_chr2_G22.png
+    Untracked:  output/DO_Gigamuga_founder_proportions_chr2_G23.png
+    Untracked:  output/DO_Gigamuga_founder_proportions_chr2_G25.png
+    Untracked:  output/DO_Gigamuga_founder_proportions_chr2_G29.png
+    Untracked:  output/DO_Gigamuga_founder_proportions_chr2_G30.png
+    Untracked:  output/DO_Gigamuga_founder_proportions_chr2_G31.png
+    Untracked:  output/DO_Gigamuga_founder_proportions_chr2_G32.png
+    Untracked:  output/DO_Gigamuga_founder_proportions_chr2_G33.png
+    Untracked:  output/DO_recom_block_size_G21.png
+    Untracked:  output/DO_recom_block_size_G22.png
+    Untracked:  output/DO_recom_block_size_G23.png
+    Untracked:  output/DO_recom_block_size_G25.png
+    Untracked:  output/DO_recom_block_size_G29.png
+    Untracked:  output/DO_recom_block_size_G30.png
+    Untracked:  output/DO_recom_block_size_G31.png
+    Untracked:  output/DO_recom_block_size_G32.png
+    Untracked:  output/DO_recom_block_size_G33.png
+    Untracked:  output/Histgram_Prj01_RL-Acquisition_preqc_02142020.pdf
+    Untracked:  output/Histgram_Prj01_RL-Reversal_preqc_02142020.pdf
+    Untracked:  output/Histgram_Prj02_Sensitization_preqc_02142020.pdf
+    Untracked:  output/Histgram_Prj04_IVSA_preqc_02142020.pdf
+    Untracked:  output/Novelty_residuals_RankNormal_datarelease_12182019-69k-genelist.csv
+    Untracked:  output/Novelty_residuals_RankNormal_datarelease_12182019-69k-variantlist.csv
+    Untracked:  output/Novelty_residuals_RankNormal_datarelease_12182019-genelist.csv
+    Untracked:  output/Novelty_residuals_RankNormal_datarelease_12182019-variantlist.csv
+    Untracked:  output/Percent_genotype_errors_obs_vs_predicted.pdf
+    Untracked:  output/Percent_missing_genotype_data.pdf
+    Untracked:  output/Percent_missing_genotype_data_per_marker.pdf
+    Untracked:  output/Proportion_matching_genotypes_after_removal_of_bad_samples.pdf
+    Untracked:  output/Proportion_matching_genotypes_after_removal_samples_percent_missing_5.pdf
+    Untracked:  output/Proportion_matching_genotypes_before_removal_of_bad_samples.pdf
+    Untracked:  output/Proportion_matching_genotypes_before_removal_samples.pdf
+    Untracked:  output/RTG/
+    Untracked:  output/blup/
+    Untracked:  output/condi.m2.Novelty_residuals_RankNormal_datarelease_12182019_genomescan.pdf
+    Untracked:  output/condi.m2.qtl.blup_Novelty_residuals_RankNormal_datarelease_12182019_coeffgeneplot.pdf
+    Untracked:  output/condi.m2.qtl.out.RData
+    Untracked:  output/conditional.69k.Novelty_residuals_RankNormal_datarelease_12182019-genelist.csv
+    Untracked:  output/conditional.69k.Novelty_residuals_RankNormal_datarelease_12182019-variantlist.csv
+    Untracked:  output/conditional.Novelty_residuals_RankNormal_datarelease_12182019-genelist.csv
+    Untracked:  output/conditional.Novelty_residuals_RankNormal_datarelease_12182019-variantlist.csv
+    Untracked:  output/conditional.m2.69k.Novelty_residuals_RankNormal_datarelease_12182019.RData
+    Untracked:  output/conditional.m2.69k.Novelty_residuals_RankNormal_datarelease_12182019_coeffgeneplot.pdf
+    Untracked:  output/conditional.m2.69k.Novelty_residuals_RankNormal_datarelease_12182019_genomescan.pdf
+    Untracked:  output/conditional.m2.Novelty_residuals_RankNormal_datarelease_12182019.RData
+    Untracked:  output/conditional.m2.Novelty_residuals_RankNormal_datarelease_12182019_coeffgeneplot.pdf
+    Untracked:  output/conditional.m2.Novelty_residuals_RankNormal_datarelease_12182019_genomescan.pdf
+    Untracked:  output/conditional.m2.qtl.out.RData
+    Untracked:  output/conditional_m2.Novelty_residuals_RankNormal_datarelease_07302918_genomescan.pdf
+    Untracked:  output/conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019_genomescan.pdf
+    Untracked:  output/genotype_error_marker.pdf
+    Untracked:  output/genotype_frequency_marker.pdf
+    Untracked:  output/m1.Novelty_resids_datarelease_07302918.RData
+    Untracked:  output/m1.Novelty_resids_datarelease_07302918_coeffgeneplot.pdf
+    Untracked:  output/m1.Novelty_resids_datarelease_07302918_genomescan.pdf
+    Untracked:  output/m1.Novelty_resids_datarelease_12182019.RData
+    Untracked:  output/m1.Novelty_resids_datarelease_12182019_coeffgeneplot.pdf
+    Untracked:  output/m1.Novelty_resids_datarelease_12182019_genomescan.pdf
+    Untracked:  output/m1.Novelty_residuals_RankNormal_datarelease_07302918.RData
+    Untracked:  output/m1.Novelty_residuals_RankNormal_datarelease_07302918_genomescan.pdf
+    Untracked:  output/m1.Novelty_residuals_RankNormal_datarelease_12182019.RData
+    Untracked:  output/m1.Novelty_residuals_RankNormal_datarelease_12182019_coeffgeneplot.pdf
+    Untracked:  output/m1.Novelty_residuals_RankNormal_datarelease_12182019_genomescan.pdf
+    Untracked:  output/m2.69k.Novelty_residuals_RankNormal_datarelease_12182019.RData
+    Untracked:  output/m2.69k.Novelty_residuals_RankNormal_datarelease_12182019_coeffgeneplot.pdf
+    Untracked:  output/m2.69k.Novelty_residuals_RankNormal_datarelease_12182019_genomescan.pdf
+    Untracked:  output/m2.69k.Prj01_RL-Acquisition_preqc_02142020.RData
+    Untracked:  output/m2.69k.Prj01_RL-Reversal_preqc_02142020.RData
+    Untracked:  output/m2.69k.Prj02_Sensitization_preqc_02142020.RData
+    Untracked:  output/m2.69k.Prj04_IVSA_preqc_02142020.RData
+    Untracked:  output/m2.Novelty_resids_datarelease_07302918.RData
+    Untracked:  output/m2.Novelty_resids_datarelease_07302918_genomescan.pdf
+    Untracked:  output/m2.Novelty_resids_datarelease_12182019.RData
+    Untracked:  output/m2.Novelty_resids_datarelease_12182019_coeffgeneplot.pdf
+    Untracked:  output/m2.Novelty_resids_datarelease_12182019_genomescan.pdf
+    Untracked:  output/m2.Novelty_residuals_RankNormal_datarelease_07302918.RData
+    Untracked:  output/m2.Novelty_residuals_RankNormal_datarelease_07302918_genomescan.pdf
+    Untracked:  output/m2.Novelty_residuals_RankNormal_datarelease_12182019.RData
+    Untracked:  output/m2.Novelty_residuals_RankNormal_datarelease_12182019_coeffgeneplot.pdf
+    Untracked:  output/m2.Novelty_residuals_RankNormal_datarelease_12182019_genomescan.pdf
+    Untracked:  output/m2.Prj01_RL-Acquisition_preqc_02142020.RData
+    Untracked:  output/m2.Prj01_RL-Acquisition_preqc_02142020_qtl2scan.pdf
+    Untracked:  output/m2.Prj01_RL-Reversal_preqc_02142020.RData
+    Untracked:  output/m2.Prj01_RL-Reversal_preqc_02142020_qtl2scan.pdf
+    Untracked:  output/m2.Prj02_Sensitization_preqc_02142020.RData
+    Untracked:  output/m2.Prj02_Sensitization_preqc_02142020_qtl2scan.pdf
+    Untracked:  output/m2.Prj04_IVSA_preqc_02142020.RData
+    Untracked:  output/m2.Prj04_IVSA_preqc_02142020_qtl2scan.pdf
+    Untracked:  output/m3.Novelty_resids_datarelease_07302918.RData
+    Untracked:  output/m3.Novelty_resids_datarelease_07302918_genomescan.pdf
+    Untracked:  output/m3.Novelty_resids_datarelease_12182019.RData
+    Untracked:  output/m3.Novelty_resids_datarelease_12182019_coeffgeneplot.pdf
+    Untracked:  output/m3.Novelty_resids_datarelease_12182019_genomescan.pdf
+    Untracked:  output/m3.Novelty_residuals_RankNormal_datarelease_07302918.RData
+    Untracked:  output/m3.Novelty_residuals_RankNormal_datarelease_07302918_genomescan.pdf
+    Untracked:  output/m3.Novelty_residuals_RankNormal_datarelease_12182019.RData
+    Untracked:  output/m3.Novelty_residuals_RankNormal_datarelease_12182019_coeffgeneplot.pdf
+    Untracked:  output/m3.Novelty_residuals_RankNormal_datarelease_12182019_genomescan.pdf
+    Untracked:  output/num.geno.pheno.in.Novelty_resids_datarelease_07302918.csv
+    Untracked:  output/num.geno.pheno.in.Novelty_resids_datarelease_12182019.csv
+    Untracked:  output/num.geno.pheno.in.Novelty_residuals_RankNormal_datarelease_07302918.csv
+    Untracked:  output/num.geno.pheno.in.Novelty_residuals_RankNormal_datarelease_12182019.csv
+    Untracked:  output/number_crossover.pdf
+    Untracked:  output/permu/
+    Untracked:  output/prop_across_generation_chr_p.RData
+
+Unstaged changes:
+    Deleted:    analysis/01_geneseek2qtl2.R
+    Deleted:    analysis/02_geneseek2intensity.R
+    Deleted:    analysis/03_firstgm2genoprobs.R
+    Deleted:    analysis/04_diagnosis_qc_gigamuga_11_batches.Rmd
+    Deleted:    analysis/04_diagnosis_qc_gigamuga_nine_batches.R
+    Deleted:    analysis/04_diagnosis_qc_gigamuga_nine_batches.Rmd
+    Deleted:    analysis/05_after_diagnosis_qc_gigamuga_11_batches.Rmd
+    Deleted:    analysis/05_after_diagnosis_qc_gigamuga_nine_batches.R
+    Deleted:    analysis/05_after_diagnosis_qc_gigamuga_nine_batches.Rmd
+    Deleted:    analysis/06_final_pr_apr_69K.R
+    Deleted:    analysis/07.1_html_founder_prop.R
+    Deleted:    analysis/07_recomb_size_founder_prop.R
+    Deleted:    analysis/07_recomb_size_founder_prop.Rmd
+    Deleted:    analysis/08_gcta_herit.R
+    Deleted:    analysis/09_qtlmapping.R
+    Deleted:    analysis/10_qtl_permu.R
+    Deleted:    analysis/11_qtl_blup.R
+    Deleted:    analysis/12_plot_69k_qtl_mapping_2.Rmd
+    Deleted:    analysis/12_plot_qtl_mapping_1.Rmd
+    Deleted:    analysis/12_plot_qtl_mapping_2.Rmd
+    Deleted:    analysis/13_plot_69k_conditional_m2_qtlmapping.Rmd
+    Deleted:    analysis/13_plot_conditional_m2_qtlmapping.Rmd
+    Deleted:    analysis/16_diagnosis_qc_gigamuga_gagnon.Rmd
+    Deleted:    analysis/16_diagnosis_qc_gigamuga_gagnon2.Rmd
+    Deleted:    analysis/17_plot_qtl_mapping.Rmd
+    Deleted:    analysis/run_01_geneseek2qtl2.R
+    Deleted:    analysis/run_02_geneseek2intensity.R
+    Deleted:    analysis/run_03_firstgm2genoprobs.R
+    Deleted:    analysis/run_04_diagnosis_qc_gigamuga_nine_batches.R
+    Deleted:    analysis/run_05_after_diagnosis_qc_gigamuga_nine_batches.R
+    Deleted:    analysis/run_06_final_pr_apr_69K.R
+    Deleted:    analysis/run_07.1_html_founder_prop.R
+    Deleted:    analysis/run_07_recomb_size_founder_prop.R
+    Deleted:    analysis/run_08_gcta_herit.R
+    Deleted:    analysis/run_09_qtlmapping.R
+    Deleted:    analysis/run_10_qtl_permu.R
+    Deleted:    analysis/run_11_qtl_blup.R
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/07_do_diversity_report.Rmd</code>) and HTML (<code>docs/07_do_diversity_report.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/04001f623edb9d1099f5a48f3d203b0f3cf71577/analysis/07_do_diversity_report.Rmd" target="_blank">04001f6</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+<td>
+do_diversity_report
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="diversity-report-for-diversity-outbred-mice" class="section level1">
+<h1>Diversity report for diversity outbred mice</h1>
+<p>After finishing 06_final_pr_apr_69K.R, 07_do_diversity_report.R, all the output will be used plot DO Diversity Report for 12 batches of DO mice</p>
+</div>
+<div id="library" class="section level1">
+<h1>library</h1>
+<pre class="r"><code># Load packages
+library(qtl2)
+library(table1)
+library(tidyr)
+library(dplyr)
+library(data.table)
+library(foreach)
+library(doParallel)
+library(parallel)
+library(abind)
+library(gap)
+library(regress)
+library(lme4)
+library(abind)
+library(ggplot2)
+library(vcd)
+library(MASS)
+library(plotly)
+options(stringsAsFactors = FALSE)
+source(&quot;code/reconst_utils.R&quot;)</code></pre>
+<p>#Summary</p>
+<pre class="r"><code>load(&quot;data/Jackson_Lab_12_batches/gm_DO3173_qc.RData&quot;)#gm_after_qc
+
+# make dataset with a few variables to summarize
+table1 &lt;- gm_after_qc$covar %&gt;% 
+  select(Name = name, 
+         Sex  = sex, 
+         Generation = ngen) %&gt;%
+  mutate(Sex = case_when(
+    Sex == &quot;F&quot; ~ &quot;Female&quot;,
+    Sex == &quot;M&quot; ~ &quot;Male&quot;
+  ))
+
+# summarize the data 
+table1(~ Generation | Sex, data=table1)</code></pre>
+<div class="Rtable1"><table class="Rtable1">
+<thead>
+<tr>
+<th class='rowlabel firstrow lastrow'></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Female<br><span class='stratn'>(N=1661)</span></span></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Male<br><span class='stratn'>(N=1512)</span></span></th>
+<th class='firstrow lastrow'><span class='stratlabel'>Overall<br><span class='stratn'>(N=3173)</span></span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='rowlabel firstrow'><span class='varlabel'>Generation</span></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+<td class='firstrow'></td>
+</tr>
+<tr>
+<td class='rowlabel'>21</td>
+<td>73 (4.4%)</td>
+<td>75 (5.0%)</td>
+<td>148 (4.7%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>22</td>
+<td>85 (5.1%)</td>
+<td>71 (4.7%)</td>
+<td>156 (4.9%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>23</td>
+<td>99 (6.0%)</td>
+<td>94 (6.2%)</td>
+<td>193 (6.1%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>25</td>
+<td>11 (0.7%)</td>
+<td>13 (0.9%)</td>
+<td>24 (0.8%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>29</td>
+<td>169 (10.2%)</td>
+<td>161 (10.6%)</td>
+<td>330 (10.4%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>30</td>
+<td>222 (13.4%)</td>
+<td>215 (14.2%)</td>
+<td>437 (13.8%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>31</td>
+<td>210 (12.6%)</td>
+<td>207 (13.7%)</td>
+<td>417 (13.1%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>32</td>
+<td>164 (9.9%)</td>
+<td>153 (10.1%)</td>
+<td>317 (10.0%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>33</td>
+<td>227 (13.7%)</td>
+<td>223 (14.7%)</td>
+<td>450 (14.2%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>34</td>
+<td>250 (15.1%)</td>
+<td>157 (10.4%)</td>
+<td>407 (12.8%)</td>
+</tr>
+<tr>
+<td class='rowlabel'>35</td>
+<td>87 (5.2%)</td>
+<td>77 (5.1%)</td>
+<td>164 (5.2%)</td>
+</tr>
+<tr>
+<td class='rowlabel lastrow'>36</td>
+<td class='lastrow'>64 (3.9%)</td>
+<td class='lastrow'>66 (4.4%)</td>
+<td class='lastrow'>130 (4.1%)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>#Founder contributions</p>
+<pre class="r"><code>load(&quot;data/Jackson_Lab_12_batches/fp_DO3173.RData&quot;) #fp and fp_summary object
+#change order of level in gen
+fp$gen &lt;- factor(fp$gen,levels = c(21,22,23,25,29,30,31,32,33,34,35,36))
+
+#summarize per generation per chromosome
+fp_summary = fp %&gt;% group_by(chr, founder, gen) %&gt;%
+  summarize(mean = round(100*mean(prop), 2),
+            sd   = round(100*sd(prop), 2))</code></pre>
+<pre><code>`summarise()` regrouping output by &#39;chr&#39;, &#39;founder&#39; (override with `.groups` argument)</code></pre>
+<pre class="r"><code>#Stackbar plot
+#summarize per chromosome across generation
+pdf(file = &quot;data/Jackson_Lab_12_batches/stackbar_mean_prop_across_all_gen.pdf&quot;,width = 16)
+p01 &lt;- fp %&gt;% group_by(chr, founder) %&gt;%
+  summarise(grand_mean = round(100*mean(prop), 2)) %&gt;%
+  ggplot(aes(x = chr, y = grand_mean, fill = founder)) +
+    geom_bar(stat=&quot;identity&quot;,
+             width=1) +
+    geom_text(aes(label = paste0(grand_mean)), position = position_stack(vjust = 0.5)) +
+    scale_fill_manual(values = CCcolors) +
+    ylab(&quot;Mean percentage across generations&quot;) +
+    xlab(&quot;Chromosome&quot;) +
+    theme(panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.background = element_blank(),
+          axis.line = element_line(colour = &quot;black&quot;),
+          plot.title = element_text(hjust = 0.5),
+          text = element_text(size=16),
+          axis.title=element_text(size=16),
+          legend.title=element_blank())</code></pre>
+<pre><code>`summarise()` regrouping output by &#39;chr&#39; (override with `.groups` argument)</code></pre>
+<pre class="r"><code>p01
+dev.off()</code></pre>
+<pre><code>png 
+  2 </code></pre>
+<pre class="r"><code>p01</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-1.png" width="1344" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#Stackbar plot
+#summarize per chromosome across generation
+pdf(file = &quot;data/Jackson_Lab_12_batches/stackbar_mean_prop_across_all_chr.pdf&quot;,width = 16)
+p02 &lt;- fp %&gt;% group_by(gen, founder) %&gt;%
+  summarise(grand_mean = round(100*mean(prop), 2), 
+            grand_sd   = round(100*sd(prop), 2)) %&gt;%
+  ggplot(aes(x = gen, y = grand_mean, fill = founder)) +
+    geom_bar(stat=&quot;identity&quot;,
+             width=0.99) +
+    geom_text(aes(label = paste0(grand_mean, &quot; ± &quot;, grand_sd)), position = position_stack(vjust = 0.5)) +
+    scale_fill_manual(values = CCcolors) +
+    ylab(&quot;Mean percentage across all chromosomes&quot;) +
+    xlab(&quot;Generation&quot;) +
+    theme(panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.background = element_blank(),
+          axis.line = element_line(colour = &quot;black&quot;),
+          plot.title = element_text(hjust = 0.5),
+          text = element_text(size=16),
+          axis.title=element_text(size=16),
+          legend.title=element_blank())</code></pre>
+<pre><code>`summarise()` regrouping output by &#39;gen&#39; (override with `.groups` argument)</code></pre>
+<pre class="r"><code>p02
+dev.off()</code></pre>
+<pre><code>png 
+  2 </code></pre>
+<pre class="r"><code>p02</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-2.png" width="1344" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#stackbar_prop_across_gen
+for(c in c(1:19, &quot;X&quot;)){
+  #print(c)
+  p &lt;- ggplot(data = fp_summary[fp_summary$chr == c,], aes(x = gen, y = mean, fill = founder)) +
+    geom_bar(stat=&quot;identity&quot;,
+             width=1) +
+    geom_text(aes(label = paste0(mean,&quot; ± &quot;, sd)), position = position_stack(vjust = 0.5)) +
+    scale_fill_manual(values = CCcolors) +
+    labs(title = paste0(&quot;Chr &quot;, c)) +
+    ylab(&quot;Percentage&quot;) +
+    xlab(&quot;Generation&quot;) +
+    theme(panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.background = element_blank(),
+          axis.line = element_line(colour = &quot;black&quot;),
+          plot.title = element_text(hjust = 0.5),
+          text = element_text(size=16),
+          axis.title=element_text(size=16),
+          legend.title=element_blank())
+  print(p)
+}</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-3.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-4.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-5.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-6.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-7.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-8.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-9.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-10.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-11.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-12.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-13.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-14.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-15.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-16.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-17.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-18.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-19.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-20.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-21.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-22.png" width="1344" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>pdf(file = &quot;data/Jackson_Lab_12_batches/stackbar_prop_across_gen.pdf&quot;,width = 16)
+for(c in c(1:19, &quot;X&quot;)){
+  #print(c)
+  p &lt;- ggplot(data = fp_summary[fp_summary$chr == c,], aes(x = gen, y = mean, fill = founder)) +
+    geom_bar(stat=&quot;identity&quot;,
+             width=1) +
+    geom_text(aes(label = paste0(mean,&quot; ± &quot;, sd)), position = position_stack(vjust = 0.5)) +
+    scale_fill_manual(values = CCcolors) +
+    labs(title = paste0(&quot;Chr &quot;, c)) +
+    ylab(&quot;Percentage&quot;) +
+    xlab(&quot;Generation&quot;) +
+    theme(panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.background = element_blank(),
+          axis.line = element_line(colour = &quot;black&quot;),
+          plot.title = element_text(hjust = 0.5),
+          text = element_text(size=16),
+          axis.title=element_text(size=16),
+          legend.title=element_blank())
+  print(p)
+}
+dev.off()</code></pre>
+<pre><code>png 
+  2 </code></pre>
+<pre class="r"><code>#stackbar_prop_across_chr
+for(g in levels(fp_summary$gen)){
+  #print(g)
+  p &lt;- ggplot(data = fp_summary[fp_summary$gen == g,], aes(x = chr, y = mean, fill = founder)) +
+    geom_bar(stat=&quot;identity&quot;,
+             width=1) +
+    geom_text(aes(label = paste0(mean)), position = position_stack(vjust = 0.5)) +
+    scale_fill_manual(values = CCcolors) +
+    labs(title = paste0(&quot;Generation &quot;, g)) +
+    ylab(&quot;Percentage&quot;) +
+    theme(panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.background = element_blank(),
+          axis.title.x = element_blank(),
+          axis.line = element_line(colour = &quot;black&quot;),
+          plot.title = element_text(hjust = 0.5),
+          text = element_text(size=16),
+          axis.title=element_text(size=16),
+          legend.title=element_blank())
+  #print(p)
+}
+
+pdf(file = &quot;data/Jackson_Lab_12_batches/stackbar_prop_across_chr.pdf&quot;, width = 12)
+for(g in levels(fp_summary$gen)){
+  #print(g)
+  p &lt;- ggplot(data = fp_summary[fp_summary$gen == g,], aes(x = chr, y = mean, fill = founder)) +
+    geom_bar(stat=&quot;identity&quot;,
+             width=1) +
+    geom_text(aes(label = paste0(mean)), position = position_stack(vjust = 0.5)) +
+    scale_fill_manual(values = CCcolors) +
+    labs(title = paste0(&quot;Generation &quot;, g)) +
+    ylab(&quot;Percentage&quot;) +
+    theme(panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.background = element_blank(),
+          axis.title.x = element_blank(),
+          axis.line = element_line(colour = &quot;black&quot;),
+          plot.title = element_text(hjust = 0.5),
+          text = element_text(size=16),
+          axis.title=element_text(size=16),
+          legend.title=element_blank())
+  print(p)
+}
+dev.off()</code></pre>
+<pre><code>png 
+  2 </code></pre>
+<pre class="r"><code>#line plot
+#plt &lt;- htmltools::tagList()
+for(c in unique(names(gm_after_qc$geno))){
+  print(c)
+  fp_subdata &lt;- fp[fp$chr == c,]
+  pp &lt;- ggplot(data = fp_subdata,aes(pos, prop, group = gen, color = founder)) +
+    geom_line(aes(linetype=gen)) +
+    scale_linetype_manual(values=rep(&quot;solid&quot;,12)) +
+    geom_hline(yintercept=0.125, linetype=&quot;dashed&quot;, color = &quot;black&quot;, size = 0.25) +
+    scale_color_manual(values = CCcolors) +
+    facet_grid(founder~.) + 
+    labs(title = paste0(&quot;Chr &quot;, c)) + 
+    theme(legend.position=&#39;none&#39;)
+  print(pp)
+  # Print an interactive plot
+  # Add to list
+  #plt[[c]] &lt;- as_widget(ggplotly(pp, width = 1000, height = 1000))
+}</code></pre>
+<pre><code>[1] &quot;1&quot;</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-23.png" width="1344" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;2&quot;</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-24.png" width="1344" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;3&quot;</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-25.png" width="1344" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;4&quot;</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-26.png" width="1344" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;5&quot;</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-27.png" width="1344" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;6&quot;</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-28.png" width="1344" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;7&quot;</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-29.png" width="1344" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;8&quot;</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-30.png" width="1344" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;9&quot;</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-31.png" width="1344" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;10&quot;</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-32.png" width="1344" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;11&quot;</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-33.png" width="1344" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;12&quot;</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-34.png" width="1344" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;13&quot;</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-35.png" width="1344" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;14&quot;</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-36.png" width="1344" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;15&quot;</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-37.png" width="1344" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;16&quot;</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-38.png" width="1344" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;17&quot;</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-39.png" width="1344" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;18&quot;</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-40.png" width="1344" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;19&quot;</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-41.png" width="1344" style="display: block; margin: auto;" /></p>
+<pre><code>[1] &quot;X&quot;</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-42.png" width="1344" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#plt</code></pre>
+<p>#Average haplotype block size</p>
+<pre class="r"><code>load(&quot;data/Jackson_Lab_12_batches/recom_block_size.RData&quot;)
+#Create an appropriately sized vector of names
+nameVector &lt;- unlist(mapply(function(x,y){ rep(y, length(x)) }, pos_ind_gen, names(pos_ind_gen)))
+#Create the result
+recom_block &lt;- cbind.data.frame(unlist(pos_ind_gen), nameVector)
+colnames(recom_block) &lt;- c(&quot;sizeblock&quot;,
+                           &quot;ngen&quot;)
+#remove 0
+recom_block &lt;- recom_block[recom_block$sizeblock != 0,]
+recom_block$ngen &lt;- factor(recom_block$ngen, levels = as.character(c(21:36)))
+#mean
+means &lt;- aggregate(sizeblock~ngen, data= recom_block,mean)
+means$sizeblock &lt;- round(means$sizeblock, 2)
+
+pdf(file = &quot;data/Jackson_Lab_12_batches/boxplot_mean_recomb_block_size.pdf&quot;, height = 8, width = 10)
+p1 &lt;- ggplot(recom_block, aes(x=ngen, y=sizeblock, group = ngen, fill = ngen)) + 
+  geom_boxplot(show.legend = F , outlier.size = 0.5, notchwidth = 3) +
+  scale_x_discrete(drop=FALSE, breaks = c(21:23,NA,25,rep(NA,3),29:36)) +
+  scale_fill_brewer(palette=&quot;RdBu&quot;) +
+  geom_text(data = means, alpha = 0.85, aes(label = sizeblock, y = sizeblock + 0.15 )) + 
+  ylab(&quot;Recombination Block Size (Mb)&quot;) +
+  xlab(&quot;Generation&quot;) +
+  labs(fill = &quot;&quot;) +
+  #ylim(c(0, 60)) +
+  scale_y_continuous(breaks=c(0,5,10, 20, 40, 60), limits=c(0, 60)) +
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(), 
+        axis.line = element_line(colour = &quot;black&quot;),
+        text = element_text(size=16), 
+        axis.title=element_text(size=16)) +
+  guides(shape = guide_legend(override.aes = list(size = 12)))
+p1</code></pre>
+<pre><code>Warning in RColorBrewer::brewer.pal(n, pal): n too large, allowed maximum for palette RdBu is 11
+Returning the palette you asked for with that many colors</code></pre>
+<pre class="r"><code>dev.off()</code></pre>
+<pre><code>png 
+  2 </code></pre>
+<pre class="r"><code>p1</code></pre>
+<pre><code>Warning in RColorBrewer::brewer.pal(n, pal): n too large, allowed maximum for palette RdBu is 11
+Returning the palette you asked for with that many colors</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Average%20haplotype%20block%20size-1.png" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#block size distribution
+for(g in unique(gm_after_qc$covar$ngen)){
+  #plot for recom block size
+  #png(paste0(&quot;data/Jackson_Lab_12_batches/DO_recom_block_size_G&quot;, g, &quot;.png&quot;))
+  x &lt;- pos_ind_gen[[g]][pos_ind_gen[[g]] != 0]
+  # estimate the parameters
+  fit1 &lt;- fitdistr(x, &quot;exponential&quot;) 
+  
+  # goodness of fit test
+  ks.test(x, &quot;pexp&quot;, fit1$estimate) # p-value &gt; 0.05 -&gt; distribution not refused
+  
+  # plot a graph
+  hist(x, 
+       freq = FALSE, 
+       breaks = 200, 
+       xlim = c(0, 5+quantile(x, 1)), 
+       #ylim = c(0,0.3),
+       xlab = &quot;Recombination Block Size (Mb)&quot;, 
+       main = paste0(&quot;Gen &quot;, g))
+  curve(dexp(x, rate = fit1$estimate), 
+        from = 0, 
+        to = 5+quantile(x, 1), 
+        col = &quot;red&quot;, 
+        add = TRUE)
+  #dev.off()
+}</code></pre>
+<pre><code>Warning in ks.test(x, &quot;pexp&quot;, fit1$estimate): ties should not be present for the
+Kolmogorov-Smirnov test</code></pre>
+<pre><code>Warning in ks.test(x, &quot;pexp&quot;, fit1$estimate): ties should not be present for the
+Kolmogorov-Smirnov test</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Average%20haplotype%20block%20size-2.png" width="960" style="display: block; margin: auto;" /></p>
+<pre><code>Warning in ks.test(x, &quot;pexp&quot;, fit1$estimate): ties should not be present for the
+Kolmogorov-Smirnov test</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Average%20haplotype%20block%20size-3.png" width="960" style="display: block; margin: auto;" /></p>
+<pre><code>Warning in ks.test(x, &quot;pexp&quot;, fit1$estimate): ties should not be present for the
+Kolmogorov-Smirnov test</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Average%20haplotype%20block%20size-4.png" width="960" style="display: block; margin: auto;" /></p>
+<pre><code>Warning in ks.test(x, &quot;pexp&quot;, fit1$estimate): ties should not be present for the
+Kolmogorov-Smirnov test</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Average%20haplotype%20block%20size-5.png" width="960" style="display: block; margin: auto;" /></p>
+<pre><code>Warning in ks.test(x, &quot;pexp&quot;, fit1$estimate): ties should not be present for the
+Kolmogorov-Smirnov test</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Average%20haplotype%20block%20size-6.png" width="960" style="display: block; margin: auto;" /></p>
+<pre><code>Warning in ks.test(x, &quot;pexp&quot;, fit1$estimate): ties should not be present for the
+Kolmogorov-Smirnov test</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Average%20haplotype%20block%20size-7.png" width="960" style="display: block; margin: auto;" /></p>
+<pre><code>Warning in ks.test(x, &quot;pexp&quot;, fit1$estimate): ties should not be present for the
+Kolmogorov-Smirnov test</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Average%20haplotype%20block%20size-8.png" width="960" style="display: block; margin: auto;" /></p>
+<pre><code>Warning in ks.test(x, &quot;pexp&quot;, fit1$estimate): ties should not be present for the
+Kolmogorov-Smirnov test</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Average%20haplotype%20block%20size-9.png" width="960" style="display: block; margin: auto;" /></p>
+<pre><code>Warning in ks.test(x, &quot;pexp&quot;, fit1$estimate): ties should not be present for the
+Kolmogorov-Smirnov test</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Average%20haplotype%20block%20size-10.png" width="960" style="display: block; margin: auto;" /></p>
+<pre><code>Warning in ks.test(x, &quot;pexp&quot;, fit1$estimate): ties should not be present for the
+Kolmogorov-Smirnov test</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Average%20haplotype%20block%20size-11.png" width="960" style="display: block; margin: auto;" /></p>
+<pre><code>Warning in ks.test(x, &quot;pexp&quot;, fit1$estimate): ties should not be present for the
+Kolmogorov-Smirnov test</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Average%20haplotype%20block%20size-12.png" width="960" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Average%20haplotype%20block%20size-13.png" width="960" style="display: block; margin: auto;" /></p>
+<p>#Average heterozygosity value</p>
+<pre class="r"><code>load(&quot;data/Jackson_Lab_12_batches/dat_het_ind_pr.RData&quot;)
+dat_het_ind_pr$ngen &lt;- factor(dat_het_ind_pr$ngen, levels = as.character(c(21:36)))
+
+pdf(paste(&quot;data/Jackson_Lab_12_batches/DO_Heterozygosity_value_violin_genoprops.pdf&quot;), width = 10, height =8)
+p2 &lt;- ggplot(dat_het_ind_pr, aes(x=ngen, y=het, group=ngen, fill=ngen)) +
+  geom_violin(show.legend = FALSE) +
+  geom_boxplot(show.legend = FALSE, width=0.35, color=&quot;black&quot;, alpha=0.6) +
+  scale_x_discrete(drop=FALSE, breaks = c(21:23,NA,25,rep(NA,3),29:36)) +
+  scale_fill_brewer(palette=&quot;RdBu&quot;) +
+  ylab(&quot;Heterozygosity from genotype props&quot;) +
+  xlab(&quot;Generation&quot;) +
+  ylim(c(0.65, 1)) +
+  geom_hline(yintercept=0.875, linetype=&quot;dashed&quot;, color = &quot;red&quot;) +
+  #scale_y_continuous(breaks=c(0.55, 0.65, 0.75, 0.85, 0.95, 1), limits=c(0.55, 1)) +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = &quot;black&quot;),
+        text = element_text(size=16),
+        axis.title=element_text(size=16),
+        legend.title=element_blank())
+p2</code></pre>
+<pre><code>Warning in RColorBrewer::brewer.pal(n, pal): n too large, allowed maximum for palette RdBu is 11
+Returning the palette you asked for with that many colors</code></pre>
+<pre class="r"><code>dev.off()</code></pre>
+<pre><code>png 
+  2 </code></pre>
+<pre class="r"><code>p2</code></pre>
+<pre><code>Warning in RColorBrewer::brewer.pal(n, pal): n too large, allowed maximum for palette RdBu is 11
+Returning the palette you asked for with that many colors</code></pre>
+<p><img src="figure/07_do_diversity_report.Rmd/Average%20heterozygosity%20value-1.png" width="960" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.0.0 (2020-04-24)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 18.04.4 LTS
+
+Matrix products: default
+BLAS/LAPACK: /usr/lib/x86_64-linux-gnu/libopenblasp-r0.2.20.so
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C             
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] grid      parallel  stats     graphics  grDevices utils     datasets 
+[8] methods   base     
+
+other attached packages:
+ [1] plotly_4.9.2.1    MASS_7.3-51.6     vcd_1.4-8         ggplot2_3.3.2    
+ [5] lme4_1.1-23       Matrix_1.2-18     regress_1.3-21    gap_1.2.2        
+ [9] abind_1.4-5       doParallel_1.0.15 iterators_1.0.12  foreach_1.5.0    
+[13] data.table_1.12.8 dplyr_1.0.0       tidyr_1.1.0       table1_1.2       
+[17] qtl2_0.22-8       workflowr_1.6.2  
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.4.6       lattice_0.20-41    zoo_1.8-8          rprojroot_1.3-2   
+ [5] digest_0.6.25      lmtest_0.9-38      R6_2.4.1           backports_1.1.6   
+ [9] RSQLite_2.2.0      evaluate_0.14      httr_1.4.1         pillar_1.4.4      
+[13] rlang_0.4.6        lazyeval_0.2.2     minqa_1.2.4        whisker_0.4       
+[17] nloptr_1.2.2.2     blob_1.2.1         rmarkdown_2.5      labeling_0.4.2    
+[21] splines_4.0.0      statmod_1.4.34     stringr_1.4.0      htmlwidgets_1.5.1 
+[25] bit_1.1-15.2       munsell_0.5.0      compiler_4.0.0     httpuv_1.5.4      
+[29] xfun_0.13          pkgconfig_2.0.3    htmltools_0.4.0    tidyselect_1.1.0  
+[33] tibble_3.0.1       codetools_0.2-16   viridisLite_0.3.0  crayon_1.3.4      
+[37] withr_2.2.0        later_1.0.0        jsonlite_1.6.1     nlme_3.1-147      
+[41] gtable_0.3.0       lifecycle_0.2.0    DBI_1.1.0          git2r_0.27.1      
+[45] magrittr_1.5       scales_1.1.1       stringi_1.4.6      farver_2.0.3      
+[49] fs_1.4.1           promises_1.1.0     ellipsis_0.3.0     generics_0.0.2    
+[53] vctrs_0.3.1        boot_1.3-25        Formula_1.2-4      RColorBrewer_1.1-2
+[57] tools_4.0.0        bit64_0.9-7        glue_1.4.0         purrr_0.3.4       
+[61] yaml_2.2.1         colorspace_1.4-1   memoise_1.1.0      knitr_1.28        </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
