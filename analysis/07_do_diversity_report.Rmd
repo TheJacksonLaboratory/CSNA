@@ -32,6 +32,7 @@ library(ggplot2)
 library(vcd)
 library(MASS)
 library(plotly)
+library(colorspace)
 options(stringsAsFactors = FALSE)
 source("code/reconst_utils.R")
 ```
@@ -245,7 +246,7 @@ pdf(file = "data/Jackson_Lab_12_batches/boxplot_mean_recomb_block_size.pdf", hei
 p1 <- ggplot(recom_block, aes(x=ngen, y=sizeblock, group = ngen, fill = ngen)) + 
   geom_boxplot(show.legend = F , outlier.size = 0.5, notchwidth = 3) +
   scale_x_discrete(drop=FALSE, breaks = c(21:23,NA,25,rep(NA,3),29:36)) +
-  scale_fill_brewer(palette="RdBu") +
+  scale_fill_discrete_qualitative(palette = "warm")+
   geom_text(data = means, alpha = 0.85, aes(label = sizeblock, y = sizeblock + 0.15 )) + 
   ylab("Recombination Block Size (Mb)") +
   xlab("Generation") +
@@ -301,7 +302,7 @@ p2 <- ggplot(dat_het_ind_pr, aes(x=ngen, y=het, group=ngen, fill=ngen)) +
   geom_violin(show.legend = FALSE) +
   geom_boxplot(show.legend = FALSE, width=0.35, color="black", alpha=0.6) +
   scale_x_discrete(drop=FALSE, breaks = c(21:23,NA,25,rep(NA,3),29:36)) +
-  scale_fill_brewer(palette="RdBu") +
+  scale_fill_discrete_qualitative(palette = "warm")+
   ylab("Heterozygosity from genotype props") +
   xlab("Generation") +
   ylim(c(0.65, 1)) +
