@@ -446,16 +446,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtree04001f623edb9d1099f5a48f3d203b0f3cf71577targetblank04001f6a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/04001f623edb9d1099f5a48f3d203b0f3cf71577" target="_blank">04001f6</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtree2716c96e8ddfa29c52628f4fe638daaa9b464258targetblank2716c96a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/2716c96e8ddfa29c52628f4fe638daaa9b464258" target="_blank">2716c96</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtree04001f623edb9d1099f5a48f3d203b0f3cf71577targetblank04001f6a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtree2716c96e8ddfa29c52628f4fe638daaa9b464258targetblank2716c96a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/04001f623edb9d1099f5a48f3d203b0f3cf71577" target="_blank">04001f6</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/2716c96e8ddfa29c52628f4fe638daaa9b464258" target="_blank">2716c96</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -700,6 +700,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/2716c96e8ddfa29c52628f4fe638daaa9b464258/analysis/07_do_diversity_report.Rmd" target="_blank">2716c96</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+<td>
+do_diversity_report
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/07_do_diversity_report.html" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/TheJacksonLaboratory/CSNA/blob/04001f623edb9d1099f5a48f3d203b0f3cf71577/analysis/07_do_diversity_report.Rmd" target="_blank">04001f6</a>
 </td>
 <td>
@@ -743,6 +777,7 @@ library(ggplot2)
 library(vcd)
 library(MASS)
 library(plotly)
+library(colorspace)
 options(stringsAsFactors = FALSE)
 source(&quot;code/reconst_utils.R&quot;)</code></pre>
 <p>#Summary</p>
@@ -888,6 +923,43 @@ dev.off()</code></pre>
   2 </code></pre>
 <pre class="r"><code>p01</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-1.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-1">
+Past versions of “Founder contributions-1.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-1.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#Stackbar plot
 #summarize per chromosome across generation
 pdf(file = &quot;data/Jackson_Lab_12_batches/stackbar_mean_prop_across_all_chr.pdf&quot;,width = 16)
@@ -916,6 +988,43 @@ dev.off()</code></pre>
   2 </code></pre>
 <pre class="r"><code>p02</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-2.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-2">
+Past versions of “Founder contributions-2.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-2.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#stackbar_prop_across_gen
 for(c in c(1:19, &quot;X&quot;)){
   #print(c)
@@ -937,7 +1046,766 @@ for(c in c(1:19, &quot;X&quot;)){
           legend.title=element_blank())
   print(p)
 }</code></pre>
-<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-3.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-4.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-5.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-6.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-7.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-8.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-9.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-10.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-11.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-12.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-13.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-14.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-15.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-16.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-17.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-18.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-19.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-20.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-21.png" width="1344" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-22.png" width="1344" style="display: block; margin: auto;" /></p>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-3.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-3">
+Past versions of “Founder contributions-3.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-3.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-4.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-4">
+Past versions of “Founder contributions-4.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-4.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-5.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-5">
+Past versions of “Founder contributions-5.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-5.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-6.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-6">
+Past versions of “Founder contributions-6.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-6.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-7.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-7">
+Past versions of “Founder contributions-7.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-7.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-8.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-8">
+Past versions of “Founder contributions-8.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-8" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-8.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-9.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-9">
+Past versions of “Founder contributions-9.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-9" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-9.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-10.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-10">
+Past versions of “Founder contributions-10.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-10" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-10.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-11.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-11">
+Past versions of “Founder contributions-11.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-11" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-11.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-12.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-12">
+Past versions of “Founder contributions-12.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-12" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-12.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-13.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-13">
+Past versions of “Founder contributions-13.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-13" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-13.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-14.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-14">
+Past versions of “Founder contributions-14.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-14" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-14.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-15.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-15">
+Past versions of “Founder contributions-15.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-15" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-15.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-16.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-16">
+Past versions of “Founder contributions-16.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-16" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-16.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-17.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-17">
+Past versions of “Founder contributions-17.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-17" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-17.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-18.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-18">
+Past versions of “Founder contributions-18.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-18" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-18.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-19.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-19">
+Past versions of “Founder contributions-19.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-19" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-19.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-20.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-20">
+Past versions of “Founder contributions-20.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-20" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-20.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-21.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-21">
+Past versions of “Founder contributions-21.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-21" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-21.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-22.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-22">
+Past versions of “Founder contributions-22.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-22" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-22.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>pdf(file = &quot;data/Jackson_Lab_12_batches/stackbar_prop_across_gen.pdf&quot;,width = 16)
 for(c in c(1:19, &quot;X&quot;)){
   #print(c)
@@ -1028,44 +1896,784 @@ for(c in unique(names(gm_after_qc$geno))){
 }</code></pre>
 <pre><code>[1] &quot;1&quot;</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-23.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-23">
+Past versions of “Founder contributions-23.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-23" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-23.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>[1] &quot;2&quot;</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-24.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-24">
+Past versions of “Founder contributions-24.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-24" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-24.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>[1] &quot;3&quot;</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-25.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-25">
+Past versions of “Founder contributions-25.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-25" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-25.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>[1] &quot;4&quot;</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-26.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-26">
+Past versions of “Founder contributions-26.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-26" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-26.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>[1] &quot;5&quot;</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-27.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-27">
+Past versions of “Founder contributions-27.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-27" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-27.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>[1] &quot;6&quot;</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-28.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-28">
+Past versions of “Founder contributions-28.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-28" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-28.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>[1] &quot;7&quot;</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-29.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-29">
+Past versions of “Founder contributions-29.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-29" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-29.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>[1] &quot;8&quot;</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-30.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-30">
+Past versions of “Founder contributions-30.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-30" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-30.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>[1] &quot;9&quot;</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-31.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-31">
+Past versions of “Founder contributions-31.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-31" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-31.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>[1] &quot;10&quot;</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-32.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-32">
+Past versions of “Founder contributions-32.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-32" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-32.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>[1] &quot;11&quot;</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-33.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-33">
+Past versions of “Founder contributions-33.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-33" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-33.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>[1] &quot;12&quot;</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-34.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-34">
+Past versions of “Founder contributions-34.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-34" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-34.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>[1] &quot;13&quot;</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-35.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-35">
+Past versions of “Founder contributions-35.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-35" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-35.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>[1] &quot;14&quot;</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-36.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-36">
+Past versions of “Founder contributions-36.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-36" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-36.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>[1] &quot;15&quot;</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-37.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-37">
+Past versions of “Founder contributions-37.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-37" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-37.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>[1] &quot;16&quot;</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-38.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-38">
+Past versions of “Founder contributions-38.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-38" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-38.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>[1] &quot;17&quot;</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-39.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-39">
+Past versions of “Founder contributions-39.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-39" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-39.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>[1] &quot;18&quot;</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-40.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-40">
+Past versions of “Founder contributions-40.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-40" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-40.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>[1] &quot;19&quot;</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-41.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-41">
+Past versions of “Founder contributions-41.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-41" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-41.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>[1] &quot;X&quot;</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Founder%20contributions-42.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Founder-contributions-42">
+Past versions of “Founder contributions-42.png”
+</button>
+</p>
+<div id="fig-no-spaces-Founder-contributions-42" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Founder contributions-42.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#plt</code></pre>
 <p>#Average haplotype block size</p>
 <pre class="r"><code>load(&quot;data/Jackson_Lab_12_batches/recom_block_size.RData&quot;)
@@ -1086,7 +2694,7 @@ pdf(file = &quot;data/Jackson_Lab_12_batches/boxplot_mean_recomb_block_size.pdf&
 p1 &lt;- ggplot(recom_block, aes(x=ngen, y=sizeblock, group = ngen, fill = ngen)) + 
   geom_boxplot(show.legend = F , outlier.size = 0.5, notchwidth = 3) +
   scale_x_discrete(drop=FALSE, breaks = c(21:23,NA,25,rep(NA,3),29:36)) +
-  scale_fill_brewer(palette=&quot;RdBu&quot;) +
+  scale_fill_discrete_qualitative(palette = &quot;warm&quot;)+
   geom_text(data = means, alpha = 0.85, aes(label = sizeblock, y = sizeblock + 0.15 )) + 
   ylab(&quot;Recombination Block Size (Mb)&quot;) +
   xlab(&quot;Generation&quot;) +
@@ -1100,16 +2708,49 @@ p1 &lt;- ggplot(recom_block, aes(x=ngen, y=sizeblock, group = ngen, fill = ngen)
         text = element_text(size=16), 
         axis.title=element_text(size=16)) +
   guides(shape = guide_legend(override.aes = list(size = 12)))
-p1</code></pre>
-<pre><code>Warning in RColorBrewer::brewer.pal(n, pal): n too large, allowed maximum for palette RdBu is 11
-Returning the palette you asked for with that many colors</code></pre>
-<pre class="r"><code>dev.off()</code></pre>
+p1
+dev.off()</code></pre>
 <pre><code>png 
   2 </code></pre>
 <pre class="r"><code>p1</code></pre>
-<pre><code>Warning in RColorBrewer::brewer.pal(n, pal): n too large, allowed maximum for palette RdBu is 11
-Returning the palette you asked for with that many colors</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Average%20haplotype%20block%20size-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Average-haplotype-block-size-1">
+Past versions of “Average haplotype block size-1.png”
+</button>
+</p>
+<div id="fig-no-spaces-Average-haplotype-block-size-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Average haplotype block size-1.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#block size distribution
 for(g in unique(gm_after_qc$covar$ngen)){
   #plot for recom block size
@@ -1137,40 +2778,486 @@ for(g in unique(gm_after_qc$covar$ngen)){
   #dev.off()
 }</code></pre>
 <pre><code>Warning in ks.test(x, &quot;pexp&quot;, fit1$estimate): ties should not be present for the
-Kolmogorov-Smirnov test</code></pre>
-<pre><code>Warning in ks.test(x, &quot;pexp&quot;, fit1$estimate): ties should not be present for the
+Kolmogorov-Smirnov test
+
+Warning in ks.test(x, &quot;pexp&quot;, fit1$estimate): ties should not be present for the
 Kolmogorov-Smirnov test</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Average%20haplotype%20block%20size-2.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Average-haplotype-block-size-2">
+Past versions of “Average haplotype block size-2.png”
+</button>
+</p>
+<div id="fig-no-spaces-Average-haplotype-block-size-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Average haplotype block size-2.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>Warning in ks.test(x, &quot;pexp&quot;, fit1$estimate): ties should not be present for the
 Kolmogorov-Smirnov test</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Average%20haplotype%20block%20size-3.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Average-haplotype-block-size-3">
+Past versions of “Average haplotype block size-3.png”
+</button>
+</p>
+<div id="fig-no-spaces-Average-haplotype-block-size-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Average haplotype block size-3.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>Warning in ks.test(x, &quot;pexp&quot;, fit1$estimate): ties should not be present for the
 Kolmogorov-Smirnov test</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Average%20haplotype%20block%20size-4.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Average-haplotype-block-size-4">
+Past versions of “Average haplotype block size-4.png”
+</button>
+</p>
+<div id="fig-no-spaces-Average-haplotype-block-size-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Average haplotype block size-4.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>Warning in ks.test(x, &quot;pexp&quot;, fit1$estimate): ties should not be present for the
 Kolmogorov-Smirnov test</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Average%20haplotype%20block%20size-5.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Average-haplotype-block-size-5">
+Past versions of “Average haplotype block size-5.png”
+</button>
+</p>
+<div id="fig-no-spaces-Average-haplotype-block-size-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Average haplotype block size-5.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>Warning in ks.test(x, &quot;pexp&quot;, fit1$estimate): ties should not be present for the
 Kolmogorov-Smirnov test</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Average%20haplotype%20block%20size-6.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Average-haplotype-block-size-6">
+Past versions of “Average haplotype block size-6.png”
+</button>
+</p>
+<div id="fig-no-spaces-Average-haplotype-block-size-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Average haplotype block size-6.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>Warning in ks.test(x, &quot;pexp&quot;, fit1$estimate): ties should not be present for the
 Kolmogorov-Smirnov test</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Average%20haplotype%20block%20size-7.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Average-haplotype-block-size-7">
+Past versions of “Average haplotype block size-7.png”
+</button>
+</p>
+<div id="fig-no-spaces-Average-haplotype-block-size-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Average haplotype block size-7.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>Warning in ks.test(x, &quot;pexp&quot;, fit1$estimate): ties should not be present for the
 Kolmogorov-Smirnov test</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Average%20haplotype%20block%20size-8.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Average-haplotype-block-size-8">
+Past versions of “Average haplotype block size-8.png”
+</button>
+</p>
+<div id="fig-no-spaces-Average-haplotype-block-size-8" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Average haplotype block size-8.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>Warning in ks.test(x, &quot;pexp&quot;, fit1$estimate): ties should not be present for the
 Kolmogorov-Smirnov test</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Average%20haplotype%20block%20size-9.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Average-haplotype-block-size-9">
+Past versions of “Average haplotype block size-9.png”
+</button>
+</p>
+<div id="fig-no-spaces-Average-haplotype-block-size-9" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Average haplotype block size-9.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>Warning in ks.test(x, &quot;pexp&quot;, fit1$estimate): ties should not be present for the
 Kolmogorov-Smirnov test</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Average%20haplotype%20block%20size-10.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Average-haplotype-block-size-10">
+Past versions of “Average haplotype block size-10.png”
+</button>
+</p>
+<div id="fig-no-spaces-Average-haplotype-block-size-10" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Average haplotype block size-10.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>Warning in ks.test(x, &quot;pexp&quot;, fit1$estimate): ties should not be present for the
 Kolmogorov-Smirnov test</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Average%20haplotype%20block%20size-11.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Average-haplotype-block-size-11">
+Past versions of “Average haplotype block size-11.png”
+</button>
+</p>
+<div id="fig-no-spaces-Average-haplotype-block-size-11" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Average haplotype block size-11.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre><code>Warning in ks.test(x, &quot;pexp&quot;, fit1$estimate): ties should not be present for the
 Kolmogorov-Smirnov test</code></pre>
-<p><img src="figure/07_do_diversity_report.Rmd/Average%20haplotype%20block%20size-12.png" width="960" style="display: block; margin: auto;" /><img src="figure/07_do_diversity_report.Rmd/Average%20haplotype%20block%20size-13.png" width="960" style="display: block; margin: auto;" /></p>
+<p><img src="figure/07_do_diversity_report.Rmd/Average%20haplotype%20block%20size-12.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Average-haplotype-block-size-12">
+Past versions of “Average haplotype block size-12.png”
+</button>
+</p>
+<div id="fig-no-spaces-Average-haplotype-block-size-12" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Average haplotype block size-12.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/07_do_diversity_report.Rmd/Average%20haplotype%20block%20size-13.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Average-haplotype-block-size-13">
+Past versions of “Average haplotype block size-13.png”
+</button>
+</p>
+<div id="fig-no-spaces-Average-haplotype-block-size-13" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Average haplotype block size-13.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>#Average heterozygosity value</p>
 <pre class="r"><code>load(&quot;data/Jackson_Lab_12_batches/dat_het_ind_pr.RData&quot;)
 dat_het_ind_pr$ngen &lt;- factor(dat_het_ind_pr$ngen, levels = as.character(c(21:36)))
@@ -1180,7 +3267,7 @@ p2 &lt;- ggplot(dat_het_ind_pr, aes(x=ngen, y=het, group=ngen, fill=ngen)) +
   geom_violin(show.legend = FALSE) +
   geom_boxplot(show.legend = FALSE, width=0.35, color=&quot;black&quot;, alpha=0.6) +
   scale_x_discrete(drop=FALSE, breaks = c(21:23,NA,25,rep(NA,3),29:36)) +
-  scale_fill_brewer(palette=&quot;RdBu&quot;) +
+  scale_fill_discrete_qualitative(palette = &quot;warm&quot;)+
   ylab(&quot;Heterozygosity from genotype props&quot;) +
   xlab(&quot;Generation&quot;) +
   ylim(c(0.65, 1)) +
@@ -1193,16 +3280,49 @@ p2 &lt;- ggplot(dat_het_ind_pr, aes(x=ngen, y=het, group=ngen, fill=ngen)) +
         text = element_text(size=16),
         axis.title=element_text(size=16),
         legend.title=element_blank())
-p2</code></pre>
-<pre><code>Warning in RColorBrewer::brewer.pal(n, pal): n too large, allowed maximum for palette RdBu is 11
-Returning the palette you asked for with that many colors</code></pre>
-<pre class="r"><code>dev.off()</code></pre>
+p2
+dev.off()</code></pre>
 <pre><code>png 
   2 </code></pre>
 <pre class="r"><code>p2</code></pre>
-<pre><code>Warning in RColorBrewer::brewer.pal(n, pal): n too large, allowed maximum for palette RdBu is 11
-Returning the palette you asked for with that many colors</code></pre>
 <p><img src="figure/07_do_diversity_report.Rmd/Average%20heterozygosity%20value-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Average-heterozygosity-value-1">
+Past versions of “Average heterozygosity value-1.png”
+</button>
+</p>
+<div id="fig-no-spaces-Average-heterozygosity-value-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8040a4b52304683a5f5a4c6cfe5a44275d7f7cca/docs/figure/07_do_diversity_report.Rmd/Average heterozygosity value-1.png" target="_blank">8040a4b</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1231,29 +3351,29 @@ attached base packages:
 [8] methods   base     
 
 other attached packages:
- [1] plotly_4.9.2.1    MASS_7.3-51.6     vcd_1.4-8         ggplot2_3.3.2    
- [5] lme4_1.1-23       Matrix_1.2-18     regress_1.3-21    gap_1.2.2        
- [9] abind_1.4-5       doParallel_1.0.15 iterators_1.0.12  foreach_1.5.0    
-[13] data.table_1.12.8 dplyr_1.0.0       tidyr_1.1.0       table1_1.2       
-[17] qtl2_0.22-8       workflowr_1.6.2  
+ [1] colorspace_1.4-1  plotly_4.9.2.1    MASS_7.3-51.6     vcd_1.4-8        
+ [5] ggplot2_3.3.2     lme4_1.1-23       Matrix_1.2-18     regress_1.3-21   
+ [9] gap_1.2.2         abind_1.4-5       doParallel_1.0.15 iterators_1.0.12 
+[13] foreach_1.5.0     data.table_1.12.8 dplyr_1.0.0       tidyr_1.1.0      
+[17] table1_1.2        qtl2_0.22-8       workflowr_1.6.2  
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.4.6       lattice_0.20-41    zoo_1.8-8          rprojroot_1.3-2   
- [5] digest_0.6.25      lmtest_0.9-38      R6_2.4.1           backports_1.1.6   
- [9] RSQLite_2.2.0      evaluate_0.14      httr_1.4.1         pillar_1.4.4      
-[13] rlang_0.4.6        lazyeval_0.2.2     minqa_1.2.4        whisker_0.4       
-[17] nloptr_1.2.2.2     blob_1.2.1         rmarkdown_2.5      labeling_0.4.2    
-[21] splines_4.0.0      statmod_1.4.34     stringr_1.4.0      htmlwidgets_1.5.1 
-[25] bit_1.1-15.2       munsell_0.5.0      compiler_4.0.0     httpuv_1.5.4      
-[29] xfun_0.13          pkgconfig_2.0.3    htmltools_0.4.0    tidyselect_1.1.0  
-[33] tibble_3.0.1       codetools_0.2-16   viridisLite_0.3.0  crayon_1.3.4      
-[37] withr_2.2.0        later_1.0.0        jsonlite_1.6.1     nlme_3.1-147      
-[41] gtable_0.3.0       lifecycle_0.2.0    DBI_1.1.0          git2r_0.27.1      
-[45] magrittr_1.5       scales_1.1.1       stringi_1.4.6      farver_2.0.3      
-[49] fs_1.4.1           promises_1.1.0     ellipsis_0.3.0     generics_0.0.2    
-[53] vctrs_0.3.1        boot_1.3-25        Formula_1.2-4      RColorBrewer_1.1-2
-[57] tools_4.0.0        bit64_0.9-7        glue_1.4.0         purrr_0.3.4       
-[61] yaml_2.2.1         colorspace_1.4-1   memoise_1.1.0      knitr_1.28        </code></pre>
+ [1] Rcpp_1.0.4.6      lattice_0.20-41   zoo_1.8-8         rprojroot_1.3-2  
+ [5] digest_0.6.25     lmtest_0.9-38     R6_2.4.1          backports_1.1.6  
+ [9] RSQLite_2.2.0     evaluate_0.14     httr_1.4.1        pillar_1.4.4     
+[13] rlang_0.4.6       lazyeval_0.2.2    minqa_1.2.4       whisker_0.4      
+[17] nloptr_1.2.2.2    blob_1.2.1        rmarkdown_2.5     labeling_0.4.2   
+[21] splines_4.0.0     statmod_1.4.34    stringr_1.4.0     htmlwidgets_1.5.1
+[25] bit_1.1-15.2      munsell_0.5.0     compiler_4.0.0    httpuv_1.5.4     
+[29] xfun_0.13         pkgconfig_2.0.3   htmltools_0.4.0   tidyselect_1.1.0 
+[33] tibble_3.0.1      codetools_0.2-16  viridisLite_0.3.0 crayon_1.3.4     
+[37] withr_2.2.0       later_1.0.0       jsonlite_1.6.1    nlme_3.1-147     
+[41] gtable_0.3.0      lifecycle_0.2.0   DBI_1.1.0         git2r_0.27.1     
+[45] magrittr_1.5      scales_1.1.1      stringi_1.4.6     farver_2.0.3     
+[49] fs_1.4.1          promises_1.1.0    ellipsis_0.3.0    generics_0.0.2   
+[53] vctrs_0.3.1       boot_1.3-25       Formula_1.2-4     tools_4.0.0      
+[57] bit64_0.9-7       glue_1.4.0        purrr_0.3.4       yaml_2.2.1       
+[61] memoise_1.1.0     knitr_1.28       </code></pre>
 </div>
 </div>
 
