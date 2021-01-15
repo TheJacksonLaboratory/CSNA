@@ -1,0 +1,2300 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Hao He" />
+
+
+<title>Process_all_phenotypes_in_founder_CC_DO</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">CSNA_workflow</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+<li>
+  <a href="https://github.com/TheJacksonLaboratory/CSNA">GitHub</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/TheJacksonLaboratory/CSNA">
+    <span class="fas fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Process_all_phenotypes_in_founder_CC_DO</h1>
+<h4 class="author">Hao He</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2021-01-15
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
+</p>
+<p>
+<strong>Knit directory:</strong> <code>csna_workflow/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div class="panel-group" id="workflowr-checks">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20190922code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20190922)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20190922code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20190922)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongabsolute"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>File paths:</strong> absolute </a>
+</p>
+</div>
+<div id="strongFilepathsstrongabsolute" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Using absolute paths to the files within your workflowr project makes it difficult for you and others to run your code on a different machine. Change the absolute path(s) below to the suggested relative path(s) to make your code more reproducible.
+</p>
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th style="text-align:left;">
+absolute
+</th>
+<th style="text-align:left;">
+relative
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+/projects/csna/csna_workflow
+</td>
+<td style="text-align:left;">
+.
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtreea684c8adada658929cefc5ba27cf1d2d7c044a66targetblanka684c8aa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/a684c8adada658929cefc5ba27cf1d2d7c044a66" target="_blank">a684c8a</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtreea684c8adada658929cefc5ba27cf1d2d7c044a66targetblanka684c8aa" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/a684c8adada658929cefc5ba27cf1d2d7c044a66" target="_blank">a684c8a</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  analysis/.nfs0000000135a08b9b00002448
+    Untracked:  analysis/.nfs0000000135a08ba50000244a
+    Untracked:  analysis/index0.Rmd
+    Untracked:  analysis/scripts/
+    Untracked:  analysis/workflow_proc.R
+    Untracked:  analysis/workflow_proc.sh
+    Untracked:  analysis/workflow_proc.stderr
+    Untracked:  analysis/workflow_proc.stdout
+    Untracked:  archived/
+    Untracked:  code/FinalReport2Plink.sh
+    Untracked:  code/csna_qtlmapping_workflow.R
+    Untracked:  code/reconst_utils.R
+    Untracked:  data/69k_grid_pgmap.RData
+    Untracked:  data/FinalReport/
+    Untracked:  data/GCTA/
+    Untracked:  data/GM/
+    Untracked:  data/Jackson_Lab_11_batches/
+    Untracked:  data/Jackson_Lab_12_batches/
+    Untracked:  data/Jackson_Lab_Bubier_MURGIGV01/
+    Untracked:  data/Jackson_Lab_Gagnon/
+    Untracked:  data/RTG/
+    Untracked:  data/cc_do_founders_key.rds
+    Untracked:  data/cc_variants.sqlite
+    Untracked:  data/csna_image.sif
+    Untracked:  data/marker_grid_0.02cM_plus.txt
+    Untracked:  data/mouse_genes_mgi.sqlite
+    Untracked:  data/pheno/
+    Untracked:  output/archived_output/
+    Untracked:  output/pdf/
+    Untracked:  output/qtlmapping/
+
+Unstaged changes:
+    Deleted:    analysis/01_geneseek2qtl2.R
+    Deleted:    analysis/02_geneseek2intensity.R
+    Deleted:    analysis/03_firstgm2genoprobs.R
+    Deleted:    analysis/04_diagnosis_qc_gigamuga_11_batches.Rmd
+    Deleted:    analysis/04_diagnosis_qc_gigamuga_nine_batches.R
+    Deleted:    analysis/04_diagnosis_qc_gigamuga_nine_batches.Rmd
+    Deleted:    analysis/05_after_diagnosis_qc_gigamuga_11_batches.Rmd
+    Deleted:    analysis/05_after_diagnosis_qc_gigamuga_nine_batches.R
+    Deleted:    analysis/05_after_diagnosis_qc_gigamuga_nine_batches.Rmd
+    Deleted:    analysis/06_final_pr_apr_69K.R
+    Deleted:    analysis/07.1_html_founder_prop.R
+    Deleted:    analysis/07_recomb_size_founder_prop.R
+    Deleted:    analysis/07_recomb_size_founder_prop.Rmd
+    Deleted:    analysis/08_gcta_herit.R
+    Deleted:    analysis/09_qtlmapping.R
+    Deleted:    analysis/10_qtl_permu.R
+    Deleted:    analysis/11_qtl_blup.R
+    Deleted:    analysis/12_plot_69k_qtl_mapping_2.Rmd
+    Deleted:    analysis/12_plot_qtl_mapping_1.Rmd
+    Deleted:    analysis/12_plot_qtl_mapping_2.Rmd
+    Deleted:    analysis/13_plot_69k_conditional_m2_qtlmapping.Rmd
+    Deleted:    analysis/13_plot_conditional_m2_qtlmapping.Rmd
+    Deleted:    analysis/16_diagnosis_qc_gigamuga_gagnon.Rmd
+    Deleted:    analysis/16_diagnosis_qc_gigamuga_gagnon2.Rmd
+    Deleted:    analysis/17_plot_qtl_mapping.Rmd
+    Deleted:    analysis/run_01_geneseek2qtl2.R
+    Deleted:    analysis/run_02_geneseek2intensity.R
+    Deleted:    analysis/run_03_firstgm2genoprobs.R
+    Deleted:    analysis/run_04_diagnosis_qc_gigamuga_nine_batches.R
+    Deleted:    analysis/run_05_after_diagnosis_qc_gigamuga_nine_batches.R
+    Deleted:    analysis/run_06_final_pr_apr_69K.R
+    Deleted:    analysis/run_07.1_html_founder_prop.R
+    Deleted:    analysis/run_07_recomb_size_founder_prop.R
+    Deleted:    analysis/run_08_gcta_herit.R
+    Deleted:    analysis/run_09_qtlmapping.R
+    Deleted:    analysis/run_10_qtl_permu.R
+    Deleted:    analysis/run_11_qtl_blup.R
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/00_Process_all_phenotypes_in_founder_CC_DO.Rmd</code>) and HTML (<code>docs/00_Process_all_phenotypes_in_founder_CC_DO.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/a684c8adada658929cefc5ba27cf1d2d7c044a66/analysis/00_Process_all_phenotypes_in_founder_CC_DO.Rmd" target="_blank">a684c8a</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2021-01-15
+</td>
+<td>
+process_phenos_founder_CC_DO
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="purpose-of-analysis" class="section level3">
+<h3>Purpose of analysis</h3>
+<p>1, Summarize and plot phenotypes for RL, SENS, IVSA and CR across Founders, CC and DO 2, Genetic correlations in Founders and/or CC 3, Process OFA, NPP, HB, LD, RL, SENS, IVSA and CR for DO and correlation 4, Generate a file containing all phenotype of above domains for qtl mapping</p>
+</div>
+<div id="working-directory" class="section level3">
+<h3>1, Working directory</h3>
+<p>All chunks will run in the working folder for this experiment.</p>
+<pre class="r"><code>script_root_dir = &quot;/projects/csna/csna_workflow&quot;</code></pre>
+</div>
+<div id="r-libraries" class="section level3">
+<h3>2, R libraries</h3>
+<p>Calling R libraries necessary for this analysis.</p>
+<pre class="r"><code>library(gridExtra)
+library(psych)
+library(ggcorrplot)</code></pre>
+<pre><code>Loading required package: ggplot2</code></pre>
+<pre><code>
+Attaching package: &#39;ggplot2&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:psych&#39;:
+
+    %+%, alpha</code></pre>
+<pre class="r"><code>library(ggplot2)
+library(lubridate)</code></pre>
+<pre><code>
+Attaching package: &#39;lubridate&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:base&#39;:
+
+    date, intersect, setdiff, union</code></pre>
+<pre class="r"><code>library(ggpubr)
+library(lme4)</code></pre>
+<pre><code>Loading required package: Matrix</code></pre>
+<pre><code>Registered S3 methods overwritten by &#39;lme4&#39;:
+  method                          from
+  cooks.distance.influence.merMod car 
+  influence.merMod                car 
+  dfbeta.influence.merMod         car 
+  dfbetas.influence.merMod        car </code></pre>
+<pre class="r"><code>library(lmerTest)</code></pre>
+<pre><code>
+Attaching package: &#39;lmerTest&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:lme4&#39;:
+
+    lmer</code></pre>
+<pre><code>The following object is masked from &#39;package:stats&#39;:
+
+    step</code></pre>
+<pre class="r"><code>library(ggrepel)
+library(cowplot)</code></pre>
+<pre><code>
+Attaching package: &#39;cowplot&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:ggpubr&#39;:
+
+    get_legend</code></pre>
+<pre><code>The following object is masked from &#39;package:lubridate&#39;:
+
+    stamp</code></pre>
+<pre class="r"><code>library(lsr)
+library(pwr)
+library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>✓ tibble  3.0.4     ✓ dplyr   1.0.2
+✓ tidyr   1.1.2     ✓ stringr 1.4.0
+✓ readr   1.4.0     ✓ forcats 0.5.0
+✓ purrr   0.3.4     </code></pre>
+<pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+x ggplot2::%+%()           masks psych::%+%()
+x ggplot2::alpha()         masks psych::alpha()
+x lubridate::as.difftime() masks base::as.difftime()
+x dplyr::combine()         masks gridExtra::combine()
+x lubridate::date()        masks base::date()
+x tidyr::expand()          masks Matrix::expand()
+x dplyr::filter()          masks stats::filter()
+x lubridate::intersect()   masks base::intersect()
+x dplyr::lag()             masks stats::lag()
+x tidyr::pack()            masks Matrix::pack()
+x lubridate::setdiff()     masks base::setdiff()
+x cowplot::stamp()         masks lubridate::stamp()
+x lubridate::union()       masks base::union()
+x tidyr::unpack()          masks Matrix::unpack()</code></pre>
+<pre class="r"><code># Suppress summarise info
+options(dplyr.summarise.inform = FALSE)
+options(stringsAsFactors = FALSE)</code></pre>
+</div>
+<div id="utility-functions" class="section level3">
+<h3>3, Utility functions</h3>
+<pre class="r"><code>#founder key
+founders_key = readRDS(&quot;data/cc_do_founders_key.rds&quot;)
+row.names(founders_key) = founders_key$strain
+
+#norm_rank_transform
+norm_rank_transform = function(x, c = (0)) {
+  stopifnot(is.numeric(x) &amp; is.vector(x))
+  x_noNA = which(!is.na(x))
+  N = length(x_noNA)
+  x[x_noNA] = qnorm((rank(x[x_noNA], ties.method = &quot;random&quot;) - c) / (N - (2 * c) + 1))
+  return(x)
+}
+# Getting a normal rank transformation function that can handle `NA` values from the following formula:
+# 
+# $Y^t_i={\phi}^{-1}({{r_i-c}\over{N-2c+1}})$
+# 
+# where $r_i$ is the rank, $N$ is the number of ranked samples, $\phi^{-1}$ is the inverse normal funcion (equivalent to `qnorm()` in R). The original recommended value of $c=3/8$ was per [Beasley and Erickson, 2010](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2921808/), but we use $c=0$. Our work appears to meet their sample size recommendations.
+
+#powerTransform
+powerTransform &lt;- function(y, lambda1, lambda2 = NULL, method = &quot;boxcox&quot;) {
+  boxcoxTrans &lt;- function(x, lam1, lam2 = NULL) {
+    # if we set lambda2 to zero, it becomes the one parameter transformation
+    lam2 &lt;- ifelse(is.null(lam2), 0, lam2)
+    if (lam1 == 0L) {
+      log(y + lam2)
+    } else {
+      (((y + lam2)^lam1) - 1) / lam1
+    }
+  }
+  switch(method
+         , boxcox = boxcoxTrans(y, lambda1, lambda2)
+         , tukey = y^lambda1
+  )
+}
+#summary_func
+summary_func &lt;- list(
+  mean = ~mean(.x, na.rm = TRUE),
+  n    = ~length(which(!is.na(.x))),
+  ul   = ~(mean(.x, na.rm = TRUE) + sd(.x, na.rm = TRUE)/sqrt(length(which(!is.na(.x))))),
+  ll   = ~(mean(.x, na.rm = TRUE) - sd(.x, na.rm = TRUE)/sqrt(length(which(!is.na(.x)))))
+)
+#summary_extremesCC_func
+summary_extremesCC_func &lt;- list(
+  mean = ~MASS::huber(na.omit(.x))$mu,
+  n    = ~length(which(!is.na(.x))),
+  ul   = ~(~MASS::huber(na.omit(.x))$mu + sd(.x, na.rm = TRUE)/sqrt(length(which(!is.na(.x))))),
+  ll   = ~(~MASS::huber(na.omit(.x))$mu - sd(.x, na.rm = TRUE)/sqrt(length(which(!is.na(.x)))))
+)
+#outliers are outside of mean +/- 3SD
+remove_outliers &lt;- function(x, thres = 3, na.rm = TRUE, ...) {
+  y &lt;- x
+  y[y &lt;= mean(y,na.rm = na.rm) - thres * sd(y, na.rm = na.rm) | y &gt;= mean(y,na.rm = na.rm) + thres * sd(y, na.rm = na.rm)] &lt;- NA
+  y
+}
+#rankz transform
+rz.transform &lt;- function(y) {
+  rankY=rank(y, ties.method=&quot;average&quot;, na.last=&quot;keep&quot;)
+  rzT=qnorm(rankY/(length(na.exclude(rankY))+1))
+  return(rzT)
+}
+#plot.summary
+plot.summary &lt;- function(summary.dat, pheno.list, out.pdf){
+  p &lt;- list()
+  for(i in pheno.list){
+    d &lt;- summary.dat %&gt;% 
+      left_join(founders_key[,c(2,5)], by = c(&quot;Strain&quot; = &quot;collaborative_cross_abbreviation&quot;)) %&gt;%
+      rename(color = collaborative_cross_color_broman) %&gt;%
+      mutate(color = replace_na(color, &quot;grey&quot;)) %&gt;%
+      mutate(color = case_when(
+        Strain == &quot;J:DO&quot; ~ &quot;springgreen&quot;,
+        TRUE             ~ as.character(color))) %&gt;%
+      relocate(color, .after = Strain) %&gt;%
+      select(c(&quot;Strain&quot;, &quot;color&quot;, contains(all_of(i)))) %&gt;%
+      rename_with(~(.x = c(&quot;Strain&quot;, &quot;color&quot;, &quot;mean&quot;, &quot;n&quot;, &quot;ul&quot;, &quot;ll&quot;))) %&gt;%
+      filter(n &gt;= 1) %&gt;%
+      arrange(mean) %&gt;%
+      mutate(across(Strain, ~factor(.x, levels = as.character(.x)))) %&gt;%
+      mutate(xlabel = paste0(Strain,&quot; (n = &quot;, n, &quot;)&quot;))
+    p[[i]] &lt;- ggplot(data = d, aes(x = Strain, y = mean, fill = Strain)) +
+      geom_col(color = &quot;#000000&quot;) +
+      geom_errorbar(aes(ymin = ll, ymax = ul), width = 0.5) +
+      theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.position=&quot;none&quot;) +
+      scale_fill_manual(values = d$color) +
+      labs(x =&quot;&quot;, y = paste0(&quot;Mean of &quot;, i)) +
+      scale_x_discrete(labels = d$xlabel) +
+      scale_y_continuous(#expand = c(0,0),
+                         limits = c(ifelse(min(c(d$ll, d$mean), na.rm = TRUE) &gt; 0, 
+                                           0, 
+                                           min(c(d$ll, d$mean), na.rm = TRUE)+0.12*min(c(d$ll, d$mean), na.rm = TRUE)),
+                                    max(c(d$ul, d$mean), na.rm = TRUE) + 0.12*max(c(d$ul, d$mean), na.rm = TRUE)))+
+      theme_bw(base_size = 18) +
+      theme(plot.title = element_text(hjust = 0.5),
+            panel.background = element_blank(),
+            panel.border = element_blank(),
+            legend.position = &quot;none&quot;,
+            panel.grid.major.x = element_blank(),
+            panel.grid.minor.x = element_blank(),
+            axis.line = element_line(colour = &quot;black&quot;),
+            axis.text.x = element_text(angle = 90, hjust = 0.95,vjust = 0.2))
+    print(p[[i]])
+  }
+  ggsave(file = paste0(out.pdf,&quot;.pdf&quot;), 
+         plot = marrangeGrob(p, nrow = 1, ncol=1, top = NULL, bottom = NULL),
+         device = &quot;pdf&quot;, height = 8, width = 14)
+}
+#extremesCC_func
+extremesCC_func &lt;- function(cc.data, pheno.list){
+  extremesCC &lt;- list()
+  for(i in pheno.list){
+    #print(i)
+    data  = cc.data %&gt;%
+      dplyr::filter(!is.na(.data[[i]]))
+      #split data into three lists, male, female and bothsex.
+      extremesCC[[i]] &lt;- list(both   = data %&gt;% mutate(Sex =  &quot;Both&quot;),
+                              male   = data %&gt;% filter(Sex == &quot;Male&quot;),
+                              female = data %&gt;% filter(Sex == &quot;Female&quot;)) %&gt;%
+        map(function(x){
+              y &lt;- x %&gt;%
+                dplyr::select(c(&quot;Mouse.ID&quot;, &quot;Strain&quot;, &quot;Sex&quot;, contains(all_of(i)))) %&gt;%
+                dplyr::mutate(population_mean = mean(.[[all_of(i)]], na.rm = TRUE)) %&gt;%
+                group_by(Strain, Sex) %&gt;% #Strain and Sex
+                summarise(across(c(all_of(i), population_mean), summary_func)) %&gt;%
+                dplyr::select(1:7) %&gt;%
+                dplyr::mutate(across(everything(), ~replace_na(.x, NA))) %&gt;%
+                rename_with(~(.x = c(&quot;Strain&quot;, &quot;Sex&quot; ,&quot;mean&quot;, &quot;n&quot;, &quot;ul&quot;, &quot;ll&quot;, &quot;pop_mean&quot;))) %&gt;%
+                dplyr::mutate(diff_mean = mean - pop_mean)
+              
+              #t test for each strain
+              dat.s.res &lt;- list()
+              for(s in unique(x$Strain)){
+                #print(s)
+                dat.s &lt;- x %&gt;% dplyr::filter(Strain == s)
+                #print(dim(dat.s))
+                v &lt;- dat.s[[all_of(i)]]
+                if(dim(dat.s)[[1]] &gt;= 2 &amp; length(unique(v)) != 1){
+                  t      &lt;- t.test(v, 
+                                   mu = as.numeric(unique(y$pop_mean)), 
+                                   alternative=&quot;two.sided&quot;, 
+                                   conf.level=0.95)
+                  t.stat &lt;- t$statistic
+                  t.p    &lt;- t$p.value
+                  lo.CI  &lt;- t$conf.int[1]
+                  up.CI  &lt;- t$conf.int[2]
+                  power  &lt;- round(pwr.t.test(d = cohensD(v, 
+                                                         mu = as.numeric(unique(y$pop_mean))),
+                                             n = length(v),
+                                             sig.level = 0.05,
+                                             type = &quot;one.sample&quot;,
+                                             alternative = &quot;two.sided&quot;)$power,2)
+                  sample.size.at.0.8 &lt;- ifelse(cohensD(v, 
+                                                       mu = as.numeric(unique(y$pop_mean))) &lt; 5,
+                                               round(pwr.t.test(d = cohensD(v, 
+                                                                            mu = as.numeric(unique(y$pop_mean))), 
+                                                                sig.level = 0.05,
+                                                                type=&quot;one.sample&quot;,
+                                                                alternative=&quot;two.sided&quot;, 
+                                                                power = 0.8)$n, 1), 
+                                               round(pwr.t.test(d = 5, 
+                                                                sig.level = 0.05,
+                                                                type = &quot;one.sample&quot;,
+                                                                alternative = &quot;two.sided&quot;, 
+                                                                power = 0.8)$n, 1))
+                  dat.s.res[[s]] &lt;- data.frame(Strain = s,
+                                               t.stat = t.stat, 
+                                               t.p    = t.p, 
+                                               lo.CI  = lo.CI, 
+                                               up.CI  = up.CI, 
+                                               power  = power, 
+                                               sample.size.at.0.8 = sample.size.at.0.8)
+              }else{
+                dat.s.res[[s]] &lt;- data.frame(Strain = s,
+                                             t.stat = NA, 
+                                             t.p    = NA, 
+                                             lo.CI  = NA, 
+                                             up.CI  = NA, 
+                                             power  = NA, 
+                                             sample.size.at.0.8 = NA)
+              }
+          }
+              dat.s.res &lt;- do.call(rbind.data.frame, dat.s.res)
+              
+              #merge y and dat.s.res
+              ys &lt;- full_join(y, dat.s.res, by = &quot;Strain&quot;) %&gt;%
+                mutate(sig = ifelse(t.p &lt;= 0.05, &quot;*&quot;, &quot;NS&quot;),
+                       StrainSig = paste0(Strain, &quot;[&quot;, sig, &quot;;&quot;, n, &quot;]&quot;))
+              
+              #plot
+              p &lt;- ggplot(ys, aes(y = mean, x = reorder(StrainSig, -diff_mean), 
+                                  color = sig, label = sig)) + 
+                geom_point() + 
+                geom_errorbar(aes(ymin = ll, ymax = ul), width = 0.5, size = 1) +
+                theme_cowplot() + 
+                scale_color_hue(h = c(90, 180)) +
+                geom_hline(yintercept = unique(ys$pop_mean)) +
+                theme(axis.text.x = element_text(size = 16,angle = 90, hjust = 1), axis.text.y = element_text(size = 16),
+                      legend.position=&quot;right&quot;) +
+                scale_size_continuous(breaks = c(2,4,6,8,10,20), labels = c(2,4,6,8,10,20))+
+                theme(text = element_text(size = 20)) +
+                xlab(&quot;&quot;) +
+                ylab(i) +
+                ggtitle(unique(ys$Sex)) +
+                theme(axis.title.x = element_blank(),
+                      plot.title = element_text(hjust = 0.5),
+                      axis.text.x=element_text(angle = 90, hjust = 0.95, vjust = 0.5))
+              return(list(ys, p))
+        })
+      }
+  return(extremesCC)
+}</code></pre>
+</div>
+<div id="read-data" class="section level3">
+<h3>4, Read data</h3>
+<pre class="r"><code>csv &lt;- list.files(path = &quot;data/pheno/Updated_CSNA_Data&quot;, pattern = &quot;.csv&quot;, full.names = TRUE)
+data &lt;- list()
+for(i in csv){
+  print(i)
+  data[[i]] &lt;- readr::read_csv(i, col_names = TRUE, na = c(&quot;&quot;, &quot;NA&quot;, &quot;N/A&quot;, &quot;NaN&quot;)) %&gt;%
+    rename_with(~str_remove(.x, &quot;\\_cc|\\_do&quot;)) %&gt;%
+    rename_with(~(.x = &quot;Strain&quot;),   contains(&quot;_Strain&quot;)) %&gt;%
+    rename_with(~(.x = &quot;Mouse.ID&quot;), contains(&quot;Subject&quot;)) %&gt;%
+    rename_with(~(.x = &quot;Sex&quot;),      contains(&quot;Sex&quot;)) %&gt;%
+    mutate(Sex = case_when(
+      Sex == &quot;F&quot; ~ &quot;Female&quot;,
+      Sex == &quot;M&quot; ~ &quot;Male&quot;,
+      TRUE       ~ as.character(Sex))) %&gt;% #make Sex coding consistent
+    mutate(across(Mouse.ID, as.character)) %&gt;%
+    mutate(Strain = case_when( #recode the founder strain to avoid inconsistency
+      str_detect(Strain, &quot;A/&quot;)    ~ &quot;AJ&quot;,
+      str_detect(Strain, &quot;C57BL&quot;) ~ &quot;B6&quot;,
+      str_detect(Strain, &quot;129S1&quot;) ~ &quot;129&quot;,
+      str_detect(Strain, &quot;NOD&quot;)   ~ &quot;NOD&quot;,
+      str_detect(Strain, &quot;NZO&quot;)   ~ &quot;NZO&quot;,
+      str_detect(Strain, &quot;CAST&quot;)  ~ &quot;CAST&quot;,
+      str_detect(Strain, &quot;PWK&quot;)   ~ &quot;PWK&quot;,
+      str_detect(Strain, &quot;WSB&quot;)   ~ &quot;WSB&quot;,
+      TRUE                        ~ as.character(Strain)
+    ))
+
+  print(&quot;Column names : &quot;);         print(colnames(data[[i]]))
+  print(&quot;Strain names : &quot;);         print(unique(data[[i]]$Strain))
+  print(&quot;Duplicated Mouse.ID  : &quot;); print(data[[i]]$Mouse.ID[duplicated(data[[i]]$Mouse.ID)])
+}</code></pre>
+<pre><code>[1] &quot;data/pheno/Updated_CSNA_Data/Prj01_RL-Acquisition_preqc_04212020_Founders.csv&quot;
+[1] &quot;Column names : &quot;
+ [1] &quot;Mouse.ID&quot;                            
+ [2] &quot;Sex&quot;                                 
+ [3] &quot;Strain&quot;                              
+ [4] &quot;Generation&quot;                          
+ [5] &quot;Chamber&quot;                             
+ [6] &quot;COMPLETE&quot;                            
+ [7] &quot;RL_Stage&quot;                            
+ [8] &quot;Acq.Days.To.Criteria&quot;                
+ [9] &quot;Acq.Total.Trials&quot;                    
+[10] &quot;Acq.Total.Correct&quot;                   
+[11] &quot;Acq.Total.Omit&quot;                      
+[12] &quot;Acq.Percent.Correct&quot;                 
+[13] &quot;Acq.Percent.Omit&quot;                    
+[14] &quot;Acq.Total.Time&quot;                      
+[15] &quot;Acq.Latency&quot;                         
+[16] &quot;Acq.Trial.Initiation.Latency&quot;        
+[17] &quot;Acq.retrieval&quot;                       
+[18] &quot;Acq.Reward.retrieval.Time&quot;           
+[19] &quot;Acq.Left.Anti&quot;                       
+[20] &quot;Acq.Right.Anti&quot;                      
+[21] &quot;Acq.Anticipatory.Correct.Responses&quot;  
+[22] &quot;Acq.Anticipatory.Incorrect.Responses&quot;
+[1] &quot;Strain names : &quot;
+[1] &quot;NZO&quot;  &quot;129&quot;  &quot;CAST&quot; &quot;B6&quot;   &quot;PWK&quot;  &quot;WSB&quot;  &quot;AJ&quot;   &quot;NOD&quot; 
+[1] &quot;Duplicated Mouse.ID  : &quot;
+character(0)
+[1] &quot;data/pheno/Updated_CSNA_Data/Prj01_RL-Acquisition_preqc_12072020_CC.csv&quot;
+[1] &quot;Column names : &quot;
+ [1] &quot;Mouse.ID&quot;                            
+ [2] &quot;Sex&quot;                                 
+ [3] &quot;Strain&quot;                              
+ [4] &quot;Generation&quot;                          
+ [5] &quot;Chamber&quot;                             
+ [6] &quot;COMPLETE&quot;                            
+ [7] &quot;RL_Stage&quot;                            
+ [8] &quot;Acq.Days.To.Criteria&quot;                
+ [9] &quot;Acq.Total.Trials&quot;                    
+[10] &quot;Acq.Total.Correct&quot;                   
+[11] &quot;Acq.Total.Omit&quot;                      
+[12] &quot;Acq.Percent.Correct&quot;                 
+[13] &quot;Acq.Percent.Omit&quot;                    
+[14] &quot;Acq.Total.Time&quot;                      
+[15] &quot;Acq.Latency&quot;                         
+[16] &quot;Acq.Trial.Initiation.Latency&quot;        
+[17] &quot;Acq.retrieval&quot;                       
+[18] &quot;Acq.Reward.retrieval.Time&quot;           
+[19] &quot;Acq.Left.Anti&quot;                       
+[20] &quot;Acq.Right.Anti&quot;                      
+[21] &quot;Acq.Anticipatory.Correct.Responses&quot;  
+[22] &quot;Acq.Anticipatory.Incorrect.Responses&quot;
+[1] &quot;Strain names : &quot;
+ [1] &quot;CC012/GeniUncJ&quot; &quot;CC032/GeniUncJ&quot; &quot;CC002/UncJ&quot;     &quot;CC025/GeniUncJ&quot;
+ [5] &quot;CC061/GeniUncJ&quot; &quot;CC006/TauUncJ&quot;  &quot;CC028/GeniUncJ&quot; &quot;CC011/UncJ&quot;    
+ [9] &quot;CC016/GeniUncJ&quot; &quot;CC059/TauUncJ&quot;  &quot;CC027/GeniUncJ&quot; &quot;CC019/TauUncJ&quot; 
+[13] &quot;CC041/TauUncJ&quot;  &quot;CC005/TauUncJ&quot;  &quot;CC040/TauUncJ&quot;  &quot;CC004/TauUncJ&quot; 
+[17] &quot;CC003/UncJ&quot;     &quot;CC037/TauUncJ&quot;  &quot;CC075/UncJ&quot;     &quot;CC036/UncJ&quot;    
+[21] &quot;CC051/TauUncJ&quot;  &quot;CC026/GeniUncJ&quot; &quot;CC015/UncJ&quot;     &quot;CC043/GeniUncJ&quot;
+[25] &quot;CC001/UncJ&quot;     &quot;CC018/UncJ&quot;     &quot;CC057/UncJ&quot;     &quot;CC023/GeniUncJ&quot;
+[29] &quot;CC080/TauUncJ&quot;  &quot;CC033/GeniUncJ&quot; &quot;CC079/TauUncJ&quot;  &quot;CC084/TauJ&quot;    
+[33] &quot;CC008/GeniUncJ&quot; &quot;CC030/GeniUncJ&quot; &quot;CC078/TauUncJ&quot;  &quot;CC013/GeniUncJ&quot;
+[37] &quot;CC017/UncJ&quot;     &quot;CC007/UncJ&quot;     &quot;CC029/UncJ&quot;     &quot;CC035/UncJ&quot;    
+[41] &quot;CC044/UncJ&quot;     &quot;CC060/UncJ&quot;     &quot;CC009/UncJ&quot;     &quot;CC074/UncJ&quot;    
+[1] &quot;Duplicated Mouse.ID  : &quot;
+[1] &quot;25085&quot;
+[1] &quot;data/pheno/Updated_CSNA_Data/Prj01_RL-Acquisition_preqc_12072020_DO.csv&quot;
+[1] &quot;Column names : &quot;
+ [1] &quot;Mouse.ID&quot;                            
+ [2] &quot;Sex&quot;                                 
+ [3] &quot;Strain&quot;                              
+ [4] &quot;Generation&quot;                          
+ [5] &quot;Chamber&quot;                             
+ [6] &quot;COMPLETE&quot;                            
+ [7] &quot;RL_Stage&quot;                            
+ [8] &quot;Acq.Days.To.Criteria&quot;                
+ [9] &quot;Acq.Total.Trials&quot;                    
+[10] &quot;Acq.Total.Correct&quot;                   
+[11] &quot;Acq.Total.Omit&quot;                      
+[12] &quot;Acq.Percent.Correct&quot;                 
+[13] &quot;Acq.Percent.Omit&quot;                    
+[14] &quot;Acq.Total.Time&quot;                      
+[15] &quot;Acq.Latency&quot;                         
+[16] &quot;Acq.Trial.Initiation.Latency&quot;        
+[17] &quot;Acq.retrieval&quot;                       
+[18] &quot;Acq.Reward.retrieval.Time&quot;           
+[19] &quot;Acq.Left.Anti&quot;                       
+[20] &quot;Acq.Right.Anti&quot;                      
+[21] &quot;Acq.Anticipatory.Correct.Responses&quot;  
+[22] &quot;Acq.Anticipatory.Incorrect.Responses&quot;
+[1] &quot;Strain names : &quot;
+[1] &quot;J:DO&quot;
+[1] &quot;Duplicated Mouse.ID  : &quot;
+character(0)
+[1] &quot;data/pheno/Updated_CSNA_Data/Prj01_RL-Reversal_preqc_04212020_Founders.csv&quot;
+[1] &quot;Column names : &quot;
+ [1] &quot;Mouse.ID&quot;                            
+ [2] &quot;Sex&quot;                                 
+ [3] &quot;Strain&quot;                              
+ [4] &quot;Generation&quot;                          
+ [5] &quot;Chamber&quot;                             
+ [6] &quot;COMPLETE&quot;                            
+ [7] &quot;RL_Stage&quot;                            
+ [8] &quot;Rev.Days.To.Criteria&quot;                
+ [9] &quot;Rev.Total.Trials&quot;                    
+[10] &quot;Rev.Total.Correct&quot;                   
+[11] &quot;Rev.Total.Omit&quot;                      
+[12] &quot;Rev.Percent.Correct&quot;                 
+[13] &quot;Rev.Percent.Omit&quot;                    
+[14] &quot;Rev.Total.Time&quot;                      
+[15] &quot;Rev.Latency&quot;                         
+[16] &quot;Rev.Trial.Initiation.Latency&quot;        
+[17] &quot;Rev.retrieval&quot;                       
+[18] &quot;Rev.Reward.retrieval.Time&quot;           
+[19] &quot;Rev.Left.Anti&quot;                       
+[20] &quot;Rev.Right.Anti&quot;                      
+[21] &quot;Rev.Anticipatory.Correct.Responses&quot;  
+[22] &quot;Rev.Anticipatory.Incorrect.Responses&quot;
+[1] &quot;Strain names : &quot;
+[1] &quot;NZO&quot;  &quot;129&quot;  &quot;CAST&quot; &quot;B6&quot;   &quot;PWK&quot;  &quot;WSB&quot;  &quot;AJ&quot;   &quot;NOD&quot; 
+[1] &quot;Duplicated Mouse.ID  : &quot;
+character(0)
+[1] &quot;data/pheno/Updated_CSNA_Data/Prj01_RL-Reversal_preqc_12072020_CC.csv&quot;
+[1] &quot;Column names : &quot;
+ [1] &quot;Mouse.ID&quot;                            
+ [2] &quot;Sex&quot;                                 
+ [3] &quot;Strain&quot;                              
+ [4] &quot;Generation&quot;                          
+ [5] &quot;Chamber&quot;                             
+ [6] &quot;COMPLETE&quot;                            
+ [7] &quot;RL_Stage&quot;                            
+ [8] &quot;Rev.Days.To.Criteria&quot;                
+ [9] &quot;Rev.Total.Trials&quot;                    
+[10] &quot;Rev.Total.Correct&quot;                   
+[11] &quot;Rev.Total.Omit&quot;                      
+[12] &quot;Rev.Percent.Correct&quot;                 
+[13] &quot;Rev.Percent.Omit&quot;                    
+[14] &quot;Rev.Total.Time&quot;                      
+[15] &quot;Rev.Latency&quot;                         
+[16] &quot;Rev.Trial.Initiation.Latency&quot;        
+[17] &quot;Rev.retrieval&quot;                       
+[18] &quot;Rev.Reward.retrieval.Time&quot;           
+[19] &quot;Rev.Left.Anti&quot;                       
+[20] &quot;Rev.Right.Anti&quot;                      
+[21] &quot;Rev.Anticipatory.Correct.Responses&quot;  
+[22] &quot;Rev.Anticipatory.Incorrect.Responses&quot;
+[1] &quot;Strain names : &quot;
+ [1] &quot;CC012/GeniUncJ&quot; &quot;CC032/GeniUncJ&quot; &quot;CC002/UncJ&quot;     &quot;CC025/GeniUncJ&quot;
+ [5] &quot;CC061/GeniUncJ&quot; &quot;CC006/TauUncJ&quot;  &quot;CC028/GeniUncJ&quot; &quot;CC011/UncJ&quot;    
+ [9] &quot;CC016/GeniUncJ&quot; &quot;CC059/TauUncJ&quot;  &quot;CC027/GeniUncJ&quot; &quot;CC019/TauUncJ&quot; 
+[13] &quot;CC041/TauUncJ&quot;  &quot;CC005/TauUncJ&quot;  &quot;CC040/TauUncJ&quot;  &quot;CC004/TauUncJ&quot; 
+[17] &quot;CC003/UncJ&quot;     &quot;CC037/TauUncJ&quot;  &quot;CC075/UncJ&quot;     &quot;CC036/UncJ&quot;    
+[21] &quot;CC051/TauUncJ&quot;  &quot;CC026/GeniUncJ&quot; &quot;CC015/UncJ&quot;     &quot;CC043/GeniUncJ&quot;
+[25] &quot;CC001/UncJ&quot;     &quot;CC018/UncJ&quot;     &quot;CC057/UncJ&quot;     &quot;CC023/GeniUncJ&quot;
+[29] &quot;CC080/TauUncJ&quot;  &quot;CC033/GeniUncJ&quot; &quot;CC079/TauUncJ&quot;  &quot;CC084/TauJ&quot;    
+[33] &quot;CC008/GeniUncJ&quot; &quot;CC030/GeniUncJ&quot; &quot;CC078/TauUncJ&quot;  &quot;CC013/GeniUncJ&quot;
+[37] &quot;CC017/UncJ&quot;     &quot;CC007/UncJ&quot;     &quot;CC029/UncJ&quot;     &quot;CC035/UncJ&quot;    
+[41] &quot;CC044/UncJ&quot;     &quot;CC060/UncJ&quot;     &quot;CC009/UncJ&quot;     &quot;CC074/UncJ&quot;    
+[1] &quot;Duplicated Mouse.ID  : &quot;
+character(0)
+[1] &quot;data/pheno/Updated_CSNA_Data/Prj01_RL-Reversal_preqc_12072020_DO.csv&quot;
+[1] &quot;Column names : &quot;
+ [1] &quot;Mouse.ID&quot;                            
+ [2] &quot;Sex&quot;                                 
+ [3] &quot;Strain&quot;                              
+ [4] &quot;Generation&quot;                          
+ [5] &quot;Chamber&quot;                             
+ [6] &quot;COMPLETE&quot;                            
+ [7] &quot;RL_Stage&quot;                            
+ [8] &quot;Rev.Days.To.Criteria&quot;                
+ [9] &quot;Rev.Total.Trials&quot;                    
+[10] &quot;Rev.Total.Correct&quot;                   
+[11] &quot;Rev.Total.Omit&quot;                      
+[12] &quot;Rev.Percent.Correct&quot;                 
+[13] &quot;Rev.Percent.Omit&quot;                    
+[14] &quot;Rev.Total.Time&quot;                      
+[15] &quot;Rev.Latency&quot;                         
+[16] &quot;Rev.Trial.Initiation.Latency&quot;        
+[17] &quot;Rev.retrieval&quot;                       
+[18] &quot;Rev.Reward.retrieval.Time&quot;           
+[19] &quot;Rev.Left.Anti&quot;                       
+[20] &quot;Rev.Right.Anti&quot;                      
+[21] &quot;Rev.Anticipatory.Correct.Responses&quot;  
+[22] &quot;Rev.Anticipatory.Incorrect.Responses&quot;
+[1] &quot;Strain names : &quot;
+[1] &quot;J:DO&quot;
+[1] &quot;Duplicated Mouse.ID  : &quot;
+[1] &quot;17091&quot;
+[1] &quot;data/pheno/Updated_CSNA_Data/Prj02_Sensitization_preqc_02172020_founders.csv&quot;
+[1] &quot;Column names : &quot;
+ [1] &quot;Mouse.ID&quot;        &quot;LineNo&quot;          &quot;Strain&quot;          &quot;Sex&quot;            
+ [5] &quot;Generation_Wave&quot; &quot;Study&quot;           &quot;Cohort&quot;          &quot;D01_SAL&quot;        
+ [9] &quot;D02_SAL&quot;         &quot;D03_COCA&quot;        &quot;D05_COCA&quot;        &quot;D07_COCA&quot;       
+[13] &quot;D09_COCA&quot;        &quot;D11_COCA&quot;        &quot;D12_SAL&quot;         &quot;D19_COCA&quot;       
+[17] &quot;D3_D2&quot;           &quot;D5_D3&quot;           &quot;D11_D3&quot;          &quot;D12_D2&quot;         
+[21] &quot;D19_D11&quot;         &quot;AUC&quot;            
+[1] &quot;Strain names : &quot;
+[1] &quot;B6&quot;   &quot;129&quot;  &quot;AJ&quot;   &quot;NOD&quot;  &quot;NZO&quot;  &quot;CAST&quot; &quot;WSB&quot;  &quot;PWK&quot; 
+[1] &quot;Duplicated Mouse.ID  : &quot;
+character(0)
+[1] &quot;data/pheno/Updated_CSNA_Data/Prj02_Sensitization_preqc_12282020_CC.csv&quot;
+[1] &quot;Column names : &quot;
+ [1] &quot;Mouse.ID&quot;        &quot;LineNo&quot;          &quot;Strain&quot;          &quot;Sex&quot;            
+ [5] &quot;Generation_Wave&quot; &quot;Study&quot;           &quot;Cohort&quot;          &quot;D01_SAL&quot;        
+ [9] &quot;D02_SAL&quot;         &quot;D03_COCA&quot;        &quot;D05_COCA&quot;        &quot;D07_COCA&quot;       
+[13] &quot;D09_COCA&quot;        &quot;D11_COCA&quot;        &quot;D12_SAL&quot;         &quot;D19_COCA&quot;       
+[17] &quot;D3_D2&quot;           &quot;D5_D3&quot;           &quot;D11_D3&quot;          &quot;D12_D2&quot;         
+[21] &quot;D19_D11&quot;         &quot;AUC&quot;            
+[1] &quot;Strain names : &quot;
+ [1] &quot;CC041/TauUncJ&quot;  &quot;CC004/TauUncJ&quot;  &quot;CC037/TauUncJ&quot;  &quot;CC019/TauUncJ&quot; 
+ [5] &quot;CC032/GeniUncJ&quot; &quot;CC059/TauUncJ&quot;  &quot;CC011/UncJ&quot;     &quot;CC027/GeniUncJ&quot;
+ [9] &quot;CC025/GeniUncJ&quot; &quot;CC002/UncJ&quot;     &quot;CC005/TauUncJ&quot;  &quot;CC003/UncJ&quot;    
+[13] &quot;CC051/TauUncJ&quot;  &quot;CC043/GeniUncJ&quot; &quot;CC006/TauUncJ&quot;  &quot;CC012/GeniUncJ&quot;
+[17] &quot;CC028/GeniUncJ&quot; &quot;CC016/GeniUncJ&quot; &quot;CC075/UncJ&quot;     &quot;CC036/UncJ&quot;    
+[21] &quot;CC035/UncJ&quot;     &quot;CC026/GeniUncJ&quot; &quot;CC057/UncJ&quot;     &quot;CC033/GeniUncJ&quot;
+[25] &quot;CC079/TauUncJ&quot;  &quot;CC013/GeniUncJ&quot; &quot;CC009/UncJ&quot;     &quot;CC078/TauUncJ&quot; 
+[29] &quot;CC074/UncJ&quot;     &quot;CC001/UncJ&quot;     &quot;CC018/UncJ&quot;     &quot;CC068/TauUncJ&quot; 
+[33] &quot;CC080/TauUncJ&quot;  &quot;CC061/GeniUncJ&quot; &quot;CC023/GeniUncJ&quot; &quot;CC008/GeniUncJ&quot;
+[37] &quot;CC030/GeniUncJ&quot; &quot;CC007/UncJ&quot;     &quot;CC084/TauJ&quot;     &quot;CC017/UncJ&quot;    
+[41] &quot;CC020/GeniUncJ&quot; &quot;CC029/UncJ&quot;     &quot;CC044/UncJ&quot;     &quot;CC060/UncJ&quot;    
+[45] &quot;CC065/UncJ&quot;     &quot;CC040/TauUncJ&quot;  &quot;CC015/UncJ&quot;     &quot;CC024/GeniUncJ&quot;
+[1] &quot;Duplicated Mouse.ID  : &quot;
+character(0)
+[1] &quot;data/pheno/Updated_CSNA_Data/Prj02_Sensitization_preqc_12282020_DO.csv&quot;
+[1] &quot;Column names : &quot;
+ [1] &quot;Mouse.ID&quot;        &quot;LineNo&quot;          &quot;Strain&quot;          &quot;Sex&quot;            
+ [5] &quot;Generation_Wave&quot; &quot;Study&quot;           &quot;Cohort&quot;          &quot;D01_SAL&quot;        
+ [9] &quot;D02_SAL&quot;         &quot;D03_COCA&quot;        &quot;D05_COCA&quot;        &quot;D07_COCA&quot;       
+[13] &quot;D09_COCA&quot;        &quot;D11_COCA&quot;        &quot;D12_SAL&quot;         &quot;D19_COCA&quot;       
+[17] &quot;D3_D2&quot;           &quot;D5_D3&quot;           &quot;D11_D3&quot;          &quot;D12_D2&quot;         
+[21] &quot;D19_D11&quot;         &quot;AUC&quot;            
+[1] &quot;Strain names : &quot;
+[1] &quot;J:DO&quot;
+[1] &quot;Duplicated Mouse.ID  : &quot;
+character(0)
+[1] &quot;data/pheno/Updated_CSNA_Data/Prj04_IVSA_preqc_02182020_Founders.csv&quot;
+[1] &quot;Column names : &quot;
+ [1] &quot;Mouse.ID&quot;                 &quot;DE_Experiment&quot;           
+ [3] &quot;DE_Active_Lever&quot;          &quot;DE_Control_Unit&quot;         
+ [5] &quot;DE_Group&quot;                 &quot;DE_Box&quot;                  
+ [7] &quot;DE_JR&quot;                    &quot;Strain&quot;                  
+ [9] &quot;DE_Stock_ID&quot;              &quot;Sex&quot;                     
+[11] &quot;DE_Breeding&quot;              &quot;DE_Protocol&quot;             
+[13] &quot;DE_Study&quot;                 &quot;DE_birth_date_year&quot;      
+[15] &quot;DE_birth_date_month&quot;      &quot;DE_birth_date_day&quot;       
+[17] &quot;DE_arrival_date_year&quot;     &quot;DE_arrival_date_month&quot;   
+[19] &quot;DE_arrival_date_day&quot;      &quot;DE_exit_date_year&quot;       
+[21] &quot;DE_exit_date_month&quot;       &quot;DE_exit_date_day&quot;        
+[23] &quot;DE_Exit_Reason&quot;           &quot;DE_DO_Center_Status&quot;     
+[25] &quot;AQ_SessionsToAcquisition&quot; &quot;DR_Inf_Total_1p0mgkg&quot;    
+[27] &quot;DR_Inf_Total_1p8mgkg&quot;     &quot;DR_Inf_Total_0p56mgkg&quot;   
+[29] &quot;DR_Inf_Total_0p32mgkg&quot;    &quot;DR_Inf_Total_0p1mgkg&quot;    
+[31] &quot;DR_Inf_Total_0p18mgkg&quot;    &quot;DR_Inf_Total_0p056mgkg&quot;  
+[33] &quot;DR_Inf_Total_0p032mgkg&quot;   &quot;DR_Inf_Total_1p0mgkg_2nd&quot;
+[35] &quot;EX_ALP_Total_s01&quot;         &quot;EX_ALP_Total_s02&quot;        
+[37] &quot;EX_ALP_Total_s03&quot;         &quot;EX_ALP_Total_s04&quot;        
+[39] &quot;EX_ALP_Total_s05&quot;         &quot;EX_ALP_Total_s06&quot;        
+[41] &quot;EX_ALP_Total_s07&quot;         &quot;EX_ALP_Total_s08&quot;        
+[43] &quot;EX_ALP_Total_s09&quot;         &quot;EX_ALP_Total_s10&quot;        
+[45] &quot;EX_ILP_Total_s01&quot;         &quot;EX_ILP_Total_s02&quot;        
+[47] &quot;EX_ILP_Total_s03&quot;         &quot;EX_ILP_Total_s04&quot;        
+[49] &quot;EX_ILP_Total_s05&quot;         &quot;EX_ILP_Total_s06&quot;        
+[51] &quot;EX_ILP_Total_s07&quot;         &quot;EX_ILP_Total_s08&quot;        
+[53] &quot;EX_ILP_Total_s09&quot;         &quot;EX_ILP_Total_s10&quot;        
+[55] &quot;RI_ALP_Total_s01&quot;         &quot;RI_ALP_Total_s02&quot;        
+[57] &quot;RI_ALP_Total_s03&quot;         &quot;RI_ILP_Total_s01&quot;        
+[59] &quot;RI_ILP_Total_s02&quot;         &quot;RI_ILP_Total_s03&quot;        
+[61] &quot;RI_Inf_Total_s01&quot;         &quot;RI_Inf_Total_s02&quot;        
+[63] &quot;RI_Inf_Total_s03&quot;        
+[1] &quot;Strain names : &quot;
+[1] &quot;B6&quot;   &quot;NZO&quot;  &quot;CAST&quot; &quot;129&quot;  &quot;NOD&quot;  &quot;AJ&quot;   &quot;PWK&quot;  &quot;WSB&quot; 
+[1] &quot;Duplicated Mouse.ID  : &quot;
+character(0)
+[1] &quot;data/pheno/Updated_CSNA_Data/Prj04_IVSA_preqc_12072020_CC.csv&quot;
+[1] &quot;Column names : &quot;
+ [1] &quot;Mouse.ID&quot;                 &quot;DE_Experiment&quot;           
+ [3] &quot;DE_Active_Lever&quot;          &quot;DE_Control_Unit&quot;         
+ [5] &quot;DE_Group&quot;                 &quot;DE_Box&quot;                  
+ [7] &quot;DE_JR&quot;                    &quot;Strain&quot;                  
+ [9] &quot;DE_Stock_ID&quot;              &quot;Sex&quot;                     
+[11] &quot;DE_Breeding&quot;              &quot;DE_Protocol&quot;             
+[13] &quot;DE_Study&quot;                 &quot;DE_birth_date_year&quot;      
+[15] &quot;DE_birth_date_month&quot;      &quot;DE_birth_date_day&quot;       
+[17] &quot;DE_arrival_date_year&quot;     &quot;DE_arrival_date_month&quot;   
+[19] &quot;DE_arrival_date_day&quot;      &quot;DE_exit_date_year&quot;       
+[21] &quot;DE_exit_date_month&quot;       &quot;DE_exit_date_day&quot;        
+[23] &quot;DE_Exit_Reason&quot;           &quot;DE_DO_Center_Status&quot;     
+[25] &quot;AQ_SessionsToAcquisition&quot; &quot;DR_Inf_Total_1p0mgkg&quot;    
+[27] &quot;DR_Inf_Total_1p8mgkg&quot;     &quot;DR_Inf_Total_0p56mgkg&quot;   
+[29] &quot;DR_Inf_Total_0p32mgkg&quot;    &quot;DR_Inf_Total_0p1mgkg&quot;    
+[31] &quot;DR_Inf_Total_0p18mgkg&quot;    &quot;DR_Inf_Total_0p056mgkg&quot;  
+[33] &quot;DR_Inf_Total_0p032mgkg&quot;   &quot;DR_Inf_Total_1p0mgkgX2&quot;  
+[35] &quot;EX_ALP_Total_s01&quot;         &quot;EX_ALP_Total_s02&quot;        
+[37] &quot;EX_ALP_Total_s03&quot;         &quot;EX_ALP_Total_s04&quot;        
+[39] &quot;EX_ALP_Total_s05&quot;         &quot;EX_ALP_Total_s06&quot;        
+[41] &quot;EX_ALP_Total_s07&quot;         &quot;EX_ALP_Total_s08&quot;        
+[43] &quot;EX_ALP_Total_s09&quot;         &quot;EX_ALP_Total_s10&quot;        
+[45] &quot;EX_ILP_Total_s01&quot;         &quot;EX_ILP_Total_s02&quot;        
+[47] &quot;EX_ILP_Total_s03&quot;         &quot;EX_ILP_Total_s04&quot;        
+[49] &quot;EX_ILP_Total_s05&quot;         &quot;EX_ILP_Total_s06&quot;        
+[51] &quot;EX_ILP_Total_s07&quot;         &quot;EX_ILP_Total_s08&quot;        
+[53] &quot;EX_ILP_Total_s09&quot;         &quot;EX_ILP_Total_s10&quot;        
+[55] &quot;RI_ALP_Total_s01&quot;         &quot;RI_ALP_Total_s02&quot;        
+[57] &quot;RI_ALP_Total_s03&quot;         &quot;RI_ILP_Total_s01&quot;        
+[59] &quot;RI_ILP_Total_s02&quot;         &quot;RI_ILP_Total_s03&quot;        
+[61] &quot;RI_Inf_Total_s01&quot;         &quot;RI_Inf_Total_s02&quot;        
+[63] &quot;RI_Inf_Total_s03&quot;        
+[1] &quot;Strain names : &quot;
+ [1] &quot;CC004/TauUncJ&quot;  &quot;CC041/TauUncJ&quot;  &quot;CC026/GeniUncJ&quot; &quot;CC003/UncJ&quot;    
+ [5] &quot;CC051/TauUncJ&quot;  &quot;CC011/UncJ&quot;     &quot;CC013/GeniUncJ&quot; &quot;CC059/TauUncJ&quot; 
+ [9] &quot;CC006/TauUncJ&quot;  &quot;CC061/GeniUncJ&quot; &quot;CC002/UncJ&quot;     &quot;CC019/TauUncJ&quot; 
+[13] &quot;CC005/TauUncJ&quot;  &quot;CC012/GeniUncJ&quot; &quot;CC028/GeniUncJ&quot; &quot;CC016/GeniUncJ&quot;
+[17] &quot;CC075/UncJ&quot;     &quot;CC036/UncJ&quot;     &quot;CC010/GeniUncJ&quot; &quot;CC032/GeniUncJ&quot;
+[21] &quot;CC035/UncJ&quot;     &quot;CC057/UncJ&quot;     &quot;CC033/GeniUncJ&quot; &quot;CC015/UncJ&quot;    
+[25] &quot;CC009/UncJ&quot;     &quot;CC078/TauUncJ&quot;  &quot;CC074/UncJ&quot;     &quot;CC001/UncJ&quot;    
+[29] &quot;CC018/UncJ&quot;     &quot;CC023/GeniUncJ&quot; &quot;CC037/TauUncJ&quot;  &quot;CC068/TauUncJ&quot; 
+[33] &quot;CC080/TauUncJ&quot;  &quot;CC079/TauUncJ&quot;  &quot;CC025/GeniUncJ&quot; &quot;CC008/GeniUncJ&quot;
+[37] &quot;CC043/GeniUncJ&quot; &quot;CC027/GeniUncJ&quot; &quot;CC030/GeniUncJ&quot; &quot;CC024/GeniUncJ&quot;
+[41] &quot;CC007/UncJ&quot;     &quot;CC084/TauJ&quot;     &quot;CC017/UncJ&quot;     &quot;CC020/GeniUncJ&quot;
+[45] &quot;CC029/UncJ&quot;     &quot;CC044/UncJ&quot;     &quot;CC060/UncJ&quot;     &quot;CC040/TauUncJ&quot; 
+[49] &quot;CC045/GeniUncJ&quot;
+[1] &quot;Duplicated Mouse.ID  : &quot;
+character(0)
+[1] &quot;data/pheno/Updated_CSNA_Data/Prj04_IVSA_preqc_12072020_DO.csv&quot;
+[1] &quot;Column names : &quot;
+ [1] &quot;Mouse.ID&quot;                 &quot;DE_Experiment&quot;           
+ [3] &quot;DE_Active_Lever&quot;          &quot;DE_Control_Unit&quot;         
+ [5] &quot;DE_Group&quot;                 &quot;DE_Box&quot;                  
+ [7] &quot;DE_JR&quot;                    &quot;Strain&quot;                  
+ [9] &quot;DE_Stock_ID&quot;              &quot;Sex&quot;                     
+[11] &quot;DE_Breeding&quot;              &quot;DE_Protocol&quot;             
+[13] &quot;DE_Study&quot;                 &quot;DE_birth_date_year&quot;      
+[15] &quot;DE_birth_date_month&quot;      &quot;DE_birth_date_day&quot;       
+[17] &quot;DE_arrival_date_year&quot;     &quot;DE_arrival_date_month&quot;   
+[19] &quot;DE_arrival_date_day&quot;      &quot;DE_exit_date_year&quot;       
+[21] &quot;DE_exit_date_month&quot;       &quot;DE_exit_date_day&quot;        
+[23] &quot;DE_Exit_Reason&quot;           &quot;DE_DO_Center_Status&quot;     
+[25] &quot;AQ_SessionsToAcquisition&quot; &quot;DR_Inf_Total_1p0mgkg&quot;    
+[27] &quot;DR_Inf_Total_1p8mgkg&quot;     &quot;DR_Inf_Total_0p56mgkg&quot;   
+[29] &quot;DR_Inf_Total_0p32mgkg&quot;    &quot;DR_Inf_Total_0p1mgkg&quot;    
+[31] &quot;DR_Inf_Total_0p18mgkg&quot;    &quot;DR_Inf_Total_0p056mgkg&quot;  
+[33] &quot;DR_Inf_Total_0p032mgkg&quot;   &quot;DR_Inf_Total_1p0mgkgX2&quot;  
+[35] &quot;EX_ALP_Total_s01&quot;         &quot;EX_ALP_Total_s02&quot;        
+[37] &quot;EX_ALP_Total_s03&quot;         &quot;EX_ALP_Total_s04&quot;        
+[39] &quot;EX_ALP_Total_s05&quot;         &quot;EX_ALP_Total_s06&quot;        
+[41] &quot;EX_ALP_Total_s07&quot;         &quot;EX_ALP_Total_s08&quot;        
+[43] &quot;EX_ALP_Total_s09&quot;         &quot;EX_ALP_Total_s10&quot;        
+[45] &quot;EX_ILP_Total_s01&quot;         &quot;EX_ILP_Total_s02&quot;        
+[47] &quot;EX_ILP_Total_s03&quot;         &quot;EX_ILP_Total_s04&quot;        
+[49] &quot;EX_ILP_Total_s05&quot;         &quot;EX_ILP_Total_s06&quot;        
+[51] &quot;EX_ILP_Total_s07&quot;         &quot;EX_ILP_Total_s08&quot;        
+[53] &quot;EX_ILP_Total_s09&quot;         &quot;EX_ILP_Total_s10&quot;        
+[55] &quot;RI_ALP_Total_s01&quot;         &quot;RI_ALP_Total_s02&quot;        
+[57] &quot;RI_ALP_Total_s03&quot;         &quot;RI_ILP_Total_s01&quot;        
+[59] &quot;RI_ILP_Total_s02&quot;         &quot;RI_ILP_Total_s03&quot;        
+[61] &quot;RI_Inf_Total_s01&quot;         &quot;RI_Inf_Total_s02&quot;        
+[63] &quot;RI_Inf_Total_s03&quot;        
+[1] &quot;Strain names : &quot;
+[1] &quot;J:DO&quot;
+[1] &quot;Duplicated Mouse.ID  : &quot;
+character(0)
+[1] &quot;data/pheno/Updated_CSNA_Data/Prj05_CR_preqc_12072020_CC.csv&quot;
+[1] &quot;Column names : &quot;
+[1] &quot;Mouse.ID&quot;       &quot;Sex&quot;            &quot;Strain&quot;         &quot;Generation&quot;    
+[5] &quot;period&quot;         &quot;phase&quot;          &quot;amplitude&quot;      &quot;damping&quot;       
+[9] &quot;godness_of_fit&quot;
+[1] &quot;Strain names : &quot;
+ [1] &quot;CC041/TauUncJ&quot;  &quot;CC004/TauUncJ&quot;  &quot;CC005/TauUncJ&quot;  &quot;CC011/UncJ&quot;    
+ [5] &quot;CC012/GeniUncJ&quot; &quot;CC028/GeniUncJ&quot; &quot;CC002/UncJ&quot;     &quot;CC019/TauUncJ&quot; 
+ [9] &quot;CC059/TauUncJ&quot;  &quot;CC016/GeniUncJ&quot; &quot;CC035/UncJ&quot;     &quot;CC075/UncJ&quot;    
+[13] &quot;CC010/GeniUncJ&quot; &quot;CC043/GeniUncJ&quot; &quot;CC074/UncJ&quot;     &quot;CC018/UncJ&quot;    
+[17] &quot;CC023/GeniUncJ&quot; &quot;CC025/GeniUncJ&quot; &quot;CC008/GeniUncJ&quot; &quot;CC057/UncJ&quot;    
+[21] &quot;CC030/GeniUncJ&quot; &quot;CC084/TauJ&quot;     &quot;CC037/TauUncJ&quot;  &quot;CC013/GeniUncJ&quot;
+[25] &quot;CC061/GeniUncJ&quot; &quot;CC068/TauUncJ&quot;  &quot;CC078/TauUncJ&quot;  &quot;CC080/TauUncJ&quot; 
+[29] &quot;CC001/UncJ&quot;     &quot;CC003/UncJ&quot;     &quot;CC017/UncJ&quot;     &quot;CC051/TauUncJ&quot; 
+[1] &quot;Duplicated Mouse.ID  : &quot;
+[1] &quot;20767&quot;
+[1] &quot;data/pheno/Updated_CSNA_Data/Prj05_CR_preqc_12072020_DO.csv&quot;
+[1] &quot;Column names : &quot;
+[1] &quot;Mouse.ID&quot;       &quot;Sex&quot;            &quot;Strain&quot;         &quot;Generation&quot;    
+[5] &quot;period&quot;         &quot;phase&quot;          &quot;amplitude&quot;      &quot;damping&quot;       
+[9] &quot;godness_of_fit&quot;
+[1] &quot;Strain names : &quot;
+[1] &quot;J:DO&quot;           &quot;CC075/UncJ&quot;     &quot;CC030/GeniUncJ&quot;
+[1] &quot;Duplicated Mouse.ID  : &quot;
+[1] &quot;20662&quot; &quot;26046&quot;
+[1] &quot;data/pheno/Updated_CSNA_Data/Prj05_CR_preqc_12072020_Founders.csv&quot;
+[1] &quot;Column names : &quot;
+ [1] &quot;Mouse.ID&quot;        &quot;Name&quot;            &quot;Strain&quot;          &quot;Sex&quot;            
+ [5] &quot;Generation&quot;      &quot;period&quot;          &quot;phase&quot;           &quot;amplitude&quot;      
+ [9] &quot;damping&quot;         &quot;goodness_of_fit&quot;
+[1] &quot;Strain names : &quot;
+[1] &quot;129&quot;  &quot;AJ&quot;   &quot;B6&quot;   &quot;CAST&quot; &quot;NOD&quot;  &quot;NZO&quot;  &quot;PWK&quot;  &quot;WSB&quot; 
+[1] &quot;Duplicated Mouse.ID  : &quot;
+  [1] &quot;Mouse1&quot;  &quot;Mouse2&quot;  &quot;Mouse3&quot;  &quot;Mouse4&quot;  &quot;Mouse5&quot;  &quot;Mouse6&quot;  &quot;Mouse7&quot; 
+  [8] &quot;Mouse8&quot;  &quot;Mouse9&quot;  &quot;Mouse10&quot; &quot;Mouse1&quot;  &quot;Mouse2&quot;  &quot;Mouse3&quot;  &quot;Mouse4&quot; 
+ [15] &quot;Mouse5&quot;  &quot;Mouse6&quot;  &quot;Mouse7&quot;  &quot;Mouse8&quot;  &quot;Mouse9&quot;  &quot;Mouse10&quot; &quot;Mouse1&quot; 
+ [22] &quot;Mouse2&quot;  &quot;Mouse3&quot;  &quot;Mouse4&quot;  &quot;Mouse5&quot;  &quot;Mouse6&quot;  &quot;Mouse7&quot;  &quot;Mouse8&quot; 
+ [29] &quot;Mouse9&quot;  &quot;Mouse10&quot; &quot;Mouse1&quot;  &quot;Mouse2&quot;  &quot;Mouse3&quot;  &quot;Mouse4&quot;  &quot;Mouse5&quot; 
+ [36] &quot;Mouse6&quot;  &quot;Mouse7&quot;  &quot;Mouse8&quot;  &quot;Mouse9&quot;  &quot;Mouse10&quot; &quot;Mouse1&quot;  &quot;Mouse2&quot; 
+ [43] &quot;Mouse3&quot;  &quot;Mouse4&quot;  &quot;Mouse5&quot;  &quot;Mouse6&quot;  &quot;Mouse7&quot;  &quot;Mouse8&quot;  &quot;Mouse9&quot; 
+ [50] &quot;Mouse10&quot; &quot;Mouse1&quot;  &quot;Mouse2&quot;  &quot;Mouse3&quot;  &quot;Mouse4&quot;  &quot;Mouse5&quot;  &quot;Mouse6&quot; 
+ [57] &quot;Mouse7&quot;  &quot;Mouse8&quot;  &quot;Mouse9&quot;  &quot;Mouse10&quot; &quot;Mouse1&quot;  &quot;Mouse2&quot;  &quot;Mouse3&quot; 
+ [64] &quot;Mouse4&quot;  &quot;Mouse5&quot;  &quot;Mouse6&quot;  &quot;Mouse7&quot;  &quot;Mouse8&quot;  &quot;Mouse9&quot;  &quot;Mouse10&quot;
+ [71] &quot;Mouse1&quot;  &quot;Mouse2&quot;  &quot;Mouse3&quot;  &quot;Mouse4&quot;  &quot;Mouse5&quot;  &quot;Mouse6&quot;  &quot;Mouse7&quot; 
+ [78] &quot;Mouse8&quot;  &quot;Mouse9&quot;  &quot;Mouse10&quot; &quot;Mouse1&quot;  &quot;Mouse2&quot;  &quot;Mouse3&quot;  &quot;Mouse4&quot; 
+ [85] &quot;Mouse5&quot;  &quot;Mouse6&quot;  &quot;Mouse7&quot;  &quot;Mouse8&quot;  &quot;Mouse9&quot;  &quot;Mouse10&quot; &quot;Mouse1&quot; 
+ [92] &quot;Mouse2&quot;  &quot;Mouse3&quot;  &quot;Mouse4&quot;  &quot;Mouse5&quot;  &quot;Mouse6&quot;  &quot;Mouse7&quot;  &quot;Mouse8&quot; 
+ [99] &quot;Mouse9&quot;  &quot;Mouse10&quot; &quot;Mouse1&quot;  &quot;Mouse2&quot;  &quot;Mouse3&quot;  &quot;Mouse4&quot;  &quot;Mouse5&quot; 
+[106] &quot;Mouse6&quot;  &quot;Mouse7&quot;  &quot;Mouse8&quot;  &quot;Mouse9&quot;  &quot;Mouse10&quot; &quot;Mouse1&quot;  &quot;Mouse2&quot; 
+[113] &quot;Mouse3&quot;  &quot;Mouse4&quot;  &quot;Mouse5&quot;  &quot;Mouse6&quot;  &quot;Mouse7&quot;  &quot;Mouse8&quot;  &quot;Mouse9&quot; 
+[120] &quot;Mouse10&quot; &quot;Mouse1&quot;  &quot;Mouse2&quot;  &quot;Mouse3&quot;  &quot;Mouse4&quot;  &quot;Mouse5&quot;  &quot;Mouse6&quot; 
+[127] &quot;Mouse7&quot;  &quot;Mouse8&quot;  &quot;Mouse9&quot;  &quot;Mouse10&quot; &quot;Mouse1&quot;  &quot;Mouse2&quot;  &quot;Mouse3&quot; 
+[134] &quot;Mouse4&quot;  &quot;Mouse5&quot;  &quot;Mouse6&quot;  &quot;Mouse7&quot;  &quot;Mouse8&quot;  &quot;Mouse9&quot;  &quot;Mouse10&quot;
+[141] &quot;Mouse1&quot;  &quot;Mouse2&quot;  &quot;Mouse3&quot;  &quot;Mouse4&quot;  &quot;Mouse5&quot;  &quot;Mouse6&quot;  &quot;Mouse7&quot; 
+[148] &quot;Mouse8&quot;  &quot;Mouse9&quot;  &quot;Mouse10&quot;</code></pre>
+<pre class="r"><code>names(data) &lt;- csv
+
+#RL_Acq-------------------------------------------------------------------------
+RL_Acq &lt;- data[which(str_detect(csv, &quot;Acquisition&quot;))] %&gt;% 
+  map(function(x){
+    x %&gt;% select(c(&quot;Mouse.ID&quot;, &quot;Strain&quot;, &quot;Sex&quot;, 
+                   &quot;Acq.Total.Trials&quot;, 
+                   &quot;Acq.Total.Correct&quot;, 
+                   &quot;Acq.Total.Omit&quot;, 
+                   &quot;Acq.Anticipatory.Correct.Responses&quot;, 
+                   &quot;Acq.Anticipatory.Incorrect.Responses&quot;)) %&gt;%
+      mutate(across(starts_with(&quot;Acq&quot;), as.numeric)) %&gt;%
+      mutate(Acq.Anticipatory.Correct.Responses = case_when(
+        Acq.Anticipatory.Correct.Responses &gt;= 100 ~ NA_real_,
+        is.na(Acq.Anticipatory.Correct.Responses) ~ NA_real_,
+        TRUE                                      ~ Acq.Anticipatory.Correct.Responses)) %&gt;% #outliers
+      mutate(Acq.Anticipatory.Incorrect.Responses = case_when(
+        Acq.Anticipatory.Incorrect.Responses &gt;= 100 ~ NA_real_,
+        is.na(Acq.Anticipatory.Incorrect.Responses) ~ NA_real_,
+        TRUE                                        ~ Acq.Anticipatory.Incorrect.Responses)) %&gt;%
+      distinct(Mouse.ID, .keep_all = TRUE) #remove duplicates
+}) %&gt;%
+  set_names(., nm = str_match(names(.),&quot;2020_(\\w+?)\\.&quot;)[,2]) %&gt;% .[order(names(.))]
+
+#RL_Rev-------------------------------------------------------------------------
+RL_Rev &lt;- data[which(str_detect(csv, &quot;Reversal&quot;))] %&gt;% 
+  map(function(x){
+    x %&gt;% select(c(&quot;Mouse.ID&quot;, &quot;Strain&quot;, &quot;Sex&quot;, 
+                   &quot;Rev.Total.Trials&quot;, 
+                   &quot;Rev.Total.Correct&quot;, 
+                   &quot;Rev.Total.Omit&quot;, 
+                   &quot;Rev.Anticipatory.Correct.Responses&quot;, 
+                   &quot;Rev.Anticipatory.Incorrect.Responses&quot;)) %&gt;%
+      mutate(across(starts_with(&quot;Rev&quot;), as.numeric)) %&gt;%
+      mutate(Rev.Anticipatory.Correct.Responses = case_when(
+        Rev.Anticipatory.Correct.Responses &gt;= 100 ~ NA_real_,
+        is.na(Rev.Anticipatory.Correct.Responses) ~ NA_real_,
+        TRUE                                      ~ Rev.Anticipatory.Correct.Responses)) %&gt;% #outliers
+      mutate(Rev.Anticipatory.Incorrect.Responses = case_when(
+        Rev.Anticipatory.Incorrect.Responses &gt;= 100 ~ NA_real_,
+        is.na(Rev.Anticipatory.Incorrect.Responses) ~ NA_real_,
+        TRUE                                        ~ Rev.Anticipatory.Incorrect.Responses)) %&gt;%
+      distinct(Mouse.ID, .keep_all = TRUE) #remove duplicates
+}) %&gt;%
+  set_names(., nm = str_match(names(.),&quot;2020_(\\w+?)\\.&quot;)[,2]) %&gt;% .[order(names(.))]
+
+#add Diff.Total.Trials
+Diff &lt;- map2(RL_Acq, RL_Rev, function(x,y){
+  full_join(x, y, by = c(&quot;Mouse.ID&quot;, &quot;Strain&quot;, &quot;Sex&quot;)) %&gt;%
+    mutate(Diff.Total.Trials = Rev.Total.Trials - Acq.Total.Trials) %&gt;% #Diff.Total.Trials
+    select(c(&quot;Mouse.ID&quot;, &quot;Strain&quot;, &quot;Sex&quot;, &quot;Diff.Total.Trials&quot;))
+})
+#merge to RL_Rev
+RL_Rev &lt;- map2(RL_Rev, Diff, function(x,y){
+    left_join(x, y, by = c(&quot;Mouse.ID&quot;, &quot;Strain&quot;, &quot;Sex&quot;))
+})
+
+#SENS_COCA-------------------------------------------------------------------------
+SENS_COCA &lt;- data[which(str_detect(csv, &quot;Sensitization&quot;))] %&gt;% 
+  map(function(x){
+    x %&gt;% 
+      filter(Study == &quot;SENS-COCA&quot;) %&gt;%
+      select(c(&quot;Mouse.ID&quot;, &quot;Strain&quot;, &quot;Sex&quot;, 
+               &quot;D3_D2&quot;,
+               &quot;D5_D3&quot;,
+               &quot;D11_D3&quot;,
+               &quot;D12_D2&quot;,
+               &quot;D19_D11&quot;,
+               &quot;AUC&quot;)) %&gt;%
+      distinct(Mouse.ID, .keep_all = TRUE) #remove duplicates
+}) %&gt;%
+  set_names(., nm = str_match(names(.),&quot;2020_(\\w+?)\\.&quot;)[,2]) %&gt;% .[order(names(.))]
+
+#SENS-SHAM-------------------------------------------------------------------------
+SENS_SHAM &lt;- data[which(str_detect(csv, &quot;Sensitization&quot;))] %&gt;% 
+  map(function(x){
+    x %&gt;% 
+      filter(Study == &quot;SENS-SHAM&quot;) %&gt;%
+      select(c(&quot;Mouse.ID&quot;, &quot;Strain&quot;, &quot;Sex&quot;, 
+               &quot;D3_D2&quot;,
+               &quot;D5_D3&quot;,
+               &quot;D11_D3&quot;,
+               &quot;D12_D2&quot;,
+               &quot;D19_D11&quot;,
+               &quot;AUC&quot;)) %&gt;%
+      distinct(Mouse.ID, .keep_all = TRUE) #remove duplicates
+}) %&gt;% 
+  set_names(., nm = str_match(names(.),&quot;2020_(\\w+?)\\.&quot;)[,2]) %&gt;% .[order(names(.))]
+
+#IVSA-------------------------------------------------------------------------
+IVSA &lt;- data[which(str_detect(csv, &quot;IVSA&quot;))] %&gt;% 
+  map(function(x){
+    x %&gt;% 
+      filter(!(DE_Exit_Reason == &quot;FD&quot;)) %&gt;%
+      select(c(&quot;Mouse.ID&quot;, &quot;Strain&quot;, &quot;Sex&quot;,
+               &quot;AQ_SessionsToAcquisition&quot;,
+               &quot;DR_Inf_Total_1p0mgkg&quot;,
+               &quot;DR_Inf_Total_0p032mgkg&quot;,
+               &quot;DR_Inf_Total_0p1mgkg&quot;,
+               &quot;DR_Inf_Total_0p32mgkg&quot;,
+               #&quot;DR_Inf_Total_AUC&quot;,
+               &quot;EX_ALP_Total_s01&quot;,
+               &quot;EX_ILP_Total_s01&quot;,
+               &quot;EX_ALP_Total_s02&quot;,
+               &quot;EX_ILP_Total_s02&quot;,
+               #&quot;EX_Slope_ALP&quot;,
+               #&quot;EX_Slope_ILP&quot;,
+               &quot;RI_ALP_Total_s01&quot;,
+               &quot;RI_ILP_Total_s01&quot;,
+               &quot;RI_ALP_Total_s02&quot;,
+               &quot;RI_ILP_Total_s02&quot;,
+               &quot;RI_Inf_Total_s01&quot;,
+               &quot;RI_Inf_Total_s02&quot;)) %&gt;%
+      distinct(Mouse.ID, .keep_all = TRUE) #remove duplicates
+}) %&gt;%
+  set_names(., nm = str_match(names(.),&quot;2020_(\\w+?)\\.&quot;)[,2]) %&gt;% .[order(names(.))]
+
+#CR-------------------------------------------------------------------------
+CR &lt;- data[which(str_detect(csv, &quot;CR&quot;))] %&gt;% 
+  map(function(x){
+    x %&gt;% 
+      select(c(&quot;Mouse.ID&quot;, &quot;Strain&quot;, &quot;Sex&quot;, 
+               &quot;period&quot;, 
+               &quot;phase&quot;,
+               &quot;amplitude&quot;,
+               &quot;damping&quot;,
+               contains(&quot;of_fit&quot;))) %&gt;%
+    rename_with(~(.x = &quot;goodness_of_fit&quot;), contains(&quot;of_fit&quot;))
+}) %&gt;%
+  set_names(., nm = str_match(names(.),&quot;2020_(\\w+?)\\.&quot;)[,2]) %&gt;% .[order(names(.))]
+
+# note that Prj05_CR_preqc_12072020_DO.csv contains &quot;J:DO&quot;, &quot;CC075/UncJ&quot;, &quot;CC030/GeniUncJ&quot;
+CR$DO &lt;- CR$DO %&gt;%
+  filter(Strain == &quot;J:DO&quot;)
+#add CC from DO to CC for CR
+CR$CC &lt;- CR$DO %&gt;%
+  filter(Strain != &quot;J:DO&quot;) %&gt;%
+  rbind(CR$CC)</code></pre>
+</div>
+<div id="data-summary" class="section level3">
+<h3>5, Data summary</h3>
+<pre class="r"><code>#get result of summary
+res.summary &lt;- map(list(RL_Acq, RL_Rev, SENS_COCA, SENS_SHAM, IVSA, CR), function(x){
+  print(names(x))
+  y &lt;- map(x, function(x){# for CC, DO and Founders
+    x %&gt;%
+      group_by(Strain) %&gt;% #Strain
+      summarise(across(where(is.numeric), summary_func))
+  })
+  names(y) &lt;- names(x)
+  return(do.call(rbind.data.frame, y)) #combine CC, DO and Founders
+}) %&gt;%
+  set_names(., nm = c(&quot;RL_Acq&quot;, &quot;RL_Rev&quot;, &quot;SENS_COCA&quot;, &quot;SENS_SHAM&quot;, &quot;IVSA&quot;, &quot;CR&quot;))</code></pre>
+<pre><code>[1] &quot;CC&quot;       &quot;DO&quot;       &quot;Founders&quot;
+[1] &quot;CC&quot;       &quot;DO&quot;       &quot;Founders&quot;
+[1] &quot;CC&quot;       &quot;DO&quot;       &quot;founders&quot;
+[1] &quot;CC&quot;       &quot;DO&quot;       &quot;founders&quot;
+[1] &quot;CC&quot;       &quot;DO&quot;       &quot;Founders&quot;
+[1] &quot;CC&quot;       &quot;DO&quot;       &quot;Founders&quot;</code></pre>
+</div>
+<div id="plot-summary" class="section level3">
+<h3>6, Plot summary</h3>
+<pre class="r"><code>#pheno list in each domain
+pheno.list &lt;- list(RL_Acq, 
+                   RL_Rev, 
+                   SENS_COCA,
+                   SENS_SHAM,
+                   IVSA,
+                   CR) %&gt;% 
+  map(~colnames(.x[[1]])[-c(1:3)]) %&gt;% # get pheno names except for Mouse.ID, Strain, Sex
+  set_names(., nm = c(&quot;RL_Acq&quot;, &quot;RL_Rev&quot;, &quot;SENS_COCA&quot;, &quot;SENS_SHAM&quot;, &quot;IVSA&quot;, &quot;CR&quot;))
+
+#output location and name
+out.pdf = as.list(paste0(&quot;output/pdf/mean.&quot;,names(pheno.list))) 
+stopifnot(all.equal(names(pheno.list), names(res.summary)))
+
+#plot for each domain
+args1 &lt;- list(summary.dat = res.summary, pheno.list = pheno.list, out.pdf = out.pdf)
+args1 %&gt;% 
+  pmap(plot.summary)</code></pre>
+<p><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-1.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-2.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-3.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-4.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-5.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-6.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-7.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-8.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-9.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-10.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-11.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-12.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-13.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-14.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-15.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-16.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-17.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-18.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-19.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-20.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-21.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-22.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-23.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-24.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-25.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-26.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-27.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-28.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-29.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-30.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-31.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-32.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-33.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-34.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-35.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-36.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-37.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-38.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-39.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-40.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-41.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-42.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Plot%20summary-43.png" width="1152" style="display: block; margin: auto;" /></p>
+<pre><code>$RL_Acq
+NULL
+
+$RL_Rev
+NULL
+
+$SENS_COCA
+NULL
+
+$SENS_SHAM
+NULL
+
+$IVSA
+NULL
+
+$CR
+NULL</code></pre>
+</div>
+<div id="correlation-in-cc-andor-founders" class="section level3">
+<h3>7, Correlation in CC and/or Founders</h3>
+<pre class="r"><code>#correlation in CC-------------------------
+corr.cc &lt;- res.summary[-4] %&gt;% 
+  reduce(full_join, by = &quot;Strain&quot;) %&gt;% # Don&#39;t include SENS_SHAM
+  filter(str_detect(Strain, &quot;^CC&quot;)) %&gt;%
+  select(c(contains(&quot;_mean&quot;))) %&gt;%
+  rename_with(~str_remove(.x, &quot;_mean&quot;), contains(&quot;_mean&quot;)) %&gt;%
+  corr.test(use = &quot;pairwise.complete.obs&quot;, method = &quot;spearman&quot;, adjust = &quot;fdr&quot;)
+#plot
+plot.corr.cc &lt;- ggcorrplot(corr.cc$r, 
+                           hc.order = FALSE, 
+                           method = &quot;square&quot;,
+                           type = &quot;lower&quot;,
+                           outline.col = &quot;grey&quot;, 
+                           sig.level = 0.10, 
+                           p.mat = corr.cc$p, 
+                           insig=&quot;blank&quot;,
+                           lab = TRUE,
+                           lab_size = 3,
+                           tl.cex = 18,
+                           ggtheme = ggplot2::theme_bw,
+                           title = &quot;Cross Project Correlations in CC (p &lt; 0.1)&quot;)
+print(plot.corr.cc)</code></pre>
+<p><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Correlation%20in%20CC%20and/or%20Founders-1.png" width="1536" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(file = paste0(&quot;output/pdf/corr.cc&quot;,&quot;.pdf&quot;), 
+         plot = plot.corr.cc,
+         device = &quot;pdf&quot;, height = 20, width = 20)
+
+#correlation in founders-------------------------
+corr.fd &lt;- res.summary[-4] %&gt;% 
+  reduce(full_join, by = &quot;Strain&quot;) %&gt;% # Don&#39;t include SENS_SHAM
+  filter(!str_detect(Strain, &quot;^CC&quot;)) %&gt;%
+  filter(Strain != &quot;J:DO&quot;) %&gt;%
+  select(c(contains(&quot;_mean&quot;))) %&gt;%
+  rename_with(~str_remove(.x, &quot;_mean&quot;), contains(&quot;_mean&quot;)) %&gt;%
+  corr.test(use = &quot;pairwise.complete.obs&quot;, method = &quot;spearman&quot;, adjust = &quot;fdr&quot;)
+#plot
+plot.corr.fd &lt;- ggcorrplot(corr.fd$r, 
+                           hc.order = FALSE, 
+                           method = &quot;square&quot;,
+                           type = &quot;lower&quot;,
+                           outline.col = &quot;grey&quot;, 
+                           sig.level = 0.10, 
+                           p.mat = corr.fd$p, 
+                           insig=&quot;blank&quot;,
+                           lab = TRUE,
+                           lab_size = 3,
+                           tl.cex = 18,
+                           ggtheme = ggplot2::theme_bw,
+                           title = &quot;Cross Project Correlations in Founders (p &lt; 0.1)&quot;)
+print(plot.corr.fd)</code></pre>
+<p><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Correlation%20in%20CC%20and/or%20Founders-2.png" width="1536" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(file = paste0(&quot;output/pdf/corr.fd&quot;,&quot;.pdf&quot;), 
+         plot = plot.corr.fd,
+         device = &quot;pdf&quot;, height = 20, width = 20)
+
+#correlation in cc + founders-------------------------
+corr.cc.fd &lt;- res.summary[-4] %&gt;% 
+  reduce(full_join, by = &quot;Strain&quot;) %&gt;% # Don&#39;t include SENS_SHAM
+  filter(Strain != &quot;J:DO&quot;) %&gt;%
+  select(c(contains(&quot;_mean&quot;))) %&gt;%
+  rename_with(~str_remove(.x, &quot;_mean&quot;), contains(&quot;_mean&quot;)) %&gt;%
+  corr.test(use = &quot;pairwise.complete.obs&quot;, method = &quot;spearman&quot;, adjust = &quot;fdr&quot;)
+#plot
+plot.corr.cc.fd &lt;- ggcorrplot(corr.cc.fd$r, 
+                           hc.order = FALSE, 
+                           method = &quot;square&quot;,
+                           type = &quot;lower&quot;,
+                           outline.col = &quot;grey&quot;, 
+                           sig.level = 0.10, 
+                           p.mat = corr.cc.fd$p, 
+                           insig=&quot;blank&quot;,
+                           lab = TRUE,
+                           lab_size = 3,
+                           tl.cex = 18,
+                           ggtheme = ggplot2::theme_bw,
+                           title = &quot;Cross Project Correlations in CC and Founders (p &lt; 0.1)&quot;)
+print(plot.corr.cc.fd)</code></pre>
+<p><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/Correlation%20in%20CC%20and/or%20Founders-3.png" width="1536" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(file = paste0(&quot;output/pdf/corr.cc.fd&quot;,&quot;.pdf&quot;), 
+       plot = plot.corr.cc.fd,
+       device = &quot;pdf&quot;, height = 20, width = 20)</code></pre>
+</div>
+<div id="cc-extreme-strain-survey" class="section level3">
+<h3>8, CC Extreme Strain Survey</h3>
+<pre class="r"><code>#CC Extreme Strain Survey
+args2 &lt;- list(cc.data = list(RL_Acq    = RL_Acq$CC, 
+                             RL_Rev    = RL_Rev$CC, 
+                             SENS_COCA = SENS_COCA$CC, 
+                             IVSA      = IVSA$CC, 
+                             CR        = CR$CC), #CC data across projects
+              pheno.list = pheno.list[c(-4)]) #no SENS_SHAM
+extremesCC.res &lt;- args2 %&gt;% 
+  pmap(extremesCC_func)
+
+#print a pdf for each domain
+for(d in names(extremesCC.res)){
+  extremesCC.res[[d]] %&gt;% 
+    modify_depth(2, ~print(.x[[2]])) #print in rmarkdown
+  #print into pdf
+  pdf(file = paste0(&quot;output/pdf/&quot;, d, &quot;.extremesCC.pdf&quot;), width = 14, height = 10) 
+    extremesCC.res[[d]] %&gt;% modify_depth(2, ~print(.x[[2]]))
+  dev.off()
+}</code></pre>
+<p><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-1.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-2.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-3.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-4.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-5.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-6.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-7.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-8.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-9.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-10.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-11.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-12.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-13.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-14.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-15.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-16.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-17.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-18.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-19.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-20.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-21.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-22.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-23.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-24.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-25.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-26.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-27.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-28.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-29.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-30.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-31.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-32.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-33.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-34.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-35.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-36.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-37.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-38.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-39.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-40.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-41.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-42.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-43.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-44.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-45.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-46.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-47.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-48.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-49.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-50.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-51.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-52.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-53.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-54.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-55.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-56.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-57.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-58.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-59.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-60.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-61.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-62.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-63.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-64.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-65.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-66.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-67.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-68.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-69.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-70.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-71.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-72.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-73.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-74.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-75.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-76.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-77.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-78.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-79.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-80.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-81.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-82.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-83.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-84.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-85.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-86.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-87.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-88.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-89.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-90.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-91.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-92.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-93.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-94.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-95.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-96.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-97.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-98.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-99.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-100.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-101.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-102.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-103.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-104.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-105.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-106.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-107.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-108.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-109.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-110.png" width="1152" style="display: block; margin: auto;" /><img src="figure/00_Process_all_phenotypes_in_founder_CC_DO.Rmd/CC%20Extreme%20Strain%20Survey-111.png" width="1152" style="display: block; margin: auto;" /></p>
+</div>
+<div id="do-phenos-and-correlation" class="section level3">
+<h3>9, DO phenos and correlation</h3>
+<pre class="r"><code># Novelty data process
+# This will process CSNA phenotype in
+# OFA_raw_07012020.csv
+# NPP_raw_07012020.csv
+# LD_raw_07012020.csv
+# HB_raw_07012020.csv.
+# 1, remove outliers
+# 2, get residuals
+# 3, rankz transformation on residuals
+
+if(TRUE){# it&#39;s done in the cluster
+  #Process OFA phenotype data  -----------------------------------------------------------------------
+  #mouse id &lt; 10000 are pre-center, anything &gt; 1000 is post-center
+  #raw OFA
+  ofa.raw &lt;- read.csv(&quot;data/pheno/OFA_raw_07012020.csv&quot;, header = TRUE)
+  ofa.raw$Birth.Date &lt;- as.Date(ofa.raw$Birth.Date, &quot;%m/%d/%Y&quot;)
+  ofa.raw$date.of.test &lt;- as.Date(ofa.raw$date.of.test, &quot;%m/%d/%y&quot;)
+  ofa.raw &lt;- as_tibble(ofa.raw)
+
+  # pre center
+  ofa.pre.nooutlier &lt;- ofa.raw %&gt;%
+    filter(Mouse.ID &lt; 10000) %&gt;%
+    group_by(Sex) %&gt;%
+    mutate(across(total.distance.traveled:distance.traveled.last.five,remove_outliers))
+
+  #regression
+  ofa.pre.resids &lt;- ofa.pre.nooutlier
+  #OFA
+  ofa.pre.resids[,20:43] &lt;- apply(ofa.pre.nooutlier[,20:43], 2, FUN = function(x, data = ofa.pre.nooutlier){
+    data$date.of.test &lt;- as.factor(data$date.of.test)
+    data$tester &lt;- as.factor(data$tester)
+    m &lt;- lmer(x ~ tester + (1|date.of.test), data = data, na.action = na.exclude, REML = TRUE)
+    r &lt;- residuals(m)
+    r
+  })
+
+  #rankz transform
+  ofa.pre.rankz.resids &lt;- ofa.pre.resids
+  ofa.pre.rankz.resids[,20:43] &lt;- apply(ofa.pre.resids[,20:43], 2, rz.transform)
+
+  # post center
+  ofa.post.nooutlier &lt;- ofa.raw %&gt;%
+    filter(Mouse.ID &gt;= 10000) %&gt;%
+    group_by(Sex) %&gt;%
+    mutate(across(total.distance.traveled:distance.traveled.last.five,remove_outliers))
+
+  #regression
+  ofa.post.resids &lt;- ofa.post.nooutlier
+  #OFA
+  ofa.post.resids[,20:43] &lt;- apply(ofa.post.nooutlier[,20:43], 2, FUN = function(x, data = ofa.post.nooutlier){
+    data$date.of.test &lt;- as.factor(data$date.of.test)
+    data$tester &lt;- as.factor(data$tester)
+    m &lt;- lmer(x ~ tester + (1|date.of.test), data = data, na.action = na.exclude, REML = TRUE)
+    r &lt;- residuals(m)
+    r
+  })
+
+  #rankz transform
+  ofa.post.rankz.resids &lt;- ofa.post.resids
+  ofa.post.rankz.resids[,20:43] &lt;- apply(ofa.post.resids[,20:43], 2, rz.transform)
+
+  #write out the csv
+  colnames(ofa.raw)[20:43] &lt;- paste0(&quot;OFA.&quot;, colnames(ofa.raw)[20:43],             &quot;.raw&quot;)
+  ofa.nooutlier &lt;- rbind.data.frame(ofa.pre.nooutlier, ofa.post.nooutlier)
+  colnames(ofa.nooutlier)[20:43] &lt;- paste0(&quot;OFA.&quot;, colnames(ofa.nooutlier)[20:43], &quot;.nooutlier&quot;)
+  #write.csv(ofa.nooutlier, file = &quot;data/pheno/OFA_nooutlier_07012020.csv&quot;, row.names = F, quote = F)
+  ofa.resids &lt;- rbind.data.frame(ofa.pre.resids, ofa.post.resids)
+  colnames(ofa.resids)[20:43] &lt;- paste0(&quot;OFA.&quot;, colnames(ofa.resids)[20:43],       &quot;.resids&quot;)
+  #write.csv(ofa.resids, file = &quot;data/pheno/OFA_resids_07012020.csv&quot;, row.names = F, quote = F)
+  ofa.ranknorm &lt;- rbind.data.frame(ofa.pre.rankz.resids, ofa.post.rankz.resids)
+  colnames(ofa.ranknorm)[20:43] &lt;- paste0(&quot;OFA.&quot;, colnames(ofa.ranknorm)[20:43],   &quot;.ranknorm&quot;)
+  #write.csv(ofa.ranknorm, file = &quot;data/pheno/OFA_resids_ranknorm_07012020.csv&quot;, row.names = F, quote = F)
+
+  #mege ofa
+  OFA &lt;- list(ofa.raw,
+              ofa.nooutlier,
+              ofa.resids,
+              ofa.ranknorm) %&gt;%
+    reduce(full_join, by = colnames(ofa.raw)[1:19])
+  colnames(OFA)[2:19] &lt;- paste0(&quot;OFA.&quot;, colnames(OFA)[2:19])
+
+  #Process NPP phenotype data  -----------------------------------------------------------------------
+  #raw npp
+  npp.raw &lt;- read.csv(&quot;data/pheno/NPP_raw_07012020.csv&quot;, header = TRUE)
+  npp.raw$Birth.Date &lt;- as.Date(npp.raw$Birth.Date, &quot;%m/%d/%Y&quot;)
+  npp.raw &lt;- npp.raw[,!(colnames(npp.raw)  %in% c(&quot;Test.MovementCounts_GreyZone_Total&quot;,&quot;Exposure.MovementCounts_GreyZone_Total&quot;))]
+  npp.raw$date.of.test &lt;- as.Date(npp.raw$date.of.test, &quot;%m/%d/%y&quot;)
+  npp.raw &lt;- as_tibble(npp.raw)
+
+  # pre center
+  npp.pre.nooutlier &lt;- npp.raw %&gt;%
+    filter(Mouse.ID &lt; 10000) %&gt;%
+    group_by(Sex) %&gt;%
+    mutate(across(Exposure.ExplorationCounts_BlackZone_Total:NoveltyPreference.MovementCounts_GreyWhiteBlack_Total,remove_outliers))
+
+  # post center
+  npp.post.nooutlier &lt;- npp.raw %&gt;%
+    filter(Mouse.ID &gt;= 10000) %&gt;%
+    group_by(Sex) %&gt;%
+    mutate(across(Exposure.ExplorationCounts_BlackZone_Total:NoveltyPreference.MovementCounts_GreyWhiteBlack_Total,remove_outliers))
+
+  npp.nooutlier &lt;- rbind.data.frame(npp.pre.nooutlier, npp.post.nooutlier)
+  #regression
+  npp.resids &lt;- npp.nooutlier
+  #npp
+  npp.resids[,41:78] &lt;- apply(npp.nooutlier[,41:78], 2, FUN = function(x, data = npp.nooutlier){
+    data$date.of.test &lt;- as.factor(data$date.of.test)
+    data$tester &lt;- as.factor(data$tester)
+    m &lt;- lmer(x ~ tester + (1|date.of.test), data = data, na.action = na.exclude, REML = TRUE)
+    r &lt;- residuals(m)
+    r
+  })
+
+  #rankz transform
+  npp.ranknorm &lt;- npp.resids
+  npp.ranknorm[,41:78] &lt;- apply(npp.resids[,41:78], 2, rz.transform)
+
+  #write out the csv
+  colnames(npp.raw)[41:78]       &lt;- paste0(&quot;NPP.&quot;, colnames(npp.raw)[41:78],       &quot;.raw&quot;)
+  colnames(npp.nooutlier)[41:78] &lt;- paste0(&quot;NPP.&quot;, colnames(npp.nooutlier)[41:78], &quot;.nooutlier&quot;)
+  colnames(npp.resids)[41:78]    &lt;- paste0(&quot;NPP.&quot;, colnames(npp.resids)[41:78],    &quot;.resids&quot;)
+  colnames(npp.ranknorm)[41:78]  &lt;- paste0(&quot;NPP.&quot;, colnames(npp.ranknorm)[41:78],  &quot;.ranknorm&quot;)
+  #write.csv(npp.nooutlier, file = &quot;data/pheno/NPP_nooutlier_07012020.csv&quot;, row.names = F, quote = F)
+  #write.csv(npp.resids, file = &quot;data/pheno/NPP_resids_07012020.csv&quot;, row.names = F, quote = F)
+  #write.csv(npp.ranknorm, file = &quot;data/pheno/NPP_resids_ranknorm_07012020.csv&quot;, row.names = F, quote = F)
+
+  #mege NPP
+  NPP &lt;- list(npp.raw,
+              npp.nooutlier,
+              npp.resids,
+              npp.ranknorm) %&gt;%
+    reduce(full_join, by = colnames(npp.raw)[-c(41:78)])
+  colnames(NPP)[c(2:40,79,80)] &lt;- paste0(&quot;NPP.&quot;, colnames(NPP)[c(2:40,79,80)])
+
+  #Process LD phenotype data -----------------------------------------------------------------------
+  #raw LD
+  LD.raw &lt;- read.csv(&quot;data/pheno/LD_raw_07012020.csv&quot;, header = TRUE)
+  LD.raw$Birth.Date &lt;- as.Date(LD.raw$Birth.Date, &quot;%m/%d/%Y&quot;)
+  LD.raw$date.of.test &lt;- as.Date(LD.raw$date.of.test, &quot;%m/%d/%y&quot;)
+  LD.raw &lt;- as_tibble(LD.raw)
+
+  # pre center
+  LD.pre.nooutlier &lt;- LD.raw %&gt;%
+    filter(Mouse.ID &lt; 10000) %&gt;%
+    group_by(Sex) %&gt;%
+    mutate(across(pct.distance.traveled.in.light:total.transitions,remove_outliers))
+
+  #regression
+  LD.pre.resids &lt;- LD.pre.nooutlier
+  #LD
+  LD.pre.resids[,20:25] &lt;- apply(LD.pre.nooutlier[,20:25], 2, FUN = function(x, data = LD.pre.nooutlier){
+    data$date.of.test &lt;- as.factor(data$date.of.test)
+    m &lt;- lm(x ~ date.of.test, data = data, na.action = na.exclude)
+    r &lt;- residuals(m)
+    r
+  })
+
+  #rankz transform
+  LD.pre.rankz.resids &lt;- LD.pre.resids
+  LD.pre.rankz.resids[,20:25] &lt;- apply(LD.pre.resids[,20:25], 2, rz.transform)
+
+  # post center
+  LD.post.nooutlier &lt;- LD.raw %&gt;%
+    filter(Mouse.ID &gt;= 10000) %&gt;%
+    group_by(Sex) %&gt;%
+    mutate(across(pct.distance.traveled.in.light:total.transitions,remove_outliers))
+
+  #regression
+  LD.post.resids &lt;- LD.post.nooutlier
+  #LD
+  LD.post.resids[,20:25] &lt;- apply(LD.post.nooutlier[,20:25], 2, FUN = function(x, data = LD.post.nooutlier){
+    data$date.of.test &lt;- as.factor(data$date.of.test)
+    data$tester &lt;- as.factor(data$tester)
+    m &lt;- lmer(x ~ tester + (1|date.of.test), data = data, na.action = na.exclude, REML = TRUE)
+    r &lt;- residuals(m)
+    r
+  })
+
+  #rankz transform
+  LD.post.rankz.resids &lt;- LD.post.resids
+  LD.post.rankz.resids[,20:25] &lt;- apply(LD.post.resids[,20:25], 2, rz.transform)
+
+  #write out the csv
+  colnames(LD.raw)[20:25]       &lt;- paste0(&quot;LD.&quot;, colnames(LD.raw)[20:25],       &quot;.raw&quot;)
+  LD.nooutlier &lt;- rbind.data.frame(LD.pre.nooutlier, LD.post.nooutlier)
+  colnames(LD.nooutlier)[20:25] &lt;- paste0(&quot;LD.&quot;, colnames(LD.nooutlier)[20:25], &quot;.nooutlier&quot;)
+  #write.csv(LD.nooutlier, file = &quot;data/pheno/LD_nooutlier_07012020.csv&quot;, row.names = F, quote = F)
+  LD.resids &lt;- rbind.data.frame(LD.pre.resids, LD.post.resids)
+  colnames(LD.resids)[20:25]    &lt;- paste0(&quot;LD.&quot;, colnames(LD.resids)[20:25],    &quot;.resids&quot;)
+  #write.csv(LD.resids, file = &quot;data/pheno/LD_resids_07012020.csv&quot;, row.names = F, quote = F)
+  LD.ranknorm &lt;- rbind.data.frame(LD.pre.rankz.resids, LD.post.rankz.resids)
+  colnames(LD.ranknorm)[20:25]  &lt;- paste0(&quot;LD.&quot;, colnames(LD.ranknorm)[20:25],  &quot;.ranknorm&quot;)
+  #write.csv(LD.ranknorm, file = &quot;data/pheno/LD_resids_ranknorm_07012020.csv&quot;, row.names = F, quote = F)
+
+  #mege LD
+  LD &lt;- list(LD.raw,
+             LD.nooutlier,
+             LD.resids,
+             LD.ranknorm) %&gt;%
+    reduce(full_join, by = colnames(LD.raw)[1:19])
+  colnames(LD)[c(2:19)] &lt;- paste0(&quot;LD.&quot;, colnames(LD)[c(2:19)])
+
+  #Process HB phenotype data -----------------------------------------------------------------------
+  #raw HB
+  HB.raw &lt;- read.csv(&quot;data/pheno/HB_raw_07012020.csv&quot;, header = TRUE)
+  HB.raw$Birth.Date &lt;- as.Date(HB.raw$Birth.Date, &quot;%m/%d/%y&quot;)
+  HB.raw$date.of.test &lt;- as.Date(HB.raw$date.of.test, &quot;%m/%d/%y&quot;)
+  HB.raw &lt;- as_tibble(HB.raw)
+
+  # pre center
+  HB.pre.nooutlier &lt;- HB.raw %&gt;%
+    filter(Mouse.ID &lt; 10000) %&gt;%
+    group_by(Sex) %&gt;%
+    mutate(across(Total.Entries:Repeat.Entries,remove_outliers))
+
+  #regression
+  HB.pre.resids &lt;- HB.pre.nooutlier
+  #HB
+  HB.pre.resids[,20:22] &lt;- apply(HB.pre.nooutlier[,20:22], 2, FUN = function(x, data = HB.pre.nooutlier){
+    data$date.of.test &lt;- as.factor(data$date.of.test)
+    m &lt;- lm(x ~ date.of.test, data = data, na.action = na.exclude)
+    r &lt;- residuals(m)
+    r
+  })
+
+  #rankz transform
+  HB.pre.rankz.resids &lt;- HB.pre.resids
+  HB.pre.rankz.resids[,20:22] &lt;- apply(HB.pre.resids[,20:22], 2, rz.transform)
+
+  # post center
+  HB.post.nooutlier &lt;- HB.raw %&gt;%
+    filter(Mouse.ID &gt;= 10000) %&gt;%
+    group_by(Sex) %&gt;%
+    mutate(across(Total.Entries:Repeat.Entries,remove_outliers))
+
+  #regression
+  HB.post.resids &lt;- HB.post.nooutlier
+  #HB
+  HB.post.resids[,20:22] &lt;- apply(HB.post.nooutlier[,20:22], 2, FUN = function(x, data = HB.post.nooutlier){
+    data$date.of.test &lt;- as.factor(data$date.of.test)
+    data$tester &lt;- as.factor(data$tester)
+    m &lt;- lmer(x ~ tester + (1|date.of.test), data = data, na.action = na.exclude, REML = TRUE)
+    r &lt;- residuals(m)
+    r
+  })
+
+  #rankz transform
+  HB.post.rankz.resids &lt;- HB.post.resids
+  HB.post.rankz.resids[,20:22] &lt;- apply(HB.post.resids[,20:22], 2, rz.transform)
+
+  #write out the csv
+  colnames(HB.raw)[20:22]       &lt;- paste0(&quot;HB.&quot;, colnames(HB.raw)[20:22],       &quot;.raw&quot;)
+  HB.nooutlier &lt;- rbind.data.frame(HB.pre.nooutlier, HB.post.nooutlier)
+  colnames(HB.nooutlier)[20:22] &lt;- paste0(&quot;HB.&quot;, colnames(HB.nooutlier)[20:22], &quot;.nooutlier&quot;)
+  #write.csv(HB.nooutlier, file = &quot;data/pheno/HB_nooutlier_07012020.csv&quot;, row.names = F, quote = F)
+  HB.resids &lt;- rbind.data.frame(HB.pre.resids, HB.post.resids)
+  colnames(HB.resids)[20:22]    &lt;- paste0(&quot;HB.&quot;, colnames(HB.resids)[20:22],    &quot;.resids&quot;)
+  #write.csv(HB.resids, file = &quot;data/pheno/HB_resids_07012020.csv&quot;, row.names = F, quote = F)
+  HB.ranknorm &lt;- rbind.data.frame(HB.pre.rankz.resids, HB.post.rankz.resids)
+  colnames(HB.ranknorm)[20:22]  &lt;- paste0(&quot;HB.&quot;, colnames(HB.ranknorm)[20:22],  &quot;.ranknorm&quot;)
+  #write.csv(HB.ranknorm, file = &quot;data/pheno/HB_resids_ranknorm_07012020.csv&quot;, row.names = F, quote = F)
+
+  #mege HB
+  HB &lt;- list(HB.raw,
+             HB.nooutlier,
+             HB.resids,
+             HB.ranknorm) %&gt;%
+    reduce(full_join, by = colnames(HB.raw)[1:19])
+  colnames(HB)[c(2:19)] &lt;- paste0(&quot;HB.&quot;, colnames(HB)[c(2:19)])
+}</code></pre>
+<pre><code>boundary (singular) fit: see ?isSingular
+boundary (singular) fit: see ?isSingular
+boundary (singular) fit: see ?isSingular
+boundary (singular) fit: see ?isSingular
+boundary (singular) fit: see ?isSingular
+boundary (singular) fit: see ?isSingular
+boundary (singular) fit: see ?isSingular
+boundary (singular) fit: see ?isSingular
+boundary (singular) fit: see ?isSingular
+boundary (singular) fit: see ?isSingular</code></pre>
+<pre class="r"><code># Read each project
+#sens----------------------------------------------------------
+sens &lt;- read.csv(&quot;data/pheno/Prj02_SENS_pheno_qttl2_DO_12012020_COCA_all.csv&quot;)
+sens &lt;- sens %&gt;% rename(Mouse.ID = mouseID) %&gt;%
+  distinct(Mouse.ID, .keep_all = TRUE) %&gt;%
+  mutate(across(Mouse.ID, as.character)) %&gt;%
+  mutate(
+    D3_D2.nooutlier = case_when(
+      (D3_D2 &lt; -15000 | D3_D2 &gt; 50000) ~ NA_real_,
+      TRUE ~ D3_D2),
+    D5_D3.nooutlier = case_when(
+      (D5_D3 &lt; -25000) ~ NA_real_,
+      TRUE ~ D5_D3),
+    D11_D3.nooutlier = case_when(
+      (D11_D3 &gt; 50000 | D11_D3 &lt; -25000) ~ NA_real_,
+      TRUE ~ D11_D3),
+    D12_D2.nooutlier = case_when(
+      (D12_D2 &gt; 20000 | D12_D2 &lt; -20000) ~ NA_real_,
+      TRUE ~ D12_D2),
+    D19_D11.nooutlier = case_when(
+      (D19_D11 &gt; 20000 | D19_D11 &lt; -20000) ~ NA_real_,
+      TRUE ~ D19_D11),
+    AUC.nooutlier = case_when(
+      (AUC &gt; 50000 | AUC &lt; -20000) ~ NA_real_,
+      TRUE ~ AUC)
+  )#remove outliers
+colnames(sens)[4:9] &lt;- paste0(colnames(sens)[4:9], &quot;.raw&quot;)
+colnames(sens)[4:15] &lt;- paste0(&quot;SENS.&quot;, colnames(sens)[4:15])
+
+#cr----------------------------------------------------------
+cr &lt;- read.csv(&quot;data/pheno/Prj05_rythms_do.mean.csv&quot;)
+colnames(cr) &lt;- c(&quot;ID&quot;, &quot;Period.raw&quot;, &quot;Phase.raw&quot;, &quot;Amplitude.raw&quot;, &quot;Damping.raw&quot;, &quot;Goodness.of.fit.raw&quot;, &quot;Mouse.ID&quot;)
+cr &lt;- cr %&gt;% filter(!(ID %in% c(&quot;26046_5&quot;, &quot;20662_8&quot;))) %&gt;% # remove duplicates
+  mutate(across(Mouse.ID, as.character)) %&gt;%
+  mutate(Damping.nooutlier = case_when(
+    (Damping.raw &gt;= 20 | Damping.raw &lt;= -2) ~ NA_real_,
+    TRUE ~ Damping.raw
+  ))
+colnames(cr)[c(2:6,8)] &lt;- paste0(&quot;CR.&quot;, colnames(cr)[c(2:6,8)])
+
+#rl----------------------------------------------------------
+rl &lt;- readr::read_csv(&quot;data/pheno/Prj01_RL_pheno_qttl2_DO_11092020.csv&quot;, na = c(&quot;N/A&quot;, &quot;NA&quot;))</code></pre>
+<pre><code>
+── Column specification ────────────────────────────────────────────────────────
+cols(
+  id = col_character(),
+  pheno1 = col_double(),
+  mouseID = col_double(),
+  Acq.Total.Trials = col_double(),
+  Acq.Anticipatory.Correct.Responses = col_double(),
+  Rev.Total.Trials = col_double(),
+  Rev.Anticipatory.Incorrect.Responses = col_double(),
+  Diff.Total.Trials = col_double()
+)</code></pre>
+<pre class="r"><code>rl &lt;- rl %&gt;% rename(Mouse.ID = mouseID) %&gt;% distinct(Mouse.ID, .keep_all = TRUE) %&gt;%
+  mutate(across(Mouse.ID, as.character))
+colnames(rl)[4:8] &lt;- paste0(colnames(rl)[4:8], &quot;.raw&quot;)
+rl &lt;- rl %&gt;% mutate(
+  Acq.Anticipatory.Correct.Responses.nooutlier = case_when(
+    (Acq.Anticipatory.Correct.Responses.raw &gt; 5 | is.na(Acq.Anticipatory.Correct.Responses.raw)) ~ NA_real_,
+    TRUE ~ Acq.Anticipatory.Correct.Responses.raw),
+  Rev.Anticipatory.Incorrect.Responses.nooutlier = case_when(
+    (Rev.Anticipatory.Incorrect.Responses.raw &gt;6) ~ NA_real_,
+    TRUE ~ Rev.Anticipatory.Incorrect.Responses.raw
+  ))#omit values &gt;6 for Acq.Anticipatory.Correct.Responses and Rev.Anticipatory.Incorrect.Responses variables.
+colnames(rl)[4:10] &lt;- paste0(&quot;RL.&quot;, colnames(rl)[4:10])
+
+#ivsa----------------------------------------------------------
+ivsa &lt;- IVSA$DO %&gt;%
+  rename_with(~paste0(&quot;IVSA.&quot;, .x, &quot;.raw&quot;), contains(&quot;_&quot;))
+
+#merge OFA, NPP, LD, HB, sens, cr, rl, ivsa for DO----------------------
+DO.allpheno &lt;- list(OFA, NPP, LD, HB, sens, cr, rl, ivsa) %&gt;%
+  map(~(.x %&gt;% mutate(across(Mouse.ID, as.character)))) %&gt;%
+  reduce(full_join, by = &quot;Mouse.ID&quot;)
+#correlation on raw phenotypes
+DO.allrawpheno.corr &lt;- DO.allpheno %&gt;%
+  select(contains(&quot;.raw&quot;)) %&gt;%
+  corr.test(use = &quot;pairwise.complete.obs&quot;, 
+            method = &quot;spearman&quot;, 
+            adjust = &quot;fdr&quot;)
+#plot
+plot.DO.allrawpheno.corr &lt;- ggcorrplot(DO.allrawpheno.corr$r, 
+                                       hc.order = FALSE, 
+                                       method = &quot;square&quot;,
+                                       type = &quot;lower&quot;,
+                                       outline.col = &quot;grey&quot;, 
+                                       sig.level = 0.10, 
+                                       p.mat = DO.allrawpheno.corr$p, 
+                                       insig=&quot;blank&quot;,
+                                       lab = TRUE,
+                                       lab_size = 3,
+                                       tl.cex = 16,
+                                       ggtheme = ggplot2::theme_bw,
+                                       title = &quot;Cross Project Correlations in DO (p &lt; 0.1)&quot;)
+# print(plot.DO.allpheno.corr)
+# ggsave(file = paste0(&quot;output/pdf/DO.allpheno.corr&quot;,&quot;.pdf&quot;), 
+#          plot = plot.DO.allpheno.corr,
+#          device = &quot;pdf&quot;, height = 20, width = 20)
+# NEED phenotype list for plotting</code></pre>
+</div>
+<div id="phenotypes-for-qtl" class="section level3">
+<h3>9, Phenotypes for QTL</h3>
+<pre class="r"><code>#merge with genotype data after QC----------------------------------------------------------
+load(&quot;data/Jackson_Lab_12_batches/gm_DO3173_qc_newid.RData&quot;)
+csna.allqtl.pheno &lt;- gm_after_qc$covar %&gt;%
+  rename(Mouse.ID = name) %&gt;%
+  left_join(DO.allpheno, by = &quot;Mouse.ID&quot;) %&gt;%
+  select(c(colnames(.)[1:5], matches(&quot;raw|outlier|resids|ranknorm&quot;)))
+write.csv(csna.allqtl.pheno, file  = &quot;data/pheno/csna.allqtl.pheno.csv&quot;, row.names = F)</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.0.3 (2020-10-10)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 20.04.1 LTS
+
+Matrix products: default
+BLAS/LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.8.so
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C             
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] forcats_0.5.0     stringr_1.4.0     dplyr_1.0.2       purrr_0.3.4      
+ [5] readr_1.4.0       tidyr_1.1.2       tibble_3.0.4      tidyverse_1.3.0  
+ [9] pwr_1.3-0         lsr_0.5           cowplot_1.1.1     ggrepel_0.9.0    
+[13] lmerTest_3.1-3    lme4_1.1-26       Matrix_1.3-2      ggpubr_0.4.0     
+[17] lubridate_1.7.9.2 ggcorrplot_0.1.3  ggplot2_3.3.3     psych_2.0.12     
+[21] gridExtra_2.3     workflowr_1.6.2  
+
+loaded via a namespace (and not attached):
+ [1] nlme_3.1-151        fs_1.5.0            httr_1.4.2         
+ [4] rprojroot_2.0.2     numDeriv_2016.8-1.1 tools_4.0.3        
+ [7] backports_1.2.1     R6_2.5.0            DBI_1.1.0          
+[10] colorspace_2.0-0    withr_2.3.0         tidyselect_1.1.0   
+[13] mnormt_2.0.2        curl_4.3            compiler_4.0.3     
+[16] git2r_0.28.0        cli_2.2.0           rvest_0.3.6        
+[19] xml2_1.3.2          labeling_0.4.2      scales_1.1.1       
+[22] digest_0.6.27       foreign_0.8-81      minqa_1.2.4        
+[25] rmarkdown_2.6       rio_0.5.16          pkgconfig_2.0.3    
+[28] htmltools_0.5.1     dbplyr_2.0.0        highr_0.8          
+[31] rlang_0.4.10        readxl_1.3.1        rstudioapi_0.13    
+[34] farver_2.0.3        generics_0.1.0      jsonlite_1.7.2     
+[37] zip_2.1.1           car_3.0-10          magrittr_2.0.1     
+[40] fansi_0.4.1         Rcpp_1.0.5          munsell_0.5.0      
+[43] abind_1.4-5         lifecycle_0.2.0     stringi_1.5.3      
+[46] whisker_0.4         yaml_2.2.1          carData_3.0-4      
+[49] MASS_7.3-53         plyr_1.8.6          grid_4.0.3         
+[52] parallel_4.0.3      promises_1.1.1      crayon_1.3.4       
+[55] lattice_0.20-41     haven_2.3.1         splines_4.0.3      
+[58] hms_1.0.0           tmvnsim_1.0-2       knitr_1.30         
+[61] pillar_1.4.7        boot_1.3-25         ggsignif_0.6.0     
+[64] reshape2_1.4.4      reprex_0.3.0        glue_1.4.2         
+[67] evaluate_0.14       modelr_0.1.8        data.table_1.13.6  
+[70] vctrs_0.3.6         nloptr_1.2.2.2      httpuv_1.5.5       
+[73] cellranger_1.1.0    gtable_0.3.0        assertthat_0.2.1   
+[76] xfun_0.20           openxlsx_4.2.3      broom_0.7.3        
+[79] rstatix_0.6.0       later_1.1.0.1       statmod_1.4.35     
+[82] ellipsis_0.3.1     </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

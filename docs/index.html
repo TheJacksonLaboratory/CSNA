@@ -23,8 +23,6 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
-<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
@@ -89,6 +87,7 @@ h6 {
   text-align: left;
 }
 </style>
+
 
 
 
@@ -306,7 +305,7 @@ $(document).ready(function () {
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/TheJacksonLaboratory/CSNA">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
     Source code
   </a>
@@ -327,22 +326,15 @@ $(document).ready(function () {
 
 <div id="TOC">
 <ul>
+<li><a href="#process-all-phenotypes-in-founder-cc-and-do">0 Process all phenotypes in founder CC and DO</a></li>
 <li><a href="#data-transformation-from-finalreport.txt-to-qtl2-for-12-batches">1 Data transformation from Finalreport.txt to qtl2 for 12 batches</a></li>
-<li><a href="#grab-intensities-from-geneseek-finalreport.txt-files-convert-them-to-a-single-big-data-frame">2 Grab intensities from GeneSeek FinalReport.txt files convert them to a single big data frame</a></li>
+<li><a href="#grab-intensities-from-geneseek-finalreport.txt-files">2 Grab intensities from GeneSeek FinalReport.txt files</a></li>
 <li><a href="#first-time-to-calculate-genoprobs-maxmarg-crossover-errorlod-snpg-for-the-qc-diagnositics">3 First time to calculate genoprobs, maxmarg, crossover, errorlod, snpg for the qc diagnositics</a></li>
 <li><a href="#genotype-diagnostics-for-diversity-outbred-mice-of-12-batches">4 Genotype diagnostics for diversity outbred mice of 12 batches</a></li>
 <li><a href="#after-qc-genotype-diagnostics">5 After QC, genotype diagnostics</a></li>
 <li><a href="#calculation-of-the-genoprobs-after-qc-and-do-interpolatino-to-69k-grid">6 Calculation of the genoprobs after qc and do interpolatino to 69K grid</a></li>
 <li><a href="#do-diversity-report">7 DO Diversity Report</a></li>
 <li><a href="#gcta-heritability">8 GCTA heritability</a></li>
-<li><a href="#qtl-mapping">9 qtl mapping</a></li>
-<li><a href="#qtl-permutation">10 qtl permutation</a></li>
-<li><a href="#qtl-blup">11 qtl blup</a></li>
-<li><a href="#plot-qtl-mapping">12 plot qtl mapping</a></li>
-<li><a href="#conditional_m2_qtlmapping">13 conditional_m2_qtlmapping</a></li>
-<li><a href="#geneseek2qtl2fst_gagnon">14 geneseek2qtl2fst_Gagnon</a></li>
-<li><a href="#firstgm2genoprobs_gagnon">15 firstgm2genoprobs_Gagnon</a></li>
-<li><a href="#diagnosis_qc_gigamuga_gagnon">16 diagnosis_qc_gigamuga_gagnon</a></li>
 </ul>
 </div>
 
@@ -366,7 +358,7 @@ $(document).ready(function () {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-11-08
+<strong>Last updated:</strong> 2021-01-15
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -397,16 +389,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtree2716c96e8ddfa29c52628f4fe638daaa9b464258targetblank2716c96a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/2716c96e8ddfa29c52628f4fe638daaa9b464258" target="_blank">2716c96</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtreea684c8adada658929cefc5ba27cf1d2d7c044a66targetblanka684c8aa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/a684c8adada658929cefc5ba27cf1d2d7c044a66" target="_blank">a684c8a</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtree2716c96e8ddfa29c52628f4fe638daaa9b464258targetblank2716c96a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtreea684c8adada658929cefc5ba27cf1d2d7c044a66targetblanka684c8aa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/2716c96e8ddfa29c52628f4fe638daaa9b464258" target="_blank">2716c96</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/a684c8adada658929cefc5ba27cf1d2d7c044a66" target="_blank">a684c8a</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -414,19 +406,20 @@ Note that you need to be careful to ensure that all relevant files for the analy
 <pre><code>
 Ignored files:
     Ignored:    .Rhistory
-    Ignored:    analysis/.Rhistory
+    Ignored:    .Rproj.user/
 
 Untracked files:
     Untracked:  analysis/.nfs0000000135a08b9b00002448
     Untracked:  analysis/.nfs0000000135a08ba50000244a
-    Untracked:  analysis/csna_image.sif
+    Untracked:  analysis/index0.Rmd
     Untracked:  analysis/scripts/
-    Untracked:  analysis/temp/
-    Untracked:  analysis/temp2/
     Untracked:  analysis/workflow_proc.R
     Untracked:  analysis/workflow_proc.sh
     Untracked:  analysis/workflow_proc.stderr
     Untracked:  analysis/workflow_proc.stdout
+    Untracked:  archived/
+    Untracked:  code/FinalReport2Plink.sh
+    Untracked:  code/csna_qtlmapping_workflow.R
     Untracked:  code/reconst_utils.R
     Untracked:  data/69k_grid_pgmap.RData
     Untracked:  data/FinalReport/
@@ -437,138 +430,15 @@ Untracked files:
     Untracked:  data/Jackson_Lab_Bubier_MURGIGV01/
     Untracked:  data/Jackson_Lab_Gagnon/
     Untracked:  data/RTG/
+    Untracked:  data/cc_do_founders_key.rds
     Untracked:  data/cc_variants.sqlite
+    Untracked:  data/csna_image.sif
     Untracked:  data/marker_grid_0.02cM_plus.txt
     Untracked:  data/mouse_genes_mgi.sqlite
     Untracked:  data/pheno/
-    Untracked:  output/AfterQC_Percent_missing_genotype_data.pdf
-    Untracked:  output/AfterQC_Proportion_matching_genotypes_after_removal_of_bad_samples.pdf
-    Untracked:  output/AfterQC_Proportion_matching_genotypes_before_removal_of_bad_samples.pdf
-    Untracked:  output/AfterQC_number_crossover.pdf
-    Untracked:  output/DO_Gigamuga_chr2_WSB_G21.png
-    Untracked:  output/DO_Gigamuga_chr2_WSB_G22.png
-    Untracked:  output/DO_Gigamuga_chr2_WSB_G23.png
-    Untracked:  output/DO_Gigamuga_chr2_WSB_G25.png
-    Untracked:  output/DO_Gigamuga_chr2_WSB_G29.png
-    Untracked:  output/DO_Gigamuga_chr2_WSB_G30.png
-    Untracked:  output/DO_Gigamuga_chr2_WSB_G31.png
-    Untracked:  output/DO_Gigamuga_chr2_WSB_G32.png
-    Untracked:  output/DO_Gigamuga_chr2_WSB_G33.png
-    Untracked:  output/DO_Gigamuga_founder_proportions_G21.png
-    Untracked:  output/DO_Gigamuga_founder_proportions_G22.png
-    Untracked:  output/DO_Gigamuga_founder_proportions_G23.png
-    Untracked:  output/DO_Gigamuga_founder_proportions_G25.png
-    Untracked:  output/DO_Gigamuga_founder_proportions_G29.png
-    Untracked:  output/DO_Gigamuga_founder_proportions_G30.png
-    Untracked:  output/DO_Gigamuga_founder_proportions_G31.png
-    Untracked:  output/DO_Gigamuga_founder_proportions_G32.png
-    Untracked:  output/DO_Gigamuga_founder_proportions_G33.png
-    Untracked:  output/DO_Gigamuga_founder_proportions_chr2_G21.png
-    Untracked:  output/DO_Gigamuga_founder_proportions_chr2_G22.png
-    Untracked:  output/DO_Gigamuga_founder_proportions_chr2_G23.png
-    Untracked:  output/DO_Gigamuga_founder_proportions_chr2_G25.png
-    Untracked:  output/DO_Gigamuga_founder_proportions_chr2_G29.png
-    Untracked:  output/DO_Gigamuga_founder_proportions_chr2_G30.png
-    Untracked:  output/DO_Gigamuga_founder_proportions_chr2_G31.png
-    Untracked:  output/DO_Gigamuga_founder_proportions_chr2_G32.png
-    Untracked:  output/DO_Gigamuga_founder_proportions_chr2_G33.png
-    Untracked:  output/DO_recom_block_size_G21.png
-    Untracked:  output/DO_recom_block_size_G22.png
-    Untracked:  output/DO_recom_block_size_G23.png
-    Untracked:  output/DO_recom_block_size_G25.png
-    Untracked:  output/DO_recom_block_size_G29.png
-    Untracked:  output/DO_recom_block_size_G30.png
-    Untracked:  output/DO_recom_block_size_G31.png
-    Untracked:  output/DO_recom_block_size_G32.png
-    Untracked:  output/DO_recom_block_size_G33.png
-    Untracked:  output/Histgram_Prj01_RL-Acquisition_preqc_02142020.pdf
-    Untracked:  output/Histgram_Prj01_RL-Reversal_preqc_02142020.pdf
-    Untracked:  output/Histgram_Prj02_Sensitization_preqc_02142020.pdf
-    Untracked:  output/Histgram_Prj04_IVSA_preqc_02142020.pdf
-    Untracked:  output/Novelty_residuals_RankNormal_datarelease_12182019-69k-genelist.csv
-    Untracked:  output/Novelty_residuals_RankNormal_datarelease_12182019-69k-variantlist.csv
-    Untracked:  output/Novelty_residuals_RankNormal_datarelease_12182019-genelist.csv
-    Untracked:  output/Novelty_residuals_RankNormal_datarelease_12182019-variantlist.csv
-    Untracked:  output/Percent_genotype_errors_obs_vs_predicted.pdf
-    Untracked:  output/Percent_missing_genotype_data.pdf
-    Untracked:  output/Percent_missing_genotype_data_per_marker.pdf
-    Untracked:  output/Proportion_matching_genotypes_after_removal_of_bad_samples.pdf
-    Untracked:  output/Proportion_matching_genotypes_after_removal_samples_percent_missing_5.pdf
-    Untracked:  output/Proportion_matching_genotypes_before_removal_of_bad_samples.pdf
-    Untracked:  output/Proportion_matching_genotypes_before_removal_samples.pdf
-    Untracked:  output/RTG/
-    Untracked:  output/blup/
-    Untracked:  output/condi.m2.Novelty_residuals_RankNormal_datarelease_12182019_genomescan.pdf
-    Untracked:  output/condi.m2.qtl.blup_Novelty_residuals_RankNormal_datarelease_12182019_coeffgeneplot.pdf
-    Untracked:  output/condi.m2.qtl.out.RData
-    Untracked:  output/conditional.69k.Novelty_residuals_RankNormal_datarelease_12182019-genelist.csv
-    Untracked:  output/conditional.69k.Novelty_residuals_RankNormal_datarelease_12182019-variantlist.csv
-    Untracked:  output/conditional.Novelty_residuals_RankNormal_datarelease_12182019-genelist.csv
-    Untracked:  output/conditional.Novelty_residuals_RankNormal_datarelease_12182019-variantlist.csv
-    Untracked:  output/conditional.m2.69k.Novelty_residuals_RankNormal_datarelease_12182019.RData
-    Untracked:  output/conditional.m2.69k.Novelty_residuals_RankNormal_datarelease_12182019_coeffgeneplot.pdf
-    Untracked:  output/conditional.m2.69k.Novelty_residuals_RankNormal_datarelease_12182019_genomescan.pdf
-    Untracked:  output/conditional.m2.Novelty_residuals_RankNormal_datarelease_12182019.RData
-    Untracked:  output/conditional.m2.Novelty_residuals_RankNormal_datarelease_12182019_coeffgeneplot.pdf
-    Untracked:  output/conditional.m2.Novelty_residuals_RankNormal_datarelease_12182019_genomescan.pdf
-    Untracked:  output/conditional.m2.qtl.out.RData
-    Untracked:  output/conditional_m2.Novelty_residuals_RankNormal_datarelease_07302918_genomescan.pdf
-    Untracked:  output/conditional_m2.Novelty_residuals_RankNormal_datarelease_12182019_genomescan.pdf
-    Untracked:  output/genotype_error_marker.pdf
-    Untracked:  output/genotype_frequency_marker.pdf
-    Untracked:  output/m1.Novelty_resids_datarelease_07302918.RData
-    Untracked:  output/m1.Novelty_resids_datarelease_07302918_coeffgeneplot.pdf
-    Untracked:  output/m1.Novelty_resids_datarelease_07302918_genomescan.pdf
-    Untracked:  output/m1.Novelty_resids_datarelease_12182019.RData
-    Untracked:  output/m1.Novelty_resids_datarelease_12182019_coeffgeneplot.pdf
-    Untracked:  output/m1.Novelty_resids_datarelease_12182019_genomescan.pdf
-    Untracked:  output/m1.Novelty_residuals_RankNormal_datarelease_07302918.RData
-    Untracked:  output/m1.Novelty_residuals_RankNormal_datarelease_07302918_genomescan.pdf
-    Untracked:  output/m1.Novelty_residuals_RankNormal_datarelease_12182019.RData
-    Untracked:  output/m1.Novelty_residuals_RankNormal_datarelease_12182019_coeffgeneplot.pdf
-    Untracked:  output/m1.Novelty_residuals_RankNormal_datarelease_12182019_genomescan.pdf
-    Untracked:  output/m2.69k.Novelty_residuals_RankNormal_datarelease_12182019.RData
-    Untracked:  output/m2.69k.Novelty_residuals_RankNormal_datarelease_12182019_coeffgeneplot.pdf
-    Untracked:  output/m2.69k.Novelty_residuals_RankNormal_datarelease_12182019_genomescan.pdf
-    Untracked:  output/m2.69k.Prj01_RL-Acquisition_preqc_02142020.RData
-    Untracked:  output/m2.69k.Prj01_RL-Reversal_preqc_02142020.RData
-    Untracked:  output/m2.69k.Prj02_Sensitization_preqc_02142020.RData
-    Untracked:  output/m2.69k.Prj04_IVSA_preqc_02142020.RData
-    Untracked:  output/m2.Novelty_resids_datarelease_07302918.RData
-    Untracked:  output/m2.Novelty_resids_datarelease_07302918_genomescan.pdf
-    Untracked:  output/m2.Novelty_resids_datarelease_12182019.RData
-    Untracked:  output/m2.Novelty_resids_datarelease_12182019_coeffgeneplot.pdf
-    Untracked:  output/m2.Novelty_resids_datarelease_12182019_genomescan.pdf
-    Untracked:  output/m2.Novelty_residuals_RankNormal_datarelease_07302918.RData
-    Untracked:  output/m2.Novelty_residuals_RankNormal_datarelease_07302918_genomescan.pdf
-    Untracked:  output/m2.Novelty_residuals_RankNormal_datarelease_12182019.RData
-    Untracked:  output/m2.Novelty_residuals_RankNormal_datarelease_12182019_coeffgeneplot.pdf
-    Untracked:  output/m2.Novelty_residuals_RankNormal_datarelease_12182019_genomescan.pdf
-    Untracked:  output/m2.Prj01_RL-Acquisition_preqc_02142020.RData
-    Untracked:  output/m2.Prj01_RL-Acquisition_preqc_02142020_qtl2scan.pdf
-    Untracked:  output/m2.Prj01_RL-Reversal_preqc_02142020.RData
-    Untracked:  output/m2.Prj01_RL-Reversal_preqc_02142020_qtl2scan.pdf
-    Untracked:  output/m2.Prj02_Sensitization_preqc_02142020.RData
-    Untracked:  output/m2.Prj02_Sensitization_preqc_02142020_qtl2scan.pdf
-    Untracked:  output/m2.Prj04_IVSA_preqc_02142020.RData
-    Untracked:  output/m2.Prj04_IVSA_preqc_02142020_qtl2scan.pdf
-    Untracked:  output/m3.Novelty_resids_datarelease_07302918.RData
-    Untracked:  output/m3.Novelty_resids_datarelease_07302918_genomescan.pdf
-    Untracked:  output/m3.Novelty_resids_datarelease_12182019.RData
-    Untracked:  output/m3.Novelty_resids_datarelease_12182019_coeffgeneplot.pdf
-    Untracked:  output/m3.Novelty_resids_datarelease_12182019_genomescan.pdf
-    Untracked:  output/m3.Novelty_residuals_RankNormal_datarelease_07302918.RData
-    Untracked:  output/m3.Novelty_residuals_RankNormal_datarelease_07302918_genomescan.pdf
-    Untracked:  output/m3.Novelty_residuals_RankNormal_datarelease_12182019.RData
-    Untracked:  output/m3.Novelty_residuals_RankNormal_datarelease_12182019_coeffgeneplot.pdf
-    Untracked:  output/m3.Novelty_residuals_RankNormal_datarelease_12182019_genomescan.pdf
-    Untracked:  output/num.geno.pheno.in.Novelty_resids_datarelease_07302918.csv
-    Untracked:  output/num.geno.pheno.in.Novelty_resids_datarelease_12182019.csv
-    Untracked:  output/num.geno.pheno.in.Novelty_residuals_RankNormal_datarelease_07302918.csv
-    Untracked:  output/num.geno.pheno.in.Novelty_residuals_RankNormal_datarelease_12182019.csv
-    Untracked:  output/number_crossover.pdf
-    Untracked:  output/permu/
-    Untracked:  output/prop_across_generation_chr_p.RData
+    Untracked:  output/archived_output/
+    Untracked:  output/pdf/
+    Untracked:  output/qtlmapping/
 
 Unstaged changes:
     Deleted:    analysis/01_geneseek2qtl2.R
@@ -646,6 +516,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/a684c8adada658929cefc5ba27cf1d2d7c044a66/analysis/index.Rmd" target="_blank">a684c8a</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2021-01-15
+</td>
+<td>
+process_phenos_founder_CC_DO
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/TheJacksonLaboratory/CSNA/b7783322eb58ce94f70769770768aa30c9aa7a25/docs/index.html" target="_blank">b778332</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2020-11-08
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1639,109 +1543,63 @@ Start workflowr project.
 </div>
 </div>
 </div>
+<div id="process-all-phenotypes-in-founder-cc-and-do" class="section level3">
+<h3>0 Process all phenotypes in founder CC and DO</h3>
+<ul>
+<li><a href="00_Process_all_phenotypes_in_founder_CC_DO.html">00_Process_all_phenotypes_in_founder_CC_DO.Rmd</a></li>
+</ul>
+</div>
 <div id="data-transformation-from-finalreport.txt-to-qtl2-for-12-batches" class="section level3">
 <h3>1 Data transformation from Finalreport.txt to qtl2 for 12 batches</h3>
 <ul>
-<li>[01_FinalReport2qtl2.R]</li>
+<li>[analysis/scripts/01_FinalReport2qtl2.R]</li>
 </ul>
 </div>
-<div id="grab-intensities-from-geneseek-finalreport.txt-files-convert-them-to-a-single-big-data-frame" class="section level3">
-<h3>2 Grab intensities from GeneSeek FinalReport.txt files convert them to a single big data frame</h3>
+<div id="grab-intensities-from-geneseek-finalreport.txt-files" class="section level3">
+<h3>2 Grab intensities from GeneSeek FinalReport.txt files</h3>
 <ul>
-<li>[02_FinalReport2intensity.R]</li>
+<li>[analysis/scripts/02_FinalReport2intensity.R]</li>
 </ul>
 </div>
 <div id="first-time-to-calculate-genoprobs-maxmarg-crossover-errorlod-snpg-for-the-qc-diagnositics" class="section level3">
 <h3>3 First time to calculate genoprobs, maxmarg, crossover, errorlod, snpg for the qc diagnositics</h3>
 <ul>
-<li>[03_firstgm2genoprobs.R]</li>
+<li>[analysis/scripts/03_firstgm2genoprobs.R]</li>
 </ul>
 </div>
 <div id="genotype-diagnostics-for-diversity-outbred-mice-of-12-batches" class="section level3">
 <h3>4 Genotype diagnostics for diversity outbred mice of 12 batches</h3>
 <ul>
+<li><a href="04_diagnosis_qc_gigamuga_12_batches.html">04_diagnosis_qc_gigamuga_12_batches.Rmd</a></li>
 <li><a href="04_diagnosis_qc_gigamuga_nine_batches.html">04_diagnosis_qc_gigamuga_nine_batches.Rmd</a></li>
 <li><a href="04_diagnosis_qc_gigamuga_11_batches.html">04_diagnosis_qc_gigamuga_11_batches.Rmd</a></li>
-<li><a href="04_diagnosis_qc_gigamuga_12_batches.html">04_diagnosis_qc_gigamuga_12_batches.Rmd</a></li>
 </ul>
 </div>
 <div id="after-qc-genotype-diagnostics" class="section level3">
 <h3>5 After QC, genotype diagnostics</h3>
 <ul>
+<li><a href="05_after_diagnosis_qc_gigamuga_12_batches.html">05_after_diagnosis_qc_gigamuga_12_batches.Rmd</a></li>
 <li><a href="05_after_diagnosis_qc_gigamuga_nine_batches.html">05_after_diagnosis_qc_gigamuga_nine_batches.Rmd</a></li>
 <li><a href="05_after_diagnosis_qc_gigamuga_11_batches.html">05_after_diagnosis_qc_gigamuga_11_batches.Rmd</a></li>
-<li><a href="05_after_diagnosis_qc_gigamuga_12_batches.html">05_after_diagnosis_qc_gigamuga_12_batches.Rmd</a></li>
 </ul>
 </div>
 <div id="calculation-of-the-genoprobs-after-qc-and-do-interpolatino-to-69k-grid" class="section level3">
 <h3>6 Calculation of the genoprobs after qc and do interpolatino to 69K grid</h3>
 <ul>
-<li>[06_final_pr_apr_69K.R]</li>
+<li>[analysis/scripts/06_final_pr_apr_69K.R]</li>
 </ul>
 </div>
 <div id="do-diversity-report" class="section level3">
 <h3>7 DO Diversity Report</h3>
 <ul>
-<li>[07_do_diversity_report.R]</li>
+<li>[analysis/scripts/07_do_diversity_report.R]</li>
 <li><a href="07_do_diversity_report.html">07_do_diversity_report.Rmd</a></li>
-<li>[07_recomb_size_founder_prop.Rmd]</li>
 </ul>
 </div>
 <div id="gcta-heritability" class="section level3">
 <h3>8 GCTA heritability</h3>
 <ul>
 <li>[08_gcta_herit.R]</li>
-</ul>
-</div>
-<div id="qtl-mapping" class="section level3">
-<h3>9 qtl mapping</h3>
-<ul>
-<li>[09_qtlmapping.R]</li>
-</ul>
-</div>
-<div id="qtl-permutation" class="section level3">
-<h3>10 qtl permutation</h3>
-<ul>
-<li>[10_qtl_permu.R]</li>
-</ul>
-</div>
-<div id="qtl-blup" class="section level3">
-<h3>11 qtl blup</h3>
-<ul>
-<li>[11_qtl_blup.R]</li>
-</ul>
-</div>
-<div id="plot-qtl-mapping" class="section level3">
-<h3>12 plot qtl mapping</h3>
-<ul>
-<li><a href="12_plot_qtl_mapping_1.html">12_plot_qtl_mapping_1.Rmd</a></li>
-<li><a href="12_plot_qtl_mapping_2.html">12_plot_qtl_mapping_2.Rmd</a></li>
-<li><a href="12_plot_69k_qtl_mapping_2.html">12_plot_69k_qtl_mapping_2.Rmd</a></li>
-</ul>
-</div>
-<div id="conditional_m2_qtlmapping" class="section level3">
-<h3>13 conditional_m2_qtlmapping</h3>
-<ul>
-<li>[13_conditional_m2_qtlmapping.R]</li>
-<li><a href="13_plot_conditional_m2_qtlmapping.html">13_plot_conditional_m2_qtlmapping.Rmd</a></li>
-</ul>
-</div>
-<div id="geneseek2qtl2fst_gagnon" class="section level3">
-<h3>14 geneseek2qtl2fst_Gagnon</h3>
-<ul>
-<li>[14_geneseek2qtl2fst_Gagnon.R]</li>
-</ul>
-</div>
-<div id="firstgm2genoprobs_gagnon" class="section level3">
-<h3>15 firstgm2genoprobs_Gagnon</h3>
-<ul>
-<li>[15_firstgm2genoprobs_Gagnon.R]</li>
-</ul>
-</div>
-<div id="diagnosis_qc_gigamuga_gagnon" class="section level3">
-<h3>16 diagnosis_qc_gigamuga_gagnon</h3>
-<ul>
-<li><a href="16_diagnosis_qc_gigamuga_gagnon.html">16_diagnosis_qc_gigamuga_gagnon.Rmd</a></li>
 </ul>
 </div>
 
