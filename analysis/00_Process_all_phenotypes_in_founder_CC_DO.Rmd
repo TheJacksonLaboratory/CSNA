@@ -1,0 +1,944 @@
+---
+title: "Process_all_phenotypes_in_founder_CC_DO"
+author: "Hao He"
+output:
+  workflowr::wflow_html:
+    toc: true
+    toc_float: true
+    code_folding: "hide"
+---
+
+### Purpose of analysis
+1, Summarize and plot phenotypes for RL, SENS, IVSA and CR across Founders, CC and DO
+2, Genetic correlations in Founders and/or CC 
+3, Process OFA, NPP, HB, LD, RL, SENS, IVSA and CR for DO and correlation
+4, Generate a file containing all phenotype of above domains for qtl mapping
+
+### 1, Working directory
+All chunks will run in the working folder for this experiment.
+```{r setup, warning = FALSE}
+script_root_dir = "/projects/csna/csna_workflow"
+```
+
+### 2, R libraries
+Calling R libraries necessary for this analysis.
+```{r libraries, warning = FALSE}
+library(gridExtra)
+library(psych)
+library(ggcorrplot)
+library(ggplot2)
+library(lubridate)
+library(ggpubr)
+library(lme4)
+library(lmerTest)
+library(ggrepel)
+library(cowplot)
+library(lsr)
+library(pwr)
+library(tidyverse)
+# Suppress summarise info
+options(dplyr.summarise.inform = FALSE)
+options(stringsAsFactors = FALSE)
+```
+
+### 3, Utility functions
+```{r Utility functions, warning = FALSE}
+#founder key
+founders_key = readRDS("data/cc_do_founders_key.rds")
+row.names(founders_key) = founders_key$strain
+
+#norm_rank_transform
+norm_rank_transform = function(x, c = (0)) {
+  stopifnot(is.numeric(x) & is.vector(x))
+  x_noNA = which(!is.na(x))
+  N = length(x_noNA)
+  x[x_noNA] = qnorm((rank(x[x_noNA], ties.method = "random") - c) / (N - (2 * c) + 1))
+  return(x)
+}
+# Getting a normal rank transformation function that can handle `NA` values from the following formula:
+# 
+# $Y^t_i={\phi}^{-1}({{r_i-c}\over{N-2c+1}})$
+# 
+# where $r_i$ is the rank, $N$ is the number of ranked samples, $\phi^{-1}$ is the inverse normal funcion (equivalent to `qnorm()` in R). The original recommended value of $c=3/8$ was per [Beasley and Erickson, 2010](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2921808/), but we use $c=0$. Our work appears to meet their sample size recommendations.
+
+#powerTransform
+powerTransform <- function(y, lambda1, lambda2 = NULL, method = "boxcox") {
+  boxcoxTrans <- function(x, lam1, lam2 = NULL) {
+    # if we set lambda2 to zero, it becomes the one parameter transformation
+    lam2 <- ifelse(is.null(lam2), 0, lam2)
+    if (lam1 == 0L) {
+      log(y + lam2)
+    } else {
+      (((y + lam2)^lam1) - 1) / lam1
+    }
+  }
+  switch(method
+         , boxcox = boxcoxTrans(y, lambda1, lambda2)
+         , tukey = y^lambda1
+  )
+}
+#summary_func
+summary_func <- list(
+  mean = ~mean(.x, na.rm = TRUE),
+  n    = ~length(which(!is.na(.x))),
+  ul   = ~(mean(.x, na.rm = TRUE) + sd(.x, na.rm = TRUE)/sqrt(length(which(!is.na(.x))))),
+  ll   = ~(mean(.x, na.rm = TRUE) - sd(.x, na.rm = TRUE)/sqrt(length(which(!is.na(.x)))))
+)
+#summary_extremesCC_func
+summary_extremesCC_func <- list(
+  mean = ~MASS::huber(na.omit(.x))$mu,
+  n    = ~length(which(!is.na(.x))),
+  ul   = ~(~MASS::huber(na.omit(.x))$mu + sd(.x, na.rm = TRUE)/sqrt(length(which(!is.na(.x))))),
+  ll   = ~(~MASS::huber(na.omit(.x))$mu - sd(.x, na.rm = TRUE)/sqrt(length(which(!is.na(.x)))))
+)
+#outliers are outside of mean +/- 3SD
+remove_outliers <- function(x, thres = 3, na.rm = TRUE, ...) {
+  y <- x
+  y[y <= mean(y,na.rm = na.rm) - thres * sd(y, na.rm = na.rm) | y >= mean(y,na.rm = na.rm) + thres * sd(y, na.rm = na.rm)] <- NA
+  y
+}
+#rankz transform
+rz.transform <- function(y) {
+  rankY=rank(y, ties.method="average", na.last="keep")
+  rzT=qnorm(rankY/(length(na.exclude(rankY))+1))
+  return(rzT)
+}
+#plot.summary
+plot.summary <- function(summary.dat, pheno.list, out.pdf){
+  p <- list()
+  for(i in pheno.list){
+    d <- summary.dat %>% 
+      left_join(founders_key[,c(2,5)], by = c("Strain" = "collaborative_cross_abbreviation")) %>%
+      rename(color = collaborative_cross_color_broman) %>%
+      mutate(color = replace_na(color, "grey")) %>%
+      mutate(color = case_when(
+        Strain == "J:DO" ~ "springgreen",
+        TRUE             ~ as.character(color))) %>%
+      relocate(color, .after = Strain) %>%
+      select(c("Strain", "color", contains(all_of(i)))) %>%
+      rename_with(~(.x = c("Strain", "color", "mean", "n", "ul", "ll"))) %>%
+      filter(n >= 1) %>%
+      arrange(mean) %>%
+      mutate(across(Strain, ~factor(.x, levels = as.character(.x)))) %>%
+      mutate(xlabel = paste0(Strain," (n = ", n, ")"))
+    p[[i]] <- ggplot(data = d, aes(x = Strain, y = mean, fill = Strain)) +
+      geom_col(color = "#000000") +
+      geom_errorbar(aes(ymin = ll, ymax = ul), width = 0.5) +
+      theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.position="none") +
+      scale_fill_manual(values = d$color) +
+      labs(x ="", y = paste0("Mean of ", i)) +
+      scale_x_discrete(labels = d$xlabel) +
+      scale_y_continuous(#expand = c(0,0),
+                         limits = c(ifelse(min(c(d$ll, d$mean), na.rm = TRUE) > 0, 
+                                           0, 
+                                           min(c(d$ll, d$mean), na.rm = TRUE)+0.12*min(c(d$ll, d$mean), na.rm = TRUE)),
+                                    max(c(d$ul, d$mean), na.rm = TRUE) + 0.12*max(c(d$ul, d$mean), na.rm = TRUE)))+
+      theme_bw(base_size = 18) +
+      theme(plot.title = element_text(hjust = 0.5),
+            panel.background = element_blank(),
+            panel.border = element_blank(),
+            legend.position = "none",
+            panel.grid.major.x = element_blank(),
+            panel.grid.minor.x = element_blank(),
+            axis.line = element_line(colour = "black"),
+            axis.text.x = element_text(angle = 90, hjust = 0.95,vjust = 0.2))
+    print(p[[i]])
+  }
+  ggsave(file = paste0(out.pdf,".pdf"), 
+         plot = marrangeGrob(p, nrow = 1, ncol=1, top = NULL, bottom = NULL),
+         device = "pdf", height = 8, width = 14)
+}
+#extremesCC_func
+extremesCC_func <- function(cc.data, pheno.list){
+  extremesCC <- list()
+  for(i in pheno.list){
+    #print(i)
+    data  = cc.data %>%
+      dplyr::filter(!is.na(.data[[i]]))
+      #split data into three lists, male, female and bothsex.
+      extremesCC[[i]] <- list(both   = data %>% mutate(Sex =  "Both"),
+                              male   = data %>% filter(Sex == "Male"),
+                              female = data %>% filter(Sex == "Female")) %>%
+        map(function(x){
+              y <- x %>%
+                dplyr::select(c("Mouse.ID", "Strain", "Sex", contains(all_of(i)))) %>%
+                dplyr::mutate(population_mean = mean(.[[all_of(i)]], na.rm = TRUE)) %>%
+                group_by(Strain, Sex) %>% #Strain and Sex
+                summarise(across(c(all_of(i), population_mean), summary_func)) %>%
+                dplyr::select(1:7) %>%
+                dplyr::mutate(across(everything(), ~replace_na(.x, NA))) %>%
+                rename_with(~(.x = c("Strain", "Sex" ,"mean", "n", "ul", "ll", "pop_mean"))) %>%
+                dplyr::mutate(diff_mean = mean - pop_mean)
+              
+              #t test for each strain
+              dat.s.res <- list()
+              for(s in unique(x$Strain)){
+                #print(s)
+                dat.s <- x %>% dplyr::filter(Strain == s)
+                #print(dim(dat.s))
+                v <- dat.s[[all_of(i)]]
+                if(dim(dat.s)[[1]] >= 2 & length(unique(v)) != 1){
+                  t      <- t.test(v, 
+                                   mu = as.numeric(unique(y$pop_mean)), 
+                                   alternative="two.sided", 
+                                   conf.level=0.95)
+                  t.stat <- t$statistic
+                  t.p    <- t$p.value
+                  lo.CI  <- t$conf.int[1]
+                  up.CI  <- t$conf.int[2]
+                  power  <- round(pwr.t.test(d = cohensD(v, 
+                                                         mu = as.numeric(unique(y$pop_mean))),
+                                             n = length(v),
+                                             sig.level = 0.05,
+                                             type = "one.sample",
+                                             alternative = "two.sided")$power,2)
+                  sample.size.at.0.8 <- ifelse(cohensD(v, 
+                                                       mu = as.numeric(unique(y$pop_mean))) < 5,
+                                               round(pwr.t.test(d = cohensD(v, 
+                                                                            mu = as.numeric(unique(y$pop_mean))), 
+                                                                sig.level = 0.05,
+                                                                type="one.sample",
+                                                                alternative="two.sided", 
+                                                                power = 0.8)$n, 1), 
+                                               round(pwr.t.test(d = 5, 
+                                                                sig.level = 0.05,
+                                                                type = "one.sample",
+                                                                alternative = "two.sided", 
+                                                                power = 0.8)$n, 1))
+                  dat.s.res[[s]] <- data.frame(Strain = s,
+                                               t.stat = t.stat, 
+                                               t.p    = t.p, 
+                                               lo.CI  = lo.CI, 
+                                               up.CI  = up.CI, 
+                                               power  = power, 
+                                               sample.size.at.0.8 = sample.size.at.0.8)
+              }else{
+                dat.s.res[[s]] <- data.frame(Strain = s,
+                                             t.stat = NA, 
+                                             t.p    = NA, 
+                                             lo.CI  = NA, 
+                                             up.CI  = NA, 
+                                             power  = NA, 
+                                             sample.size.at.0.8 = NA)
+              }
+          }
+              dat.s.res <- do.call(rbind.data.frame, dat.s.res)
+              
+              #merge y and dat.s.res
+              ys <- full_join(y, dat.s.res, by = "Strain") %>%
+                mutate(sig = ifelse(t.p <= 0.05, "*", "NS"),
+                       StrainSig = paste0(Strain, "[", sig, ";", n, "]"))
+              
+              #plot
+              p <- ggplot(ys, aes(y = mean, x = reorder(StrainSig, -diff_mean), 
+                                  color = sig, label = sig)) + 
+                geom_point() + 
+                geom_errorbar(aes(ymin = ll, ymax = ul), width = 0.5, size = 1) +
+                theme_cowplot() + 
+                scale_color_hue(h = c(90, 180)) +
+                geom_hline(yintercept = unique(ys$pop_mean)) +
+                theme(axis.text.x = element_text(size = 16,angle = 90, hjust = 1), axis.text.y = element_text(size = 16),
+                      legend.position="right") +
+                scale_size_continuous(breaks = c(2,4,6,8,10,20), labels = c(2,4,6,8,10,20))+
+                theme(text = element_text(size = 20)) +
+                xlab("") +
+                ylab(i) +
+                ggtitle(unique(ys$Sex)) +
+                theme(axis.title.x = element_blank(),
+                      plot.title = element_text(hjust = 0.5),
+                      axis.text.x=element_text(angle = 90, hjust = 0.95, vjust = 0.5))
+              return(list(ys, p))
+        })
+      }
+  return(extremesCC)
+}
+```
+
+### 4, Read data
+```{r Read data, warning = FALSE, message = FALSE}
+csv <- list.files(path = "data/pheno/Updated_CSNA_Data", pattern = ".csv", full.names = TRUE)
+data <- list()
+for(i in csv){
+  print(i)
+  data[[i]] <- readr::read_csv(i, col_names = TRUE, na = c("", "NA", "N/A", "NaN")) %>%
+    rename_with(~str_remove(.x, "\\_cc|\\_do")) %>%
+    rename_with(~(.x = "Strain"),   contains("_Strain")) %>%
+    rename_with(~(.x = "Mouse.ID"), contains("Subject")) %>%
+    rename_with(~(.x = "Sex"),      contains("Sex")) %>%
+    mutate(Sex = case_when(
+      Sex == "F" ~ "Female",
+      Sex == "M" ~ "Male",
+      TRUE       ~ as.character(Sex))) %>% #make Sex coding consistent
+    mutate(across(Mouse.ID, as.character)) %>%
+    mutate(Strain = case_when( #recode the founder strain to avoid inconsistency
+      str_detect(Strain, "A/")    ~ "AJ",
+      str_detect(Strain, "C57BL") ~ "B6",
+      str_detect(Strain, "129S1") ~ "129",
+      str_detect(Strain, "NOD")   ~ "NOD",
+      str_detect(Strain, "NZO")   ~ "NZO",
+      str_detect(Strain, "CAST")  ~ "CAST",
+      str_detect(Strain, "PWK")   ~ "PWK",
+      str_detect(Strain, "WSB")   ~ "WSB",
+      TRUE                        ~ as.character(Strain)
+    ))
+
+  print("Column names : ");         print(colnames(data[[i]]))
+  print("Strain names : ");         print(unique(data[[i]]$Strain))
+  print("Duplicated Mouse.ID  : "); print(data[[i]]$Mouse.ID[duplicated(data[[i]]$Mouse.ID)])
+}
+names(data) <- csv
+
+#RL_Acq-------------------------------------------------------------------------
+RL_Acq <- data[which(str_detect(csv, "Acquisition"))] %>% 
+  map(function(x){
+    x %>% select(c("Mouse.ID", "Strain", "Sex", 
+                   "Acq.Total.Trials", 
+                   "Acq.Total.Correct", 
+                   "Acq.Total.Omit", 
+                   "Acq.Anticipatory.Correct.Responses", 
+                   "Acq.Anticipatory.Incorrect.Responses")) %>%
+      mutate(across(starts_with("Acq"), as.numeric)) %>%
+      mutate(Acq.Anticipatory.Correct.Responses = case_when(
+        Acq.Anticipatory.Correct.Responses >= 100 ~ NA_real_,
+        is.na(Acq.Anticipatory.Correct.Responses) ~ NA_real_,
+        TRUE                                      ~ Acq.Anticipatory.Correct.Responses)) %>% #outliers
+      mutate(Acq.Anticipatory.Incorrect.Responses = case_when(
+        Acq.Anticipatory.Incorrect.Responses >= 100 ~ NA_real_,
+        is.na(Acq.Anticipatory.Incorrect.Responses) ~ NA_real_,
+        TRUE                                        ~ Acq.Anticipatory.Incorrect.Responses)) %>%
+      distinct(Mouse.ID, .keep_all = TRUE) #remove duplicates
+}) %>%
+  set_names(., nm = str_match(names(.),"2020_(\\w+?)\\.")[,2]) %>% .[order(names(.))]
+
+#RL_Rev-------------------------------------------------------------------------
+RL_Rev <- data[which(str_detect(csv, "Reversal"))] %>% 
+  map(function(x){
+    x %>% select(c("Mouse.ID", "Strain", "Sex", 
+                   "Rev.Total.Trials", 
+                   "Rev.Total.Correct", 
+                   "Rev.Total.Omit", 
+                   "Rev.Anticipatory.Correct.Responses", 
+                   "Rev.Anticipatory.Incorrect.Responses")) %>%
+      mutate(across(starts_with("Rev"), as.numeric)) %>%
+      mutate(Rev.Anticipatory.Correct.Responses = case_when(
+        Rev.Anticipatory.Correct.Responses >= 100 ~ NA_real_,
+        is.na(Rev.Anticipatory.Correct.Responses) ~ NA_real_,
+        TRUE                                      ~ Rev.Anticipatory.Correct.Responses)) %>% #outliers
+      mutate(Rev.Anticipatory.Incorrect.Responses = case_when(
+        Rev.Anticipatory.Incorrect.Responses >= 100 ~ NA_real_,
+        is.na(Rev.Anticipatory.Incorrect.Responses) ~ NA_real_,
+        TRUE                                        ~ Rev.Anticipatory.Incorrect.Responses)) %>%
+      distinct(Mouse.ID, .keep_all = TRUE) #remove duplicates
+}) %>%
+  set_names(., nm = str_match(names(.),"2020_(\\w+?)\\.")[,2]) %>% .[order(names(.))]
+
+#add Diff.Total.Trials
+Diff <- map2(RL_Acq, RL_Rev, function(x,y){
+  full_join(x, y, by = c("Mouse.ID", "Strain", "Sex")) %>%
+    mutate(Diff.Total.Trials = Rev.Total.Trials - Acq.Total.Trials) %>% #Diff.Total.Trials
+    select(c("Mouse.ID", "Strain", "Sex", "Diff.Total.Trials"))
+})
+#merge to RL_Rev
+RL_Rev <- map2(RL_Rev, Diff, function(x,y){
+    left_join(x, y, by = c("Mouse.ID", "Strain", "Sex"))
+})
+
+#SENS_COCA-------------------------------------------------------------------------
+SENS_COCA <- data[which(str_detect(csv, "Sensitization"))] %>% 
+  map(function(x){
+    x %>% 
+      filter(Study == "SENS-COCA") %>%
+      select(c("Mouse.ID", "Strain", "Sex", 
+               "D3_D2",
+               "D5_D3",
+               "D11_D3",
+               "D12_D2",
+               "D19_D11",
+               "AUC")) %>%
+      distinct(Mouse.ID, .keep_all = TRUE) #remove duplicates
+}) %>%
+  set_names(., nm = str_match(names(.),"2020_(\\w+?)\\.")[,2]) %>% .[order(names(.))]
+
+#SENS-SHAM-------------------------------------------------------------------------
+SENS_SHAM <- data[which(str_detect(csv, "Sensitization"))] %>% 
+  map(function(x){
+    x %>% 
+      filter(Study == "SENS-SHAM") %>%
+      select(c("Mouse.ID", "Strain", "Sex", 
+               "D3_D2",
+               "D5_D3",
+               "D11_D3",
+               "D12_D2",
+               "D19_D11",
+               "AUC")) %>%
+      distinct(Mouse.ID, .keep_all = TRUE) #remove duplicates
+}) %>% 
+  set_names(., nm = str_match(names(.),"2020_(\\w+?)\\.")[,2]) %>% .[order(names(.))]
+
+#IVSA-------------------------------------------------------------------------
+IVSA <- data[which(str_detect(csv, "IVSA"))] %>% 
+  map(function(x){
+    x %>% 
+      filter(!(DE_Exit_Reason == "FD")) %>%
+      select(c("Mouse.ID", "Strain", "Sex",
+               "AQ_SessionsToAcquisition",
+               "DR_Inf_Total_1p0mgkg",
+               "DR_Inf_Total_0p032mgkg",
+               "DR_Inf_Total_0p1mgkg",
+               "DR_Inf_Total_0p32mgkg",
+               #"DR_Inf_Total_AUC",
+               "EX_ALP_Total_s01",
+               "EX_ILP_Total_s01",
+               "EX_ALP_Total_s02",
+               "EX_ILP_Total_s02",
+               #"EX_Slope_ALP",
+               #"EX_Slope_ILP",
+               "RI_ALP_Total_s01",
+               "RI_ILP_Total_s01",
+               "RI_ALP_Total_s02",
+               "RI_ILP_Total_s02",
+               "RI_Inf_Total_s01",
+               "RI_Inf_Total_s02")) %>%
+      distinct(Mouse.ID, .keep_all = TRUE) #remove duplicates
+}) %>%
+  set_names(., nm = str_match(names(.),"2020_(\\w+?)\\.")[,2]) %>% .[order(names(.))]
+
+#CR-------------------------------------------------------------------------
+CR <- data[which(str_detect(csv, "CR"))] %>% 
+  map(function(x){
+    x %>% 
+      select(c("Mouse.ID", "Strain", "Sex", 
+               "period", 
+               "phase",
+               "amplitude",
+               "damping",
+               contains("of_fit"))) %>%
+    rename_with(~(.x = "goodness_of_fit"), contains("of_fit"))
+}) %>%
+  set_names(., nm = str_match(names(.),"2020_(\\w+?)\\.")[,2]) %>% .[order(names(.))]
+
+# note that Prj05_CR_preqc_12072020_DO.csv contains "J:DO", "CC075/UncJ", "CC030/GeniUncJ"
+CR$DO <- CR$DO %>%
+  filter(Strain == "J:DO")
+#add CC from DO to CC for CR
+CR$CC <- CR$DO %>%
+  filter(Strain != "J:DO") %>%
+  rbind(CR$CC)
+```
+
+### 5, Data summary
+```{r Data summary, warning = FALSE}
+#get result of summary
+res.summary <- map(list(RL_Acq, RL_Rev, SENS_COCA, SENS_SHAM, IVSA, CR), function(x){
+  print(names(x))
+  y <- map(x, function(x){# for CC, DO and Founders
+    x %>%
+      group_by(Strain) %>% #Strain
+      summarise(across(where(is.numeric), summary_func))
+  })
+  names(y) <- names(x)
+  return(do.call(rbind.data.frame, y)) #combine CC, DO and Founders
+}) %>%
+  set_names(., nm = c("RL_Acq", "RL_Rev", "SENS_COCA", "SENS_SHAM", "IVSA", "CR"))
+```
+
+### 6, Plot summary
+```{r Plot summary, warning = FALSE, fig.width=12, fig.height=12}
+#pheno list in each domain
+pheno.list <- list(RL_Acq, 
+                   RL_Rev, 
+                   SENS_COCA,
+                   SENS_SHAM,
+                   IVSA,
+                   CR) %>% 
+  map(~colnames(.x[[1]])[-c(1:3)]) %>% # get pheno names except for Mouse.ID, Strain, Sex
+  set_names(., nm = c("RL_Acq", "RL_Rev", "SENS_COCA", "SENS_SHAM", "IVSA", "CR"))
+
+#output location and name
+out.pdf = as.list(paste0("output/pdf/mean.",names(pheno.list))) 
+stopifnot(all.equal(names(pheno.list), names(res.summary)))
+
+#plot for each domain
+args1 <- list(summary.dat = res.summary, pheno.list = pheno.list, out.pdf = out.pdf)
+args1 %>% 
+  pmap(plot.summary)
+```
+
+### 7, Correlation in CC and/or Founders
+```{r Correlation in CC and/or Founders, warning = FALSE, fig.width=16, fig.height=16}
+#correlation in CC-------------------------
+corr.cc <- res.summary[-4] %>% 
+  reduce(full_join, by = "Strain") %>% # Don't include SENS_SHAM
+  filter(str_detect(Strain, "^CC")) %>%
+  select(c(contains("_mean"))) %>%
+  rename_with(~str_remove(.x, "_mean"), contains("_mean")) %>%
+  corr.test(use = "pairwise.complete.obs", method = "spearman", adjust = "fdr")
+#plot
+plot.corr.cc <- ggcorrplot(corr.cc$r, 
+                           hc.order = FALSE, 
+                           method = "square",
+                           type = "lower",
+                           outline.col = "grey", 
+                           sig.level = 0.10, 
+                           p.mat = corr.cc$p, 
+                           insig="blank",
+                           lab = TRUE,
+                           lab_size = 3,
+                           tl.cex = 18,
+                           ggtheme = ggplot2::theme_bw,
+                           title = "Cross Project Correlations in CC (p < 0.1)")
+print(plot.corr.cc)
+ggsave(file = paste0("output/pdf/corr.cc",".pdf"), 
+         plot = plot.corr.cc,
+         device = "pdf", height = 20, width = 20)
+
+#correlation in founders-------------------------
+corr.fd <- res.summary[-4] %>% 
+  reduce(full_join, by = "Strain") %>% # Don't include SENS_SHAM
+  filter(!str_detect(Strain, "^CC")) %>%
+  filter(Strain != "J:DO") %>%
+  select(c(contains("_mean"))) %>%
+  rename_with(~str_remove(.x, "_mean"), contains("_mean")) %>%
+  corr.test(use = "pairwise.complete.obs", method = "spearman", adjust = "fdr")
+#plot
+plot.corr.fd <- ggcorrplot(corr.fd$r, 
+                           hc.order = FALSE, 
+                           method = "square",
+                           type = "lower",
+                           outline.col = "grey", 
+                           sig.level = 0.10, 
+                           p.mat = corr.fd$p, 
+                           insig="blank",
+                           lab = TRUE,
+                           lab_size = 3,
+                           tl.cex = 18,
+                           ggtheme = ggplot2::theme_bw,
+                           title = "Cross Project Correlations in Founders (p < 0.1)")
+print(plot.corr.fd)
+ggsave(file = paste0("output/pdf/corr.fd",".pdf"), 
+         plot = plot.corr.fd,
+         device = "pdf", height = 20, width = 20)
+
+#correlation in cc + founders-------------------------
+corr.cc.fd <- res.summary[-4] %>% 
+  reduce(full_join, by = "Strain") %>% # Don't include SENS_SHAM
+  filter(Strain != "J:DO") %>%
+  select(c(contains("_mean"))) %>%
+  rename_with(~str_remove(.x, "_mean"), contains("_mean")) %>%
+  corr.test(use = "pairwise.complete.obs", method = "spearman", adjust = "fdr")
+#plot
+plot.corr.cc.fd <- ggcorrplot(corr.cc.fd$r, 
+                           hc.order = FALSE, 
+                           method = "square",
+                           type = "lower",
+                           outline.col = "grey", 
+                           sig.level = 0.10, 
+                           p.mat = corr.cc.fd$p, 
+                           insig="blank",
+                           lab = TRUE,
+                           lab_size = 3,
+                           tl.cex = 18,
+                           ggtheme = ggplot2::theme_bw,
+                           title = "Cross Project Correlations in CC and Founders (p < 0.1)")
+print(plot.corr.cc.fd)
+ggsave(file = paste0("output/pdf/corr.cc.fd",".pdf"), 
+       plot = plot.corr.cc.fd,
+       device = "pdf", height = 20, width = 20)
+```
+
+### 8, CC Extreme Strain Survey
+```{r, CC Extreme Strain Survey, warning = FALSE, fig.width=12, fig.height=12}
+#CC Extreme Strain Survey
+args2 <- list(cc.data = list(RL_Acq    = RL_Acq$CC, 
+                             RL_Rev    = RL_Rev$CC, 
+                             SENS_COCA = SENS_COCA$CC, 
+                             IVSA      = IVSA$CC, 
+                             CR        = CR$CC), #CC data across projects
+              pheno.list = pheno.list[c(-4)]) #no SENS_SHAM
+extremesCC.res <- args2 %>% 
+  pmap(extremesCC_func)
+
+#print a pdf for each domain
+for(d in names(extremesCC.res)){
+  extremesCC.res[[d]] %>% 
+    modify_depth(2, ~print(.x[[2]])) #print in rmarkdown
+  #print into pdf
+  pdf(file = paste0("output/pdf/", d, ".extremesCC.pdf"), width = 14, height = 10) 
+    extremesCC.res[[d]] %>% modify_depth(2, ~print(.x[[2]]))
+  dev.off()
+}
+```
+
+### 9, DO phenos and correlation
+```{r DO phenos and correlation, warning = FALSE}
+# Novelty data process
+# This will process CSNA phenotype in
+# OFA_raw_07012020.csv
+# NPP_raw_07012020.csv
+# LD_raw_07012020.csv
+# HB_raw_07012020.csv.
+# 1, remove outliers
+# 2, get residuals
+# 3, rankz transformation on residuals
+
+if(TRUE){# it's done in the cluster
+  #Process OFA phenotype data  -----------------------------------------------------------------------
+  #mouse id < 10000 are pre-center, anything > 1000 is post-center
+  #raw OFA
+  ofa.raw <- read.csv("data/pheno/OFA_raw_07012020.csv", header = TRUE)
+  ofa.raw$Birth.Date <- as.Date(ofa.raw$Birth.Date, "%m/%d/%Y")
+  ofa.raw$date.of.test <- as.Date(ofa.raw$date.of.test, "%m/%d/%y")
+  ofa.raw <- as_tibble(ofa.raw)
+
+  # pre center
+  ofa.pre.nooutlier <- ofa.raw %>%
+    filter(Mouse.ID < 10000) %>%
+    group_by(Sex) %>%
+    mutate(across(total.distance.traveled:distance.traveled.last.five,remove_outliers))
+
+  #regression
+  ofa.pre.resids <- ofa.pre.nooutlier
+  #OFA
+  ofa.pre.resids[,20:43] <- apply(ofa.pre.nooutlier[,20:43], 2, FUN = function(x, data = ofa.pre.nooutlier){
+    data$date.of.test <- as.factor(data$date.of.test)
+    data$tester <- as.factor(data$tester)
+    m <- lmer(x ~ tester + (1|date.of.test), data = data, na.action = na.exclude, REML = TRUE)
+    r <- residuals(m)
+    r
+  })
+
+  #rankz transform
+  ofa.pre.rankz.resids <- ofa.pre.resids
+  ofa.pre.rankz.resids[,20:43] <- apply(ofa.pre.resids[,20:43], 2, rz.transform)
+
+  # post center
+  ofa.post.nooutlier <- ofa.raw %>%
+    filter(Mouse.ID >= 10000) %>%
+    group_by(Sex) %>%
+    mutate(across(total.distance.traveled:distance.traveled.last.five,remove_outliers))
+
+  #regression
+  ofa.post.resids <- ofa.post.nooutlier
+  #OFA
+  ofa.post.resids[,20:43] <- apply(ofa.post.nooutlier[,20:43], 2, FUN = function(x, data = ofa.post.nooutlier){
+    data$date.of.test <- as.factor(data$date.of.test)
+    data$tester <- as.factor(data$tester)
+    m <- lmer(x ~ tester + (1|date.of.test), data = data, na.action = na.exclude, REML = TRUE)
+    r <- residuals(m)
+    r
+  })
+
+  #rankz transform
+  ofa.post.rankz.resids <- ofa.post.resids
+  ofa.post.rankz.resids[,20:43] <- apply(ofa.post.resids[,20:43], 2, rz.transform)
+
+  #write out the csv
+  colnames(ofa.raw)[20:43] <- paste0("OFA.", colnames(ofa.raw)[20:43],             ".raw")
+  ofa.nooutlier <- rbind.data.frame(ofa.pre.nooutlier, ofa.post.nooutlier)
+  colnames(ofa.nooutlier)[20:43] <- paste0("OFA.", colnames(ofa.nooutlier)[20:43], ".nooutlier")
+  #write.csv(ofa.nooutlier, file = "data/pheno/OFA_nooutlier_07012020.csv", row.names = F, quote = F)
+  ofa.resids <- rbind.data.frame(ofa.pre.resids, ofa.post.resids)
+  colnames(ofa.resids)[20:43] <- paste0("OFA.", colnames(ofa.resids)[20:43],       ".resids")
+  #write.csv(ofa.resids, file = "data/pheno/OFA_resids_07012020.csv", row.names = F, quote = F)
+  ofa.ranknorm <- rbind.data.frame(ofa.pre.rankz.resids, ofa.post.rankz.resids)
+  colnames(ofa.ranknorm)[20:43] <- paste0("OFA.", colnames(ofa.ranknorm)[20:43],   ".ranknorm")
+  #write.csv(ofa.ranknorm, file = "data/pheno/OFA_resids_ranknorm_07012020.csv", row.names = F, quote = F)
+
+  #mege ofa
+  OFA <- list(ofa.raw,
+              ofa.nooutlier,
+              ofa.resids,
+              ofa.ranknorm) %>%
+    reduce(full_join, by = colnames(ofa.raw)[1:19])
+  colnames(OFA)[2:19] <- paste0("OFA.", colnames(OFA)[2:19])
+
+  #Process NPP phenotype data  -----------------------------------------------------------------------
+  #raw npp
+  npp.raw <- read.csv("data/pheno/NPP_raw_07012020.csv", header = TRUE)
+  npp.raw$Birth.Date <- as.Date(npp.raw$Birth.Date, "%m/%d/%Y")
+  npp.raw <- npp.raw[,!(colnames(npp.raw)  %in% c("Test.MovementCounts_GreyZone_Total","Exposure.MovementCounts_GreyZone_Total"))]
+  npp.raw$date.of.test <- as.Date(npp.raw$date.of.test, "%m/%d/%y")
+  npp.raw <- as_tibble(npp.raw)
+
+  # pre center
+  npp.pre.nooutlier <- npp.raw %>%
+    filter(Mouse.ID < 10000) %>%
+    group_by(Sex) %>%
+    mutate(across(Exposure.ExplorationCounts_BlackZone_Total:NoveltyPreference.MovementCounts_GreyWhiteBlack_Total,remove_outliers))
+
+  # post center
+  npp.post.nooutlier <- npp.raw %>%
+    filter(Mouse.ID >= 10000) %>%
+    group_by(Sex) %>%
+    mutate(across(Exposure.ExplorationCounts_BlackZone_Total:NoveltyPreference.MovementCounts_GreyWhiteBlack_Total,remove_outliers))
+
+  npp.nooutlier <- rbind.data.frame(npp.pre.nooutlier, npp.post.nooutlier)
+  #regression
+  npp.resids <- npp.nooutlier
+  #npp
+  npp.resids[,41:78] <- apply(npp.nooutlier[,41:78], 2, FUN = function(x, data = npp.nooutlier){
+    data$date.of.test <- as.factor(data$date.of.test)
+    data$tester <- as.factor(data$tester)
+    m <- lmer(x ~ tester + (1|date.of.test), data = data, na.action = na.exclude, REML = TRUE)
+    r <- residuals(m)
+    r
+  })
+
+  #rankz transform
+  npp.ranknorm <- npp.resids
+  npp.ranknorm[,41:78] <- apply(npp.resids[,41:78], 2, rz.transform)
+
+  #write out the csv
+  colnames(npp.raw)[41:78]       <- paste0("NPP.", colnames(npp.raw)[41:78],       ".raw")
+  colnames(npp.nooutlier)[41:78] <- paste0("NPP.", colnames(npp.nooutlier)[41:78], ".nooutlier")
+  colnames(npp.resids)[41:78]    <- paste0("NPP.", colnames(npp.resids)[41:78],    ".resids")
+  colnames(npp.ranknorm)[41:78]  <- paste0("NPP.", colnames(npp.ranknorm)[41:78],  ".ranknorm")
+  #write.csv(npp.nooutlier, file = "data/pheno/NPP_nooutlier_07012020.csv", row.names = F, quote = F)
+  #write.csv(npp.resids, file = "data/pheno/NPP_resids_07012020.csv", row.names = F, quote = F)
+  #write.csv(npp.ranknorm, file = "data/pheno/NPP_resids_ranknorm_07012020.csv", row.names = F, quote = F)
+
+  #mege NPP
+  NPP <- list(npp.raw,
+              npp.nooutlier,
+              npp.resids,
+              npp.ranknorm) %>%
+    reduce(full_join, by = colnames(npp.raw)[-c(41:78)])
+  colnames(NPP)[c(2:40,79,80)] <- paste0("NPP.", colnames(NPP)[c(2:40,79,80)])
+
+  #Process LD phenotype data -----------------------------------------------------------------------
+  #raw LD
+  LD.raw <- read.csv("data/pheno/LD_raw_07012020.csv", header = TRUE)
+  LD.raw$Birth.Date <- as.Date(LD.raw$Birth.Date, "%m/%d/%Y")
+  LD.raw$date.of.test <- as.Date(LD.raw$date.of.test, "%m/%d/%y")
+  LD.raw <- as_tibble(LD.raw)
+
+  # pre center
+  LD.pre.nooutlier <- LD.raw %>%
+    filter(Mouse.ID < 10000) %>%
+    group_by(Sex) %>%
+    mutate(across(pct.distance.traveled.in.light:total.transitions,remove_outliers))
+
+  #regression
+  LD.pre.resids <- LD.pre.nooutlier
+  #LD
+  LD.pre.resids[,20:25] <- apply(LD.pre.nooutlier[,20:25], 2, FUN = function(x, data = LD.pre.nooutlier){
+    data$date.of.test <- as.factor(data$date.of.test)
+    m <- lm(x ~ date.of.test, data = data, na.action = na.exclude)
+    r <- residuals(m)
+    r
+  })
+
+  #rankz transform
+  LD.pre.rankz.resids <- LD.pre.resids
+  LD.pre.rankz.resids[,20:25] <- apply(LD.pre.resids[,20:25], 2, rz.transform)
+
+  # post center
+  LD.post.nooutlier <- LD.raw %>%
+    filter(Mouse.ID >= 10000) %>%
+    group_by(Sex) %>%
+    mutate(across(pct.distance.traveled.in.light:total.transitions,remove_outliers))
+
+  #regression
+  LD.post.resids <- LD.post.nooutlier
+  #LD
+  LD.post.resids[,20:25] <- apply(LD.post.nooutlier[,20:25], 2, FUN = function(x, data = LD.post.nooutlier){
+    data$date.of.test <- as.factor(data$date.of.test)
+    data$tester <- as.factor(data$tester)
+    m <- lmer(x ~ tester + (1|date.of.test), data = data, na.action = na.exclude, REML = TRUE)
+    r <- residuals(m)
+    r
+  })
+
+  #rankz transform
+  LD.post.rankz.resids <- LD.post.resids
+  LD.post.rankz.resids[,20:25] <- apply(LD.post.resids[,20:25], 2, rz.transform)
+
+  #write out the csv
+  colnames(LD.raw)[20:25]       <- paste0("LD.", colnames(LD.raw)[20:25],       ".raw")
+  LD.nooutlier <- rbind.data.frame(LD.pre.nooutlier, LD.post.nooutlier)
+  colnames(LD.nooutlier)[20:25] <- paste0("LD.", colnames(LD.nooutlier)[20:25], ".nooutlier")
+  #write.csv(LD.nooutlier, file = "data/pheno/LD_nooutlier_07012020.csv", row.names = F, quote = F)
+  LD.resids <- rbind.data.frame(LD.pre.resids, LD.post.resids)
+  colnames(LD.resids)[20:25]    <- paste0("LD.", colnames(LD.resids)[20:25],    ".resids")
+  #write.csv(LD.resids, file = "data/pheno/LD_resids_07012020.csv", row.names = F, quote = F)
+  LD.ranknorm <- rbind.data.frame(LD.pre.rankz.resids, LD.post.rankz.resids)
+  colnames(LD.ranknorm)[20:25]  <- paste0("LD.", colnames(LD.ranknorm)[20:25],  ".ranknorm")
+  #write.csv(LD.ranknorm, file = "data/pheno/LD_resids_ranknorm_07012020.csv", row.names = F, quote = F)
+
+  #mege LD
+  LD <- list(LD.raw,
+             LD.nooutlier,
+             LD.resids,
+             LD.ranknorm) %>%
+    reduce(full_join, by = colnames(LD.raw)[1:19])
+  colnames(LD)[c(2:19)] <- paste0("LD.", colnames(LD)[c(2:19)])
+
+  #Process HB phenotype data -----------------------------------------------------------------------
+  #raw HB
+  HB.raw <- read.csv("data/pheno/HB_raw_07012020.csv", header = TRUE)
+  HB.raw$Birth.Date <- as.Date(HB.raw$Birth.Date, "%m/%d/%y")
+  HB.raw$date.of.test <- as.Date(HB.raw$date.of.test, "%m/%d/%y")
+  HB.raw <- as_tibble(HB.raw)
+
+  # pre center
+  HB.pre.nooutlier <- HB.raw %>%
+    filter(Mouse.ID < 10000) %>%
+    group_by(Sex) %>%
+    mutate(across(Total.Entries:Repeat.Entries,remove_outliers))
+
+  #regression
+  HB.pre.resids <- HB.pre.nooutlier
+  #HB
+  HB.pre.resids[,20:22] <- apply(HB.pre.nooutlier[,20:22], 2, FUN = function(x, data = HB.pre.nooutlier){
+    data$date.of.test <- as.factor(data$date.of.test)
+    m <- lm(x ~ date.of.test, data = data, na.action = na.exclude)
+    r <- residuals(m)
+    r
+  })
+
+  #rankz transform
+  HB.pre.rankz.resids <- HB.pre.resids
+  HB.pre.rankz.resids[,20:22] <- apply(HB.pre.resids[,20:22], 2, rz.transform)
+
+  # post center
+  HB.post.nooutlier <- HB.raw %>%
+    filter(Mouse.ID >= 10000) %>%
+    group_by(Sex) %>%
+    mutate(across(Total.Entries:Repeat.Entries,remove_outliers))
+
+  #regression
+  HB.post.resids <- HB.post.nooutlier
+  #HB
+  HB.post.resids[,20:22] <- apply(HB.post.nooutlier[,20:22], 2, FUN = function(x, data = HB.post.nooutlier){
+    data$date.of.test <- as.factor(data$date.of.test)
+    data$tester <- as.factor(data$tester)
+    m <- lmer(x ~ tester + (1|date.of.test), data = data, na.action = na.exclude, REML = TRUE)
+    r <- residuals(m)
+    r
+  })
+
+  #rankz transform
+  HB.post.rankz.resids <- HB.post.resids
+  HB.post.rankz.resids[,20:22] <- apply(HB.post.resids[,20:22], 2, rz.transform)
+
+  #write out the csv
+  colnames(HB.raw)[20:22]       <- paste0("HB.", colnames(HB.raw)[20:22],       ".raw")
+  HB.nooutlier <- rbind.data.frame(HB.pre.nooutlier, HB.post.nooutlier)
+  colnames(HB.nooutlier)[20:22] <- paste0("HB.", colnames(HB.nooutlier)[20:22], ".nooutlier")
+  #write.csv(HB.nooutlier, file = "data/pheno/HB_nooutlier_07012020.csv", row.names = F, quote = F)
+  HB.resids <- rbind.data.frame(HB.pre.resids, HB.post.resids)
+  colnames(HB.resids)[20:22]    <- paste0("HB.", colnames(HB.resids)[20:22],    ".resids")
+  #write.csv(HB.resids, file = "data/pheno/HB_resids_07012020.csv", row.names = F, quote = F)
+  HB.ranknorm <- rbind.data.frame(HB.pre.rankz.resids, HB.post.rankz.resids)
+  colnames(HB.ranknorm)[20:22]  <- paste0("HB.", colnames(HB.ranknorm)[20:22],  ".ranknorm")
+  #write.csv(HB.ranknorm, file = "data/pheno/HB_resids_ranknorm_07012020.csv", row.names = F, quote = F)
+
+  #mege HB
+  HB <- list(HB.raw,
+             HB.nooutlier,
+             HB.resids,
+             HB.ranknorm) %>%
+    reduce(full_join, by = colnames(HB.raw)[1:19])
+  colnames(HB)[c(2:19)] <- paste0("HB.", colnames(HB)[c(2:19)])
+}
+
+# Read each project
+#sens----------------------------------------------------------
+sens <- read.csv("data/pheno/Prj02_SENS_pheno_qttl2_DO_12012020_COCA_all.csv")
+sens <- sens %>% rename(Mouse.ID = mouseID) %>%
+  distinct(Mouse.ID, .keep_all = TRUE) %>%
+  mutate(across(Mouse.ID, as.character)) %>%
+  mutate(
+    D3_D2.nooutlier = case_when(
+      (D3_D2 < -15000 | D3_D2 > 50000) ~ NA_real_,
+      TRUE ~ D3_D2),
+    D5_D3.nooutlier = case_when(
+      (D5_D3 < -25000) ~ NA_real_,
+      TRUE ~ D5_D3),
+    D11_D3.nooutlier = case_when(
+      (D11_D3 > 50000 | D11_D3 < -25000) ~ NA_real_,
+      TRUE ~ D11_D3),
+    D12_D2.nooutlier = case_when(
+      (D12_D2 > 20000 | D12_D2 < -20000) ~ NA_real_,
+      TRUE ~ D12_D2),
+    D19_D11.nooutlier = case_when(
+      (D19_D11 > 20000 | D19_D11 < -20000) ~ NA_real_,
+      TRUE ~ D19_D11),
+    AUC.nooutlier = case_when(
+      (AUC > 50000 | AUC < -20000) ~ NA_real_,
+      TRUE ~ AUC)
+  )#remove outliers
+colnames(sens)[4:9] <- paste0(colnames(sens)[4:9], ".raw")
+colnames(sens)[4:15] <- paste0("SENS.", colnames(sens)[4:15])
+
+#cr----------------------------------------------------------
+cr <- read.csv("data/pheno/Prj05_rythms_do.mean.csv")
+colnames(cr) <- c("ID", "Period.raw", "Phase.raw", "Amplitude.raw", "Damping.raw", "Goodness.of.fit.raw", "Mouse.ID")
+cr <- cr %>% filter(!(ID %in% c("26046_5", "20662_8"))) %>% # remove duplicates
+  mutate(across(Mouse.ID, as.character)) %>%
+  mutate(Damping.nooutlier = case_when(
+    (Damping.raw >= 20 | Damping.raw <= -2) ~ NA_real_,
+    TRUE ~ Damping.raw
+  ))
+colnames(cr)[c(2:6,8)] <- paste0("CR.", colnames(cr)[c(2:6,8)])
+
+#rl----------------------------------------------------------
+rl <- readr::read_csv("data/pheno/Prj01_RL_pheno_qttl2_DO_11092020.csv", na = c("N/A", "NA"))
+rl <- rl %>% rename(Mouse.ID = mouseID) %>% distinct(Mouse.ID, .keep_all = TRUE) %>%
+  mutate(across(Mouse.ID, as.character))
+colnames(rl)[4:8] <- paste0(colnames(rl)[4:8], ".raw")
+rl <- rl %>% mutate(
+  Acq.Anticipatory.Correct.Responses.nooutlier = case_when(
+    (Acq.Anticipatory.Correct.Responses.raw > 5 | is.na(Acq.Anticipatory.Correct.Responses.raw)) ~ NA_real_,
+    TRUE ~ Acq.Anticipatory.Correct.Responses.raw),
+  Rev.Anticipatory.Incorrect.Responses.nooutlier = case_when(
+    (Rev.Anticipatory.Incorrect.Responses.raw >6) ~ NA_real_,
+    TRUE ~ Rev.Anticipatory.Incorrect.Responses.raw
+  ))#omit values >6 for Acq.Anticipatory.Correct.Responses and Rev.Anticipatory.Incorrect.Responses variables.
+colnames(rl)[4:10] <- paste0("RL.", colnames(rl)[4:10])
+
+#ivsa----------------------------------------------------------
+ivsa <- IVSA$DO %>%
+  rename_with(~paste0("IVSA.", .x, ".raw"), contains("_"))
+
+#merge OFA, NPP, LD, HB, sens, cr, rl, ivsa for DO----------------------
+DO.allpheno <- list(OFA, NPP, LD, HB, sens, cr, rl, ivsa) %>%
+  map(~(.x %>% mutate(across(Mouse.ID, as.character)))) %>%
+  reduce(full_join, by = "Mouse.ID")
+#correlation on raw phenotypes
+DO.allrawpheno.corr <- DO.allpheno %>%
+  select(contains(".raw")) %>%
+  corr.test(use = "pairwise.complete.obs", 
+            method = "spearman", 
+            adjust = "fdr")
+#plot
+plot.DO.allrawpheno.corr <- ggcorrplot(DO.allrawpheno.corr$r, 
+                                       hc.order = FALSE, 
+                                       method = "square",
+                                       type = "lower",
+                                       outline.col = "grey", 
+                                       sig.level = 0.10, 
+                                       p.mat = DO.allrawpheno.corr$p, 
+                                       insig="blank",
+                                       lab = TRUE,
+                                       lab_size = 3,
+                                       tl.cex = 16,
+                                       ggtheme = ggplot2::theme_bw,
+                                       title = "Cross Project Correlations in DO (p < 0.1)")
+# print(plot.DO.allpheno.corr)
+# ggsave(file = paste0("output/pdf/DO.allpheno.corr",".pdf"), 
+#          plot = plot.DO.allpheno.corr,
+#          device = "pdf", height = 20, width = 20)
+# NEED phenotype list for plotting
+```
+
+### 9, Phenotypes for QTL
+```{r Phenotypes for QTL, warning = FALSE}
+#merge with genotype data after QC----------------------------------------------------------
+load("data/Jackson_Lab_12_batches/gm_DO3173_qc_newid.RData")
+csna.allqtl.pheno <- gm_after_qc$covar %>%
+  rename(Mouse.ID = name) %>%
+  left_join(DO.allpheno, by = "Mouse.ID") %>%
+  select(c(colnames(.)[1:5], matches("raw|outlier|resids|ranknorm")))
+write.csv(csna.allqtl.pheno, file  = "data/pheno/csna.allqtl.pheno.csv", row.names = F)
+```

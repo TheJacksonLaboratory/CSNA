@@ -7,59 +7,34 @@ output:
     toc: true
 ---
 
-### 1 Data transformation from Finalreport.txt to qtl2 for 12 batches
-* [01_FinalReport2qtl2.R]
+### 0 Process all phenotypes in founder CC and DO
+* [00_Process_all_phenotypes_in_founder_CC_DO.Rmd](00_Process_all_phenotypes_in_founder_CC_DO.html)
 
-### 2 Grab intensities from GeneSeek FinalReport.txt files convert them to a single big data frame
-* [02_FinalReport2intensity.R]
+### 1 Data transformation from Finalreport.txt to qtl2 for 12 batches
+* [analysis/scripts/01_FinalReport2qtl2.R]
+
+### 2 Grab intensities from GeneSeek FinalReport.txt files
+* [analysis/scripts/02_FinalReport2intensity.R]
 
 ### 3 First time to calculate genoprobs, maxmarg, crossover, errorlod, snpg for the qc diagnositics
-* [03_firstgm2genoprobs.R]
+* [analysis/scripts/03_firstgm2genoprobs.R]
 
 ### 4 Genotype diagnostics for diversity outbred mice of 12 batches
+* [04_diagnosis_qc_gigamuga_12_batches.Rmd](04_diagnosis_qc_gigamuga_12_batches.html)
 * [04_diagnosis_qc_gigamuga_nine_batches.Rmd](04_diagnosis_qc_gigamuga_nine_batches.html)
 * [04_diagnosis_qc_gigamuga_11_batches.Rmd](04_diagnosis_qc_gigamuga_11_batches.html)
-* [04_diagnosis_qc_gigamuga_12_batches.Rmd](04_diagnosis_qc_gigamuga_12_batches.html)
 
 ### 5 After QC, genotype diagnostics
+* [05_after_diagnosis_qc_gigamuga_12_batches.Rmd](05_after_diagnosis_qc_gigamuga_12_batches.html)
 * [05_after_diagnosis_qc_gigamuga_nine_batches.Rmd](05_after_diagnosis_qc_gigamuga_nine_batches.html)
 * [05_after_diagnosis_qc_gigamuga_11_batches.Rmd](05_after_diagnosis_qc_gigamuga_11_batches.html)
-* [05_after_diagnosis_qc_gigamuga_12_batches.Rmd](05_after_diagnosis_qc_gigamuga_12_batches.html)
 
 ### 6 Calculation of the genoprobs after qc and do interpolatino to 69K grid
-* [06_final_pr_apr_69K.R]
+* [analysis/scripts/06_final_pr_apr_69K.R]
 
 ### 7 DO Diversity Report
-* [07_do_diversity_report.R]
+* [analysis/scripts/07_do_diversity_report.R]
 * [07_do_diversity_report.Rmd](07_do_diversity_report.html)
-* [07_recomb_size_founder_prop.Rmd]
 
 ### 8 GCTA heritability 
 * [08_gcta_herit.R]
-
-### 9 qtl mapping
-* [09_qtlmapping.R]
-
-### 10 qtl permutation
-* [10_qtl_permu.R]
-
-### 11 qtl blup
-* [11_qtl_blup.R]
-
-### 12 plot qtl mapping
-* [12_plot_qtl_mapping_1.Rmd](12_plot_qtl_mapping_1.html)
-* [12_plot_qtl_mapping_2.Rmd](12_plot_qtl_mapping_2.html)
-* [12_plot_69k_qtl_mapping_2.Rmd](12_plot_69k_qtl_mapping_2.html)
-
-### 13 conditional_m2_qtlmapping
-* [13_conditional_m2_qtlmapping.R]
-* [13_plot_conditional_m2_qtlmapping.Rmd](13_plot_conditional_m2_qtlmapping.html)
-
-### 14 geneseek2qtl2fst_Gagnon
-* [14_geneseek2qtl2fst_Gagnon.R]
-
-### 15 firstgm2genoprobs_Gagnon
-* [15_firstgm2genoprobs_Gagnon.R]
-
-### 16 diagnosis_qc_gigamuga_gagnon
-* [16_diagnosis_qc_gigamuga_gagnon.Rmd](16_diagnosis_qc_gigamuga_gagnon.html)
