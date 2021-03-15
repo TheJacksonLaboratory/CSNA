@@ -9,10 +9,10 @@ output:
 ---
 
 ### Purpose of analysis
-1, Summarize and plot phenotypes for RL, SENS, IVSA and CR across Founders, CC and DO
-2, Genetic correlations in Founders and/or CC 
-3, Process OFA, NPP, HB, LD, RL, SENS, IVSA and CR for DO and correlation
-4, Generate a file containing all phenotype of above domains for qtl mapping
+* 1, Summarize and plot phenotypes for RL, SENS, IVSA and CR across Founders, CC and DO
+* 2, Genetic correlations in Founders and/or CC 
+* 3, Process OFA, NPP, HB, LD, RL, SENS, IVSA and CR for DO and correlation
+* 4, Generate a file containing all phenotype of above domains for qtl mapping
 
 ### 1, Working directory
 All chunks will run in the working folder for this experiment.
@@ -81,15 +81,15 @@ powerTransform <- function(y, lambda1, lambda2 = NULL, method = "boxcox") {
 summary_func <- list(
   mean = ~mean(.x, na.rm = TRUE),
   n    = ~length(which(!is.na(.x))),
-  ul   = ~(mean(.x, na.rm = TRUE) + sd(.x, na.rm = TRUE)/sqrt(length(which(!is.na(.x))))),
-  ll   = ~(mean(.x, na.rm = TRUE) - sd(.x, na.rm = TRUE)/sqrt(length(which(!is.na(.x)))))
+  ul   = ~(mean(.x, na.rm = TRUE) + (sd(.x, na.rm = TRUE)/sqrt(length(which(!is.na(.x)))))),
+  ll   = ~(mean(.x, na.rm = TRUE) - (sd(.x, na.rm = TRUE)/sqrt(length(which(!is.na(.x))))))
 )
 #summary_extremesCC_func
 summary_extremesCC_func <- list(
   mean = ~MASS::huber(na.omit(.x))$mu,
   n    = ~length(which(!is.na(.x))),
-  ul   = ~(~MASS::huber(na.omit(.x))$mu + sd(.x, na.rm = TRUE)/sqrt(length(which(!is.na(.x))))),
-  ll   = ~(~MASS::huber(na.omit(.x))$mu - sd(.x, na.rm = TRUE)/sqrt(length(which(!is.na(.x)))))
+  ul   = ~(MASS::huber(na.omit(.x))$mu + (sd(.x, na.rm = TRUE)/sqrt(length(which(!is.na(.x)))))),
+  ll   = ~(MASS::huber(na.omit(.x))$mu - (sd(.x, na.rm = TRUE)/sqrt(length(which(!is.na(.x))))))
 )
 #outliers are outside of mean +/- 3SD
 remove_outliers <- function(x, thres = 3, na.rm = TRUE, ...) {
@@ -98,7 +98,7 @@ remove_outliers <- function(x, thres = 3, na.rm = TRUE, ...) {
   y
 }
 #rankz transform
-rz.transform <- function(y) {
+rz.transform <- function(y){
   rankY=rank(y, ties.method="average", na.last="keep")
   rzT=qnorm(rankY/(length(na.exclude(rankY))+1))
   return(rzT)
@@ -229,25 +229,47 @@ extremesCC_func <- function(cc.data, pheno.list){
                 mutate(sig = ifelse(t.p <= 0.05, "*", "NS"),
                        StrainSig = paste0(Strain, "[", sig, ";", n, "]"))
               
-              #plot
-              p <- ggplot(ys, aes(y = mean, x = reorder(StrainSig, -diff_mean), 
-                                  color = sig, label = sig)) + 
+              #plot based on SEM
+              p1 <- ggplot(ys, aes(y = mean, x = reorder(StrainSig, -diff_mean), 
+                                   color = sig, label = sig)) + 
                 geom_point() + 
                 geom_errorbar(aes(ymin = ll, ymax = ul), width = 0.5, size = 1) +
                 theme_cowplot() + 
                 scale_color_hue(h = c(90, 180)) +
                 geom_hline(yintercept = unique(ys$pop_mean)) +
-                theme(axis.text.x = element_text(size = 16,angle = 90, hjust = 1), axis.text.y = element_text(size = 16),
-                      legend.position="right") +
+                theme(axis.text.x = element_text(size = 16,angle = 90, hjust = 1), 
+                      axis.text.y = element_text(size = 16),
+                      legend.position="none") +
                 scale_size_continuous(breaks = c(2,4,6,8,10,20), labels = c(2,4,6,8,10,20))+
                 theme(text = element_text(size = 20)) +
                 xlab("") +
-                ylab(i) +
+                ylab(paste0(i, " (Mean ± SEM)")) +
+                #ylim(min(ys$lo.CI, na.rm = TRUE), max(ys$up.CI, na.rm = TRUE)) +
                 ggtitle(unique(ys$Sex)) +
                 theme(axis.title.x = element_blank(),
                       plot.title = element_text(hjust = 0.5),
                       axis.text.x=element_text(angle = 90, hjust = 0.95, vjust = 0.5))
-              return(list(ys, p))
+              #plot based on CI
+              p2 <- ggplot(ys, aes(y = mean, x = reorder(StrainSig, -diff_mean), 
+                                   color = sig, label = sig)) + 
+                geom_point() + 
+                geom_errorbar(aes(ymin = lo.CI, ymax = up.CI), width = 0.5, size = 1) +
+                theme_cowplot() + 
+                scale_color_hue(h = c(90, 180)) +
+                geom_hline(yintercept = unique(ys$pop_mean)) +
+                theme(axis.text.x = element_text(size = 16,angle = 90, hjust = 1), 
+                      axis.text.y = element_text(size = 16),
+                      legend.position="right") +
+                scale_size_continuous(breaks = c(2,4,6,8,10,20), labels = c(2,4,6,8,10,20))+
+                theme(text = element_text(size = 20)) +
+                xlab("") +
+                ylab(paste0(i, " (Mean 95% CI)")) +
+                #ylim(min(ys$lo.CI, na.rm = TRUE), max(ys$up.CI, na.rm = TRUE)) +
+                ggtitle(unique(ys$Sex)) +
+                theme(axis.title.x = element_blank(),
+                      plot.title = element_text(hjust = 0.5),
+                      axis.text.x=element_text(angle = 90, hjust = 0.95, vjust = 0.5))
+              return(list(ys, p1, p2))
         })
       }
   return(extremesCC)
@@ -464,8 +486,8 @@ args1 %>%
   pmap(plot.summary)
 ```
 
-### 7, Correlation in CC and/or Founders
-```{r Correlation in CC and/or Founders, warning = FALSE, fig.width=16, fig.height=16}
+### 7, Correlation in CC and_or Founders
+```{r Correlation in CC and_or Founders, warning = FALSE, fig.width=16, fig.height=16}
 #correlation in CC-------------------------
 corr.cc <- res.summary[-4] %>% 
   reduce(full_join, by = "Strain") %>% # Don't include SENS_SHAM
@@ -547,7 +569,7 @@ ggsave(file = paste0("output/pdf/corr.cc.fd",".pdf"),
 ```
 
 ### 8, CC Extreme Strain Survey
-```{r, CC Extreme Strain Survey, warning = FALSE, fig.width=12, fig.height=12}
+```{r, CC Extreme Strain Survey, warning = FALSE, fig.width=24, fig.height=12}
 #CC Extreme Strain Survey
 args2 <- list(cc.data = list(RL_Acq    = RL_Acq$CC, 
                              RL_Rev    = RL_Rev$CC, 
@@ -561,16 +583,16 @@ extremesCC.res <- args2 %>%
 #print a pdf for each domain
 for(d in names(extremesCC.res)){
   extremesCC.res[[d]] %>% 
-    modify_depth(2, ~print(.x[[2]])) #print in rmarkdown
+    modify_depth(2, ~print(plot_grid(.x[[2]], .x[[3]]))) #print in rmarkdown
   #print into pdf
-  pdf(file = paste0("output/pdf/", d, ".extremesCC.pdf"), width = 14, height = 10) 
-    extremesCC.res[[d]] %>% modify_depth(2, ~print(.x[[2]]))
+  pdf(file = paste0("output/pdf/", d, ".extremesCC.pdf"), width = 24, height = 10)
+    extremesCC.res[[d]] %>% modify_depth(2, ~print(plot_grid(.x[[2]], .x[[3]])))
   dev.off()
 }
 ```
 
 ### 9, DO phenos and correlation
-```{r DO phenos and correlation, warning = FALSE}
+```{r DO phenos and correlation, warning = FALSE, eval = FALSE}
 # Novelty data process
 # This will process CSNA phenotype in
 # OFA_raw_07012020.csv
@@ -581,7 +603,7 @@ for(d in names(extremesCC.res)){
 # 2, get residuals
 # 3, rankz transformation on residuals
 
-if(TRUE){# it's done in the cluster
+if(FALSE){# it's done in the cluster
   #Process OFA phenotype data  -----------------------------------------------------------------------
   #mouse id < 10000 are pre-center, anything > 1000 is post-center
   #raw OFA
@@ -932,8 +954,8 @@ plot.DO.allrawpheno.corr <- ggcorrplot(DO.allrawpheno.corr$r,
 # NEED phenotype list for plotting
 ```
 
-### 9, Phenotypes for QTL
-```{r Phenotypes for QTL, warning = FALSE}
+### 10, Phenotypes for QTL
+```{r Phenotypes for QTL, warning = FALSE, eval = FALSE}
 #merge with genotype data after QC----------------------------------------------------------
 load("data/Jackson_Lab_12_batches/gm_DO3173_qc_newid.RData")
 csna.allqtl.pheno <- gm_after_qc$covar %>%
