@@ -371,12 +371,15 @@ SENS_COCA <- data[which(str_detect(csv, "Sensitization"))] %>%
     x %>% 
       filter(Study == "SENS-COCA") %>%
       select(c("Mouse.ID", "Strain", "Sex", 
+               "D01_SAL",
+               "D02_SAL",
                "D3_D2",
                "D5_D3",
                "D11_D3",
                "D12_D2",
                "D19_D11",
                "AUC")) %>%
+      mutate(D1_D2 = D01_SAL - D02_SAL, .after = D02_SAL) %>%
       distinct(Mouse.ID, .keep_all = TRUE) #remove duplicates
 }) %>%
   set_names(., nm = str_match(names(.),"2020_(\\w+?)\\.")[,2]) %>% .[order(names(.))]
@@ -387,12 +390,15 @@ SENS_SHAM <- data[which(str_detect(csv, "Sensitization"))] %>%
     x %>% 
       filter(Study == "SENS-SHAM") %>%
       select(c("Mouse.ID", "Strain", "Sex", 
+               "D01_SAL",
+               "D02_SAL",
                "D3_D2",
                "D5_D3",
                "D11_D3",
                "D12_D2",
                "D19_D11",
                "AUC")) %>%
+      mutate(D1_D2 = D01_SAL - D02_SAL, .after = D02_SAL) %>%
       distinct(Mouse.ID, .keep_all = TRUE) #remove duplicates
 }) %>% 
   set_names(., nm = str_match(names(.),"2020_(\\w+?)\\.")[,2]) %>% .[order(names(.))]
@@ -513,6 +519,8 @@ print(plot.corr.cc)
 ggsave(file = paste0("output/pdf/corr.cc",".pdf"), 
          plot = plot.corr.cc,
          device = "pdf", height = 20, width = 20)
+#save full matrix
+save(corr.cc, file = "output/corr.cc.fullmat.RData")
 
 #correlation in founders-------------------------
 corr.fd <- res.summary[-4] %>% 
@@ -540,6 +548,8 @@ print(plot.corr.fd)
 ggsave(file = paste0("output/pdf/corr.fd",".pdf"), 
          plot = plot.corr.fd,
          device = "pdf", height = 20, width = 20)
+#save full matrix
+save(corr.fd, file = "output/corr.fd.fullmat.RData")
 
 #correlation in cc + founders-------------------------
 corr.cc.fd <- res.summary[-4] %>% 
@@ -566,6 +576,8 @@ print(plot.corr.cc.fd)
 ggsave(file = paste0("output/pdf/corr.cc.fd",".pdf"), 
        plot = plot.corr.cc.fd,
        device = "pdf", height = 20, width = 20)
+#save full matrix
+save(corr.cc.fd, file = "output/corr.cc.fd.fullmat.RData")
 ```
 
 ### 8, CC Extreme Strain Survey
@@ -592,7 +604,7 @@ for(d in names(extremesCC.res)){
 ```
 
 ### 9, DO phenos and correlation
-```{r DO phenos and correlation, warning = FALSE, eval = FALSE}
+```{r DO phenos and correlation, warning = FALSE, eval = TRUE}
 # Novelty data process
 # This will process CSNA phenotype in
 # OFA_raw_07012020.csv
@@ -603,7 +615,7 @@ for(d in names(extremesCC.res)){
 # 2, get residuals
 # 3, rankz transformation on residuals
 
-if(FALSE){# it's done in the cluster
+if(TRUE){# it's done in the cluster
   #Process OFA phenotype data  -----------------------------------------------------------------------
   #mouse id < 10000 are pre-center, anything > 1000 is post-center
   #raw OFA
@@ -867,10 +879,13 @@ if(FALSE){# it's done in the cluster
 # Read each project
 #sens----------------------------------------------------------
 sens <- read.csv("data/pheno/Prj02_SENS_pheno_qttl2_DO_12012020_COCA_all.csv")
-sens <- sens %>% rename(Mouse.ID = mouseID) %>%
-  distinct(Mouse.ID, .keep_all = TRUE) %>%
+sens <- sens %>% 
+  rename(Mouse.ID = mouseID) %>%
   mutate(across(Mouse.ID, as.character)) %>%
+  left_join(data$`data/pheno/Updated_CSNA_Data/Prj02_Sensitization_preqc_12282020_DO.csv`[,c(1,8,9)], by = "Mouse.ID") %>%
+  distinct(Mouse.ID, .keep_all = TRUE) %>%
   mutate(
+    D1_D2 = D01_SAL - D02_SAL,
     D3_D2.nooutlier = case_when(
       (D3_D2 < -15000 | D3_D2 > 50000) ~ NA_real_,
       TRUE ~ D3_D2),
@@ -890,8 +905,8 @@ sens <- sens %>% rename(Mouse.ID = mouseID) %>%
       (AUC > 50000 | AUC < -20000) ~ NA_real_,
       TRUE ~ AUC)
   )#remove outliers
-colnames(sens)[4:9] <- paste0(colnames(sens)[4:9], ".raw")
-colnames(sens)[4:15] <- paste0("SENS.", colnames(sens)[4:15])
+colnames(sens)[4:12] <- paste0(colnames(sens)[4:12], ".raw")
+colnames(sens)[4:18] <- paste0("SENS.", colnames(sens)[4:18])
 
 #cr----------------------------------------------------------
 cr <- read.csv("data/pheno/Prj05_rythms_do.mean.csv")
@@ -947,6 +962,9 @@ plot.DO.allrawpheno.corr <- ggcorrplot(DO.allrawpheno.corr$r,
                                        tl.cex = 16,
                                        ggtheme = ggplot2::theme_bw,
                                        title = "Cross Project Correlations in DO (p < 0.1)")
+#save full matrix
+save(DO.allrawpheno.corr, file = "output/DO.allrawpheno.corr.fullmat.RData")
+
 # print(plot.DO.allpheno.corr)
 # ggsave(file = paste0("output/pdf/DO.allpheno.corr",".pdf"), 
 #          plot = plot.DO.allpheno.corr,
@@ -955,7 +973,7 @@ plot.DO.allrawpheno.corr <- ggcorrplot(DO.allrawpheno.corr$r,
 ```
 
 ### 10, Phenotypes for QTL
-```{r Phenotypes for QTL, warning = FALSE, eval = FALSE}
+```{r Phenotypes for QTL, warning = FALSE, eval = TRUE}
 #merge with genotype data after QC----------------------------------------------------------
 load("data/Jackson_Lab_12_batches/gm_DO3173_qc_newid.RData")
 csna.allqtl.pheno <- gm_after_qc$covar %>%
