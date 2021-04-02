@@ -501,7 +501,7 @@ corr.cc <- res.summary[-4] %>%
   select(c(contains("_mean"))) %>%
   rename_with(~str_remove(.x, "_mean"), contains("_mean")) %>%
   corr.test(use = "pairwise.complete.obs", method = "spearman", adjust = "fdr")
-#plot
+#plot p < 0.1
 plot.corr.cc <- ggcorrplot(corr.cc$r, 
                            hc.order = FALSE, 
                            method = "square",
@@ -519,6 +519,24 @@ print(plot.corr.cc)
 ggsave(file = paste0("output/pdf/corr.cc",".pdf"), 
          plot = plot.corr.cc,
          device = "pdf", height = 20, width = 20)
+#no p cutoff
+plot.corr.cc2 <- ggcorrplot(corr.cc$r, 
+                           hc.order = FALSE, 
+                           method = "square",
+                           type = "lower",
+                           outline.col = "grey", 
+                           sig.level = 1, 
+                           p.mat = corr.cc$p, 
+                           insig="blank",
+                           lab = TRUE,
+                           lab_size = 3,
+                           tl.cex = 18,
+                           ggtheme = ggplot2::theme_bw,
+                           title = "Cross Project Correlations in CC (no cutoff at p)")
+print(plot.corr.cc2)
+ggsave(file = paste0("output/pdf/corr.cc.fullmat",".pdf"), 
+       plot = plot.corr.cc2,
+       device = "pdf", height = 20, width = 20)
 #save full matrix
 save(corr.cc, file = "output/corr.cc.fullmat.RData")
 
@@ -530,7 +548,7 @@ corr.fd <- res.summary[-4] %>%
   select(c(contains("_mean"))) %>%
   rename_with(~str_remove(.x, "_mean"), contains("_mean")) %>%
   corr.test(use = "pairwise.complete.obs", method = "spearman", adjust = "fdr")
-#plot
+#plot p < 0.1
 plot.corr.fd <- ggcorrplot(corr.fd$r, 
                            hc.order = FALSE, 
                            method = "square",
@@ -548,6 +566,24 @@ print(plot.corr.fd)
 ggsave(file = paste0("output/pdf/corr.fd",".pdf"), 
          plot = plot.corr.fd,
          device = "pdf", height = 20, width = 20)
+#no p cutoff
+plot.corr.fd2 <- ggcorrplot(corr.fd$r, 
+                           hc.order = FALSE, 
+                           method = "square",
+                           type = "lower",
+                           outline.col = "grey", 
+                           sig.level = 1, 
+                           p.mat = corr.fd$p, 
+                           insig="blank",
+                           lab = TRUE,
+                           lab_size = 3,
+                           tl.cex = 18,
+                           ggtheme = ggplot2::theme_bw,
+                           title = "Cross Project Correlations in Founders (no cutoff at p)")
+print(plot.corr.fd2)
+ggsave(file = paste0("output/pdf/corr.fd.fullmat",".pdf"), 
+       plot = plot.corr.fd2,
+       device = "pdf", height = 20, width = 20)
 #save full matrix
 save(corr.fd, file = "output/corr.fd.fullmat.RData")
 
@@ -558,7 +594,7 @@ corr.cc.fd <- res.summary[-4] %>%
   select(c(contains("_mean"))) %>%
   rename_with(~str_remove(.x, "_mean"), contains("_mean")) %>%
   corr.test(use = "pairwise.complete.obs", method = "spearman", adjust = "fdr")
-#plot
+#plot p < 0.1
 plot.corr.cc.fd <- ggcorrplot(corr.cc.fd$r, 
                            hc.order = FALSE, 
                            method = "square",
@@ -575,6 +611,24 @@ plot.corr.cc.fd <- ggcorrplot(corr.cc.fd$r,
 print(plot.corr.cc.fd)
 ggsave(file = paste0("output/pdf/corr.cc.fd",".pdf"), 
        plot = plot.corr.cc.fd,
+       device = "pdf", height = 20, width = 20)
+#no p cutoff
+plot.corr.cc.fd2 <- ggcorrplot(corr.cc.fd$r, 
+                              hc.order = FALSE, 
+                              method = "square",
+                              type = "lower",
+                              outline.col = "grey", 
+                              sig.level = 1, 
+                              p.mat = corr.cc.fd$p, 
+                              insig="blank",
+                              lab = TRUE,
+                              lab_size = 3,
+                              tl.cex = 18,
+                              ggtheme = ggplot2::theme_bw,
+                              title = "Cross Project Correlations in CC and Founders (no cutoff at p)")
+print(plot.corr.cc.fd2)
+ggsave(file = paste0("output/pdf/corr.cc.fd.fullmat",".pdf"), 
+       plot = plot.corr.cc.fd2,
        device = "pdf", height = 20, width = 20)
 #save full matrix
 save(corr.cc.fd, file = "output/corr.cc.fd.fullmat.RData")
