@@ -17,8 +17,7 @@ After finishing 06_final_pr_apr_69K.R, 07_do_diversity_report.R, all the output 
 # Load packages
 library(qtl2)
 library(table1)
-library(tidyr)
-library(dplyr)
+library(tidyverse)
 library(data.table)
 library(foreach)
 library(doParallel)
@@ -31,8 +30,9 @@ library(abind)
 library(ggplot2)
 library(vcd)
 library(MASS)
-library(plotly)
+#library(plotly)
 library(colorspace)
+library(HardyWeinberg)
 options(stringsAsFactors = FALSE)
 source("code/reconst_utils.R")
 ```
@@ -43,9 +43,9 @@ load("data/Jackson_Lab_12_batches/gm_DO3173_qc.RData")#gm_after_qc
 
 # make dataset with a few variables to summarize
 table1 <- gm_after_qc$covar %>% 
-  select(Name = name, 
-         Sex  = sex, 
-         Generation = ngen) %>%
+  dplyr::select(Name = name, 
+                Sex  = sex, 
+                Generation = ngen) %>%
   mutate(Sex = case_when(
     Sex == "F" ~ "Female",
     Sex == "M" ~ "Male"
@@ -319,3 +319,70 @@ p2
 dev.off()
 p2
 ```
+
+#marker UNC13316610 allele frequency
+```{r marker UNC13316610 allele frequency, fig.width=10, fig.height=8, eval=T}
+T_freq <- unique(gm_after_qc$covar$ngen) %>%
+  map(~(read.table(paste0("data/GCTA/12_batches_QC_id_gen", .x,".frq"), header = TRUE) %>%
+          filter(SNP == "UNC13316610") %>%
+          mutate(GEN = .x, .before = 1))
+        ) %>%
+  set_names(., nm = unique(gm_after_qc$covar$ngen)) %>%
+  bind_rows() %>%
+  mutate(allele = "T",
+         MAF_allele = case_when(
+           A1 == "T" ~ MAF,
+           A1 != "T" ~ 1-MAF
+         ))
+C_freq <- T_freq %>%
+  mutate(allele = "C",
+         MAF_allele = 1-MAF_allele
+         )
+#bind
+UNC13316610.freq <- bind_rows(T_freq, C_freq)
+# Stacked
+p <- ggplot(UNC13316610.freq, aes(fill=allele, y=MAF_allele, x=GEN)) + 
+  geom_bar(position="stack", stat="identity") +
+  scale_fill_manual(values=c("#3399CC", "#FFCC33")) +
+  xlab("Generation") +
+  ylab("UNC13316610 allele frequency")
+print(p)
+
+#pull marker UNC13316610
+gm.UNC13316610 <- pull_markers(gm_after_qc, "UNC13316610")
+#genotype freq
+gfreq <- calc_raw_geno_freq(gm.UNC13316610)
+gfreq_tab <- gfreq %>%
+  as.data.frame() %>%
+  mutate(id = rownames(gfreq)) %>%
+  left_join(gm_after_qc$covar) %>%
+  group_by(ngen)
+
+#gfreq_tab
+tab <- gfreq_tab %>%
+  group_map(~(apply(.x[,1:3],2,function(x)(sum(x,na.rm = T))))) %>%
+  bind_rows() %>%
+  mutate(Genertation = group_keys(gfreq_tab)$ngen, .before = 1) %>%
+  left_join(C_freq[,c("GEN", "MAF_allele")], by = c("Genertation" = "GEN")) %>%
+  left_join(T_freq[,c("GEN", "MAF_allele")], by = c("Genertation" = "GEN")) %>%
+  rename(C_freq = MAF_allele.x) %>%
+  rename(T_freq = MAF_allele.y) %>%
+  mutate(C_freq2 = (2*AA + AB)/(2*(AA+AB+BB))) %>%
+  rowwise() %>%
+  mutate(chisq = HWChisq(c(AA, AB, BB))$chisq,
+         df    = HWChisq(c(AA, AB, BB))$df,
+         p     = HWChisq(c(AA, AB, BB))$p) %>%
+  dplyr::select(Genertation = Genertation,
+                CC = AA,
+                CT = AB,
+                TT = BB,
+                C_freq,
+                T_freq,
+                chisq,
+                p)
+
+tab
+```
+
+
+
