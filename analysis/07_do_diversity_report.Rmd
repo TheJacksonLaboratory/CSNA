@@ -321,7 +321,7 @@ p2
 ```
 
 #marker UNC13316610 allele frequency
-```{r marker UNC13316610 allele frequency, fig.width=10, fig.height=8, eval=T}
+```{r marker UNC13316610 allele frequency, fig.width=10, fig.height=8, eval=T, warning = FALSE,message=FALSE}
 T_freq <- unique(gm_after_qc$covar$ngen) %>%
   map(~(read.table(paste0("data/GCTA/12_batches_QC_id_gen", .x,".frq"), header = TRUE) %>%
           filter(SNP == "UNC13316610") %>%
