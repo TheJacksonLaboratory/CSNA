@@ -40,4 +40,4 @@ output:
 * [08_gcta_herit.R]
 
 ### Reverse learning project
-* [Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd]
+* [Prj01_RL_pheno_qtl2_DO_11092020_69k.html]
