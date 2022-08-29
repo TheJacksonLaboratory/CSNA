@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Hao He" />
+
+<meta name="date" content="2022-08-29" />
+
+<title>Prj01_RL_pheno_qtl2_DO_11092020_69k</title>
+
+<script src="site_libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">CSNA_workflow</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+<li>
+  <a href="https://github.com/TheJacksonLaboratory/CSNA">GitHub</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/TheJacksonLaboratory/CSNA">
+    <span class="fas fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Prj01_RL_pheno_qtl2_DO_11092020_69k</h1>
+<h4 class="author">Hao He</h4>
+<h4 class="date">2022-08-29</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2022-08-29
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
+</p>
+<p>
+<strong>Knit directory:</strong> <code>csna_workflow/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20190922code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20190922)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20190922code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20190922)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongabsolute"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>File paths:</strong> absolute </a>
+</p>
+</div>
+<div id="strongFilepathsstrongabsolute" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Using absolute paths to the files within your workflowr project makes it difficult for you and others to run your code on a different machine. Change the absolute path(s) below to the suggested relative path(s) to make your code more reproducible.
+</p>
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th style="text-align:left;">
+absolute
+</th>
+<th style="text-align:left;">
+relative
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+/projects/csna/csna_workflow/
+</td>
+<td style="text-align:left;">
+.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+/projects/csna/csna_workflow/data/69k_grid_pgmap.RData
+</td>
+<td style="text-align:left;">
+data/69k_grid_pgmap.RData
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+/projects/csna/csna_workflow/data/cc_variants.sqlite
+</td>
+<td style="text-align:left;">
+data/cc_variants.sqlite
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+/projects/csna/csna_workflow/data/mouse_genes_mgi.sqlite
+</td>
+<td style="text-align:left;">
+data/mouse_genes_mgi.sqlite
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+/projects/csna/csna_workflow/data/GCTA/12_batches.fam
+</td>
+<td style="text-align:left;">
+data/GCTA/12_batches.fam
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+/projects/csna/csna_workflow/data/GCTA/Prj01_RL_pheno_qttl2_DO_11092020/update_id.txt
+</td>
+<td style="text-align:left;">
+data/GCTA/Prj01_RL_pheno_qttl2_DO_11092020/update_id.txt
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+/projects/csna/csna_workflow/data/GCTA/Prj01_RL_pheno_qttl2_DO_11092020/update_sex.txt
+</td>
+<td style="text-align:left;">
+data/GCTA/Prj01_RL_pheno_qttl2_DO_11092020/update_sex.txt
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+/projects/csna/csna_workflow/data/GCTA/Prj01_RL_pheno_qttl2_DO_11092020/update_covar.txt
+</td>
+<td style="text-align:left;">
+data/GCTA/Prj01_RL_pheno_qttl2_DO_11092020/update_covar.txt
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+/projects/csna/csna_workflow/data/GCTA/Prj01_RL_pheno_qttl2_DO_11092020/update.pheno.txt
+</td>
+<td style="text-align:left;">
+data/GCTA/Prj01_RL_pheno_qttl2_DO_11092020/update.pheno.txt
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+/projects/csna/csna_workflow/data/GCTA/
+</td>
+<td style="text-align:left;">
+data/GCTA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+/projects/csna/csna_workflow/data/GCTA/Prj01_RL_pheno_qttl2_DO_11092020/
+</td>
+<td style="text-align:left;">
+data/GCTA/Prj01_RL_pheno_qttl2_DO_11092020
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+/projects/csna/csna_workflow/data/GCTA/Prj01_RL_pheno_qttl2_DO_11092020/h2.csv
+</td>
+<td style="text-align:left;">
+data/GCTA/Prj01_RL_pheno_qttl2_DO_11092020/h2.csv
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtree8541f24e3439709e29ad28072f9e2d85a82452b0targetblank8541f24a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/8541f24e3439709e29ad28072f9e2d85a82452b0" target="_blank">8541f24</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtree8541f24e3439709e29ad28072f9e2d85a82452b0targetblank8541f24a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/8541f24e3439709e29ad28072f9e2d85a82452b0" target="_blank">8541f24</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    output/qtlmapping/
+
+Untracked files:
+    Untracked:  analysis/.nfs0000000135a08b9b00002448
+    Untracked:  analysis/.nfs0000000135a08ba50000244a
+    Untracked:  analysis/Prj01_RL_pheno_qtl2_DO_11092020_69k.R
+    Untracked:  analysis/Prj01_RL_pheno_qtl2_DO_11092020_69k.sh
+    Untracked:  analysis/Prj01_RL_pheno_qtl2_DO_11092020_69k.stderr
+    Untracked:  analysis/Prj01_RL_pheno_qtl2_DO_11092020_69k.stdout
+    Untracked:  analysis/RL_h2.R
+    Untracked:  analysis/csna_image.sif
+    Untracked:  analysis/draft.R
+    Untracked:  analysis/for_johnathan.R
+    Untracked:  analysis/index0.Rmd
+    Untracked:  analysis/meta_robyn.R
+    Untracked:  analysis/meta_robyn_Jentsch2.R
+    Untracked:  analysis/meta_robyn_Price.R
+    Untracked:  analysis/meta_robyn_cc.R
+    Untracked:  analysis/ped.R
+    Untracked:  analysis/pylmm_hmdp.R
+    Untracked:  analysis/qtlmapping_results.Rmd
+    Untracked:  analysis/rstudio.4.0.3.simg
+    Untracked:  analysis/sample_num_qtl.R
+    Untracked:  analysis/samplesize/
+    Untracked:  analysis/scripts/
+    Untracked:  analysis/snp_UCLA1_mm10_mm39.R
+    Untracked:  analysis/snp_gene_eqtl_coeff.txt
+    Untracked:  analysis/thecube_cc_rix.R
+    Untracked:  analysis/thecube_impute_dogenome.R
+    Untracked:  analysis/thecube_impute_dogenome.err
+    Untracked:  analysis/thecube_impute_dogenome.out
+    Untracked:  analysis/thecube_impute_dogenome.sh
+    Untracked:  analysis/workflow_proc.R
+    Untracked:  analysis/workflow_proc.sh
+    Untracked:  analysis/workflow_proc.stderr
+    Untracked:  analysis/workflow_proc.stdout
+    Untracked:  archived/
+    Untracked:  code/FinalReport2Plink.sh
+    Untracked:  code/FinalReport2cross2.R
+    Untracked:  code/csna_qtlmapping_plot.R
+    Untracked:  code/csna_qtlmapping_workflow.R
+    Untracked:  code/csna_snp_gwas.R
+    Untracked:  code/do2sanger.helper.R
+    Untracked:  code/impute_dogenome.R
+    Untracked:  code/plink-1.07-x86_64.zip
+    Untracked:  code/plink-1.07-x86_64/
+    Untracked:  code/plink2
+    Untracked:  code/plink2_linux_x86_64.zip
+    Untracked:  code/predict_sanger_snp_geno.R
+    Untracked:  code/pylmm/
+    Untracked:  code/pylmm0/
+    Untracked:  code/qtlsnp_eqtl_sv.R
+    Untracked:  code/reconst_utils.R
+    Untracked:  code/sample.size.num.qtl.R
+    Untracked:  code/test_qtlsnp_eqtl_sv.R
+    Untracked:  data/69k_grid_pgmap.RData
+    Untracked:  data/CSNA03_animaldata.csv
+    Untracked:  data/DO_DrugNaive_Striatum/
+    Untracked:  data/DO_Striatum.rdata
+    Untracked:  data/Dickson2.csv
+    Untracked:  data/Dickson2.csv.1
+    Untracked:  data/Dickson2.csv.2
+    Untracked:  data/Dickson2.csv.3
+    Untracked:  data/Dickson2.csv.4
+    Untracked:  data/FinalReport/
+    Untracked:  data/GCTA/
+    Untracked:  data/GM/
+    Untracked:  data/Jackson_Lab_11_batches/
+    Untracked:  data/Jackson_Lab_12_batches/
+    Untracked:  data/Jackson_Lab_Bubier_MURGIGV01/
+    Untracked:  data/Jackson_Lab_Gagnon/
+    Untracked:  data/RTG/
+    Untracked:  data/cc.apr.RData
+    Untracked:  data/cc_do_founders_key.rds
+    Untracked:  data/cc_variants.sqlite
+    Untracked:  data/founder_SVs_modified.bed
+    Untracked:  data/gene.anno.cis.RData
+    Untracked:  data/hmdp/
+    Untracked:  data/marker_grid_0.02cM_plus.txt
+    Untracked:  data/meta/
+    Untracked:  data/mm10ToMm39.over.chain
+    Untracked:  data/mouse_genes_mgi.sqlite
+    Untracked:  data/pheno/
+    Untracked:  data/rlb/
+    Untracked:  data/snp_UCLA1_mm10_mm39.csv
+    Untracked:  data/thecube/
+    Untracked:  launch_rstudio.sbatch
+    Untracked:  output/DO.allrawpheno.corr.fullmat.RData
+    Untracked:  output/DO_IVSA_pheno.csv
+    Untracked:  output/DO_csna03_novelty_pheno.csv
+    Untracked:  output/Prj01_RL_11092020_cutoff6.pheno.herit.csv
+    Untracked:  output/Prj01_RL_11092020_cutoff6.qtlout.69k.RData
+    Untracked:  output/Prj01_RL_pheno.herit.csv
+    Untracked:  output/RL_prj/
+    Untracked:  output/archived_output/
+    Untracked:  output/archived_qtlmapping/
+    Untracked:  output/circle_chromosome.pdf
+    Untracked:  output/corr.cc.fd.fullmat.RData
+    Untracked:  output/corr.cc.fullmat.RData
+    Untracked:  output/corr.fd.fullmat.RData
+    Untracked:  output/csna.allqtl.69k.peaks.RData
+    Untracked:  output/csna.allqtl.69k.peaks.csv
+    Untracked:  output/csna.allqtl.array.peaks.RData
+    Untracked:  output/csna.allqtl.array.peaks.csv
+    Untracked:  output/csna.allqtl.peaks.RData
+    Untracked:  output/csna.allqtl.peaks.csv
+    Untracked:  output/gm.RData
+    Untracked:  output/hmdp/
+    Untracked:  output/hmdp_ped/
+    Untracked:  output/lod.69k.RData
+    Untracked:  output/meta/
+    Untracked:  output/pdf/
+    Untracked:  output/peak.69k.RData
+    Untracked:  output/qtl.out.sample.1000.RData
+    Untracked:  output/qtl.out.sample.1200.RData
+    Untracked:  output/qtl.out.sample.1500.RData
+    Untracked:  output/qtl.out.sample.2000.RData
+    Untracked:  output/qtl.out.sample.300.RData
+    Untracked:  output/qtl.out.sample.3000.RData
+    Untracked:  output/qtl.out.sample.400.RData
+    Untracked:  output/qtl.out.sample.500.RData
+    Untracked:  output/qtl.out.sample.600.RData
+    Untracked:  output/qtlmapping.heatmap.pdf
+    Untracked:  output/qtlmapping.heatmap.sens.pdf
+    Untracked:  output/qtlmapping_plot/
+    Untracked:  output/rlb/
+    Untracked:  output/sample.szie.qtl.HB.Repeat.Entries.ranknorm.RData
+    Untracked:  output/sample.szie.qtl.LD.pct.time.in.light.ranknorm.RData
+    Untracked:  output/sample.szie.qtl.NPP.NoveltyPreference.ZoneTime_GreyWhiteBlack_Total.ranknorm.RData
+    Untracked:  output/sample.szie.qtl.OFA.pct.time.corner.ranknorm.RData
+    Untracked:  output/sample.szie.qtl.OFA.total.distance.traveled.ranknorm.RData
+    Untracked:  output/sample.szie.vs.num.qtls.pdf
+    Untracked:  output/snp_gwas/
+    Untracked:  output/test_gemma/
+    Untracked:  output/thecube/
+    Untracked:  rstudio.4.0.3_v1.2.simg
+
+Unstaged changes:
+    Modified:   .Rprofile
+    Modified:   .gitignore
+    Modified:   README.md
+    Modified:   _workflowr.yml
+    Modified:   analysis/00_Process_all_phenotypes_in_founder_CC_DO.Rmd
+    Deleted:    analysis/01_geneseek2qtl2.R
+    Deleted:    analysis/02_geneseek2intensity.R
+    Deleted:    analysis/03_firstgm2genoprobs.R
+    Deleted:    analysis/04_diagnosis_qc_gigamuga_11_batches.Rmd
+    Modified:   analysis/04_diagnosis_qc_gigamuga_12_batches.Rmd
+    Deleted:    analysis/04_diagnosis_qc_gigamuga_nine_batches.R
+    Deleted:    analysis/04_diagnosis_qc_gigamuga_nine_batches.Rmd
+    Deleted:    analysis/05_after_diagnosis_qc_gigamuga_11_batches.Rmd
+    Modified:   analysis/05_after_diagnosis_qc_gigamuga_12_batches.Rmd
+    Deleted:    analysis/05_after_diagnosis_qc_gigamuga_nine_batches.R
+    Deleted:    analysis/05_after_diagnosis_qc_gigamuga_nine_batches.Rmd
+    Deleted:    analysis/06_final_pr_apr_69K.R
+    Deleted:    analysis/07.1_html_founder_prop.R
+    Modified:   analysis/07_do_diversity_report.Rmd
+    Deleted:    analysis/07_recomb_size_founder_prop.R
+    Deleted:    analysis/07_recomb_size_founder_prop.Rmd
+    Deleted:    analysis/08_gcta_herit.R
+    Deleted:    analysis/09_qtlmapping.R
+    Deleted:    analysis/10_qtl_permu.R
+    Deleted:    analysis/11_qtl_blup.R
+    Deleted:    analysis/12_plot_69k_qtl_mapping_2.Rmd
+    Deleted:    analysis/12_plot_qtl_mapping_1.Rmd
+    Deleted:    analysis/12_plot_qtl_mapping_2.Rmd
+    Deleted:    analysis/13_plot_69k_conditional_m2_qtlmapping.Rmd
+    Deleted:    analysis/13_plot_conditional_m2_qtlmapping.Rmd
+    Deleted:    analysis/16_diagnosis_qc_gigamuga_gagnon.Rmd
+    Deleted:    analysis/16_diagnosis_qc_gigamuga_gagnon2.Rmd
+    Deleted:    analysis/17_plot_qtl_mapping.Rmd
+    Modified:   analysis/_site.yml
+    Deleted:    analysis/run_01_geneseek2qtl2.R
+    Deleted:    analysis/run_02_geneseek2intensity.R
+    Deleted:    analysis/run_03_firstgm2genoprobs.R
+    Deleted:    analysis/run_04_diagnosis_qc_gigamuga_nine_batches.R
+    Deleted:    analysis/run_05_after_diagnosis_qc_gigamuga_nine_batches.R
+    Deleted:    analysis/run_06_final_pr_apr_69K.R
+    Deleted:    analysis/run_07.1_html_founder_prop.R
+    Deleted:    analysis/run_07_recomb_size_founder_prop.R
+    Deleted:    analysis/run_08_gcta_herit.R
+    Deleted:    analysis/run_09_qtlmapping.R
+    Deleted:    analysis/run_10_qtl_permu.R
+    Deleted:    analysis/run_11_qtl_blup.R
+    Modified:   code/README.md
+    Modified:   csna_workflow.Rproj
+    Modified:   data/README.md
+    Modified:   output/README.md
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd</code>) and HTML (<code>docs/Prj01_RL_pheno_qtl2_DO_11092020_69k.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8541f24e3439709e29ad28072f9e2d85a82452b0/analysis/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd" target="_blank">8541f24</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2022-08-29
+</td>
+<td>
+Prj01_RL_pheno_qtl2_DO_11092020_69k
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<p><strong>Last update:</strong> 2022-08-29</p>
+<p>###loading libraries</p>
+<pre class="r"><code>library(ggplot2)
+library(gridExtra)
+library(GGally)
+library(parallel)
+library(qtl2)
+library(parallel)
+library(survival)
+library(regress)
+library(abind)
+library(openxlsx)
+library(tidyverse)
+
+rz.transform &lt;- function(y) {
+  rankY=rank(y, ties.method=&quot;average&quot;, na.last=&quot;keep&quot;)
+  rzT=qnorm(rankY/(length(na.exclude(rankY))+1))
+  return(rzT)
+}
+setwd(&quot;/projects/csna/csna_workflow/&quot;)</code></pre>
+<p>###Read phenotype data</p>
+<pre class="r"><code>#Prj01_RL_pheno_qttl2_DO_11092020
+pheno &lt;- readr::read_csv(&quot;data/pheno/Prj01_RL_pheno_qttl2_DO_11092020.csv&quot;, na = c(&quot;N/A&quot;, &quot;NA&quot;))
+pheno &lt;- pheno %&gt;%
+  filter(apply(pheno, 1, function(x) sum(is.na(x))) &lt; 5) %&gt;% # remove rows with 5 NAs
+  mutate(
+    Acq.Anticipatory.Correct.Responses.nooutlier = case_when(
+      (Acq.Anticipatory.Correct.Responses &gt; 5 | is.na(Acq.Anticipatory.Correct.Responses)) ~ NA_real_,
+      TRUE ~ Acq.Anticipatory.Correct.Responses),
+    Rev.Anticipatory.Incorrect.Responses.nooutlier = case_when(
+      (Rev.Anticipatory.Incorrect.Responses &gt; 6) ~ NA_real_,
+      TRUE ~ Rev.Anticipatory.Incorrect.Responses
+    )) %&gt;% #boxcoxtransformation
+  mutate(across(c(Rev.Anticipatory.Incorrect.Responses), ~ EnvStats::boxcoxTransform(.x, lambda = EnvStats::boxcox(.x, optimize = TRUE)$lambda),
+                .names =&quot;{.col}.boxcox.trans&quot;)) %&gt;% #omit values &gt;6 for Acq.Anticipatory.Correct.Responses and Rev.Anticipatory.Incorrect.Responses variables.
+  mutate(across(Acq.Total.Trials:Rev.Anticipatory.Incorrect.Responses.nooutlier, ~ rz.transform(.x),
+                .names =&quot;{.col}.rz&quot;))
+
+#load gm data
+load(&quot;data/Jackson_Lab_12_batches/gm_DO3173_qc_newid.RData&quot;)
+#subset
+overlap.id &lt;- intersect(pheno$mouseID, ind_ids(gm_after_qc))
+
+load(&quot;data/Jackson_Lab_12_batches/qc_info.RData&quot;)
+#merge pheno with covar
+pheno &lt;- pheno %&gt;%
+  left_join(qc_info) %&gt;%
+  filter(mouseID %in% overlap.id) %&gt;%
+  filter(bad.sample == FALSE) %&gt;%
+  mutate(sex = case_when(
+    sex == &quot;M&quot; ~ 1,
+    sex == &quot;F&quot; ~ 0
+  )) %&gt;%
+  mutate_at(vars(sex,
+                 ngen),
+            list(factor))
+
+#pgmap
+load(&quot;/projects/csna/csna_workflow/data/69k_grid_pgmap.RData&quot;)
+query_variants &lt;- create_variant_query_func(&quot;/projects/csna/csna_workflow/data/cc_variants.sqlite&quot;)
+query_genes &lt;- create_gene_query_func(&quot;/projects/csna/csna_workflow/data/mouse_genes_mgi.sqlite&quot;)</code></pre>
+<p>###Plot qtl mapping on 69k Plot by using its output Prj01_RL_11092020_cutoff6.qtlout.69k.RData</p>
+<pre class="r"><code>load(&quot;output/Prj01_RL_11092020_cutoff6.qtlout.69k.RData&quot;)
+
+#genome-wide plot
+for(i in names(m2.qtl.out)){
+  par(mar=c(5.1, 4.1, 1.1, 1.1))
+  ymx &lt;- maxlod(m2.qtl.out[[i]]) # overall maximum LOD score
+  plot(m2.qtl.out[[i]], map=pmap, lodcolumn=1, col=&quot;slateblue&quot;, ylim=c(0, 12))
+  abline(h=summary(m2.permu[[i]], alpha=c(0.10, 0.05, 0.01))[[1]], col=&quot;red&quot;)
+  abline(h=summary(m2.permu[[i]], alpha=c(0.10, 0.05, 0.01))[[2]], col=&quot;red&quot;)
+  abline(h=summary(m2.permu[[i]], alpha=c(0.10, 0.05, 0.01))[[3]], col=&quot;red&quot;)
+  title(main = paste0(i))
+}</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-8.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-9.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-10.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-11.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-12.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-13.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-14.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-15.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>
+pdf(file = paste0(&quot;output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout.pdf&quot;), width = 16, height =8)
+#save genome-wide plo
+for(i in names(m2.qtl.out)){
+  par(mar=c(5.1, 4.1, 1.1, 1.1))
+  ymx &lt;- maxlod(m2.qtl.out[[i]]) # overall maximum LOD score
+  plot(m2.qtl.out[[i]], map=pmap, lodcolumn=1, col=&quot;slateblue&quot;, ylim=c(0, 10))
+  abline(h=summary(m2.permu[[i]], alpha=c(0.10, 0.05, 0.01))[[1]], col=&quot;red&quot;)
+  abline(h=summary(m2.permu[[i]], alpha=c(0.10, 0.05, 0.01))[[2]], col=&quot;red&quot;)
+  abline(h=summary(m2.permu[[i]], alpha=c(0.10, 0.05, 0.01))[[3]], col=&quot;red&quot;)
+  title(main = paste0(i))
+}
+dev.off()
+# png 
+#   2
+  
+#peaks coeff plot
+for(i in names(m2.qtl.out)){
+  print(i)
+  peaks &lt;- find_peaks(m2.qtl.out[[i]], map=pmap, threshold=6, drop=1.5)
+  if(nrow(peaks) &gt; 0) {
+    print(peaks)
+    for(p in 1:dim(peaks)[1]) {
+    print(p)
+    chr &lt;-peaks[p,3]
+    #coeff plot
+    par(mar=c(4.1, 4.1, 0.6, 0.6))
+    plot_coefCC(m2.sigqtl.coef[[i]][[p]], pmap[chr], scan1_output=m2.qtl.out[[i]], bgcolor=&quot;gray95&quot;, legend=NULL)
+    plot_coefCC(m2.sigqtl.blup[[i]][[p]], pmap[chr], scan1_output=m2.qtl.out[[i]], bgcolor=&quot;gray95&quot;, legend=NULL)
+    #plot(m2.sigqtl.snps[[i]][[p]]$lod, m2.sigqtl.snps[[i]][[p]]$snpinfo, drop_hilit=1.5, genes=m2.sigqtl.genes[[i]][[p]])
+    }
+  }
+}
+# [1] &quot;Acq.Total.Trials&quot;
+#   lodindex lodcolumn chr      pos      lod    ci_lo     ci_hi
+# 1        1    pheno1   6 88.69893 6.184173  3.77429 147.36991
+# 2        1    pheno1  12 81.73145 6.640822 81.11268  99.75717
+# [1] 1</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-16.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-17.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 2</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-18.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-19.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] &quot;Acq.Anticipatory.Correct.Responses&quot;
+#   lodindex lodcolumn chr       pos       lod      ci_lo     ci_hi
+# 1        1    pheno1   1 168.41339 11.416644 168.398842 168.52005
+# 2        1    pheno1   2  83.81222  9.064175  83.529734  83.82600
+# 3        1    pheno1   3  88.59530  7.550793  86.050147  89.39324
+# 4        1    pheno1   4  85.44520  6.082516   3.945062  86.84903
+# 5        1    pheno1  10 117.29331  6.097238 116.264165 118.73253
+# 6        1    pheno1  17  82.91709  6.294987  81.121859  83.40925
+# [1] 1</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-20.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-21.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 2</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-22.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-23.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 3</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-24.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-25.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 4</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-26.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-27.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 5</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-28.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-29.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 6</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-30.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-31.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] &quot;Rev.Total.Trials&quot;
+#   lodindex lodcolumn chr       pos      lod     ci_lo    ci_hi
+# 1        1    pheno1  14 121.29650 6.542708 121.11874 121.5717
+# 2        1    pheno1  18  83.08088 6.553229  82.31526  90.6726
+# [1] 1</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-32.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-33.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 2</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-34.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-35.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] &quot;Rev.Anticipatory.Incorrect.Responses&quot;
+#   lodindex lodcolumn chr       pos      lod     ci_lo     ci_hi
+# 1        1    pheno1   1 170.96387 6.571598 168.25531 171.06618
+# 2        1    pheno1   6 103.68554 7.392701 101.08006 103.77874
+# 3        1    pheno1  14  49.25670 6.252322  48.80084  54.24423
+# 4        1    pheno1  16  56.17223 7.087466  54.37418  58.59104
+# 5        1    pheno1  17  65.65263 9.228873  64.83160  66.34240
+# [1] 1</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-36.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-37.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 2</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-38.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-39.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 3</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-40.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-41.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 4</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-42.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-43.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 5</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-44.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-45.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] &quot;Diff.Total.Trials&quot;
+#   lodindex lodcolumn chr       pos      lod     ci_lo     ci_hi
+# 1        1    pheno1   7  80.80292 8.549071  80.09433  81.52958
+# 2        1    pheno1  14 121.29944 6.649824 121.03534 123.78109
+# [1] 1</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-46.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-47.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 2</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-48.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-49.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] &quot;Acq.Anticipatory.Correct.Responses.nooutlier&quot;
+#   lodindex lodcolumn chr       pos      lod     ci_lo     ci_hi
+# 1        1    pheno1   1 168.40300 8.387058 168.22298 168.52005
+# 2        1    pheno1  10 117.42104 6.828398 116.30325 117.97397
+# 3        1    pheno1  17  82.87091 6.126227  81.12186  83.40925
+# 4        1    pheno1  19  17.71985 6.578499  17.23709  18.07340
+# [1] 1</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-50.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-51.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 2</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-52.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-53.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 3</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-54.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-55.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 4</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-56.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-57.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] &quot;Rev.Anticipatory.Incorrect.Responses.nooutlier&quot;
+#   lodindex lodcolumn chr       pos      lod    ci_lo     ci_hi
+# 1        1    pheno1   1 170.96387 6.013441 41.45143 171.18444
+# 2        1    pheno1   6 103.68554 6.071478  6.05109 103.77874
+# 3        1    pheno1   7  74.30691 6.576426 74.07750  79.11953
+# 4        1    pheno1  14  49.25670 6.665675 48.80084  54.24423
+# 5        1    pheno1  16  56.17223 6.112808 54.36765  58.59104
+# 6        1    pheno1  17  65.65263 6.545085 28.65423  80.94284
+# [1] 1</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-58.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-59.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 2</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-60.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-61.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 3</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-62.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-63.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 4</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-64.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-65.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 5</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-66.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-67.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 6</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-68.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-69.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] &quot;Rev.Anticipatory.Incorrect.Responses.boxcox.trans&quot;
+#   lodindex lodcolumn chr        pos      lod      ci_lo     ci_hi
+# 1        1    pheno1   1 170.963873 7.614860 168.522985 171.06618
+# 2        1    pheno1   6   6.483562 6.049903   4.801035  12.08985
+# 3        1    pheno1  14  49.256704 6.241500  48.800840  54.24423
+# 4        1    pheno1  17  65.652629 6.697057  64.831601  66.34240
+# [1] 1</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-70.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-71.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 2</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-72.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-73.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 3</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-74.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-75.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 4</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-76.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-77.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] &quot;Acq.Total.Trials.rz&quot;
+#   lodindex lodcolumn chr      pos      lod     ci_lo     ci_hi
+# 1        1    pheno1   4 20.49269 6.027420  6.185280  21.84250
+# 2        1    pheno1   6 88.69893 6.403379  4.194618 125.22781
+# 3        1    pheno1  12 82.15231 6.789289 81.112677  83.46144
+# [1] 1</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-78.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-79.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 2</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-80.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-81.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 3</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-82.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-83.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] &quot;Acq.Anticipatory.Correct.Responses.rz&quot;
+#   lodindex lodcolumn chr       pos      lod     ci_lo     ci_hi
+# 1        1    pheno1   1 168.41339 8.655344 168.23921 168.52005
+# 2        1    pheno1   4  54.37504 6.720086  53.45208  86.15855
+# 3        1    pheno1  14  48.92034 6.057568  44.75345  54.22123
+# [1] 1</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-84.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-85.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 2</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-86.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-87.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 3</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-88.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-89.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] &quot;Rev.Total.Trials.rz&quot;
+#   lodindex lodcolumn chr      pos      lod    ci_lo    ci_hi
+# 1        1    pheno1   2 171.9407 6.492934 168.9687 172.3610
+# 2        1    pheno1  14 121.2965 6.565981 121.0353 121.5717
+# [1] 1</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-90.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-91.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 2</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-92.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-93.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] &quot;Rev.Anticipatory.Incorrect.Responses.rz&quot;
+#   lodindex lodcolumn chr        pos      lod      ci_lo     ci_hi
+# 1        1    pheno1   1 170.963873 7.424719 168.522985 171.06618
+# 2        1    pheno1   6   6.483562 6.114980   4.801035  12.08985
+# 3        1    pheno1  14  49.256704 6.106932  48.800840  54.24423
+# 4        1    pheno1  17  65.686785 6.125969  28.589293  66.34240
+# [1] 1</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-94.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-95.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 2</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-96.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-97.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 3</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-98.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-99.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 4</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-100.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-101.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] &quot;Diff.Total.Trials.rz&quot;
+#   lodindex lodcolumn chr       pos      lod     ci_lo     ci_hi
+# 1        1    pheno1   7  80.80292 7.763503  80.09433  81.52958
+# 2        1    pheno1  14 121.29944 6.447166 120.54323 123.78109
+# [1] 1</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-102.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-103.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 2</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-104.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-105.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] &quot;Acq.Anticipatory.Correct.Responses.nooutlier.rz&quot;
+#   lodindex lodcolumn chr        pos      lod      ci_lo      ci_hi
+# 1        1    pheno1   1 168.400920 7.359211 168.222977 170.984487
+# 2        1    pheno1   4  54.375041 6.204213  53.176714 138.505716
+# 3        1    pheno1   6   6.072045 6.729573   4.801035   9.764711
+# [1] 1</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-106.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-107.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 2</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-108.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-109.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 3</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-110.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-111.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] &quot;Rev.Anticipatory.Incorrect.Responses.nooutlier.rz&quot;
+#   lodindex lodcolumn chr      pos      lod    ci_lo    ci_hi
+# 1        1    pheno1   1 170.9639 6.901609 62.68856 171.0662
+# 2        1    pheno1  14  49.2567 6.230687 48.80084  54.2312
+# [1] 1</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-112.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-113.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code># [1] 2</code></pre>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-114.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-115.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>
+#save peaks coeff plot
+for(i in names(m2.qtl.out)){
+  print(i)
+  peaks &lt;- find_peaks(m2.qtl.out[[i]], map=pmap, threshold=6, drop=1.5)
+  if(nrow(peaks) &gt; 0){
+      fname &lt;- paste(&quot;output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_&quot;, str_replace_all(i, &quot;[[:punct:]]&quot;, &quot;&quot;) ,&quot;_coefplot.pdf&quot;,sep=&quot;&quot;)
+      pdf(file = fname, width = 16, height =8)
+      for(p in 1:dim(peaks)[1]) {
+        print(p)
+        chr &lt;-peaks[p,3]
+        #coeff plot
+        par(mar=c(4.1, 4.1, 0.6, 0.6))
+        plot_coefCC(m2.sigqtl.coef[[i]][[p]], pmap[chr], scan1_output=m2.qtl.out[[i]], bgcolor=&quot;gray95&quot;, legend=NULL)
+        plot_coefCC(m2.sigqtl.blup[[i]][[p]], pmap[chr], scan1_output=m2.qtl.out[[i]], bgcolor=&quot;gray95&quot;, legend=NULL)
+        #plot(m2.sigqtl.snps[[i]][[p]]$lod, m2.sigqtl.snps[[i]][[p]]$snpinfo, drop_hilit=1.5, genes=m2.sigqtl.genes[[i]][[p]])
+        }
+      dev.off()
+  }
+}
+# [1] &quot;Acq.Total.Trials&quot;
+# [1] 1
+# [1] 2
+# [1] &quot;Acq.Anticipatory.Correct.Responses&quot;
+# [1] 1
+# [1] 2
+# [1] 3
+# [1] 4
+# [1] 5
+# [1] 6
+# [1] &quot;Rev.Total.Trials&quot;
+# [1] 1
+# [1] 2
+# [1] &quot;Rev.Anticipatory.Incorrect.Responses&quot;
+# [1] 1
+# [1] 2
+# [1] 3
+# [1] 4
+# [1] 5
+# [1] &quot;Diff.Total.Trials&quot;
+# [1] 1
+# [1] 2
+# [1] &quot;Acq.Anticipatory.Correct.Responses.nooutlier&quot;
+# [1] 1
+# [1] 2
+# [1] 3
+# [1] 4
+# [1] &quot;Rev.Anticipatory.Incorrect.Responses.nooutlier&quot;
+# [1] 1
+# [1] 2
+# [1] 3
+# [1] 4
+# [1] 5
+# [1] 6
+# [1] &quot;Rev.Anticipatory.Incorrect.Responses.boxcox.trans&quot;
+# [1] 1
+# [1] 2
+# [1] 3
+# [1] 4
+# [1] &quot;Acq.Total.Trials.rz&quot;
+# [1] 1
+# [1] 2
+# [1] 3
+# [1] &quot;Acq.Anticipatory.Correct.Responses.rz&quot;
+# [1] 1
+# [1] 2
+# [1] 3
+# [1] &quot;Rev.Total.Trials.rz&quot;
+# [1] 1
+# [1] 2
+# [1] &quot;Rev.Anticipatory.Incorrect.Responses.rz&quot;
+# [1] 1
+# [1] 2
+# [1] 3
+# [1] 4
+# [1] &quot;Diff.Total.Trials.rz&quot;
+# [1] 1
+# [1] 2
+# [1] &quot;Acq.Anticipatory.Correct.Responses.nooutlier.rz&quot;
+# [1] 1
+# [1] 2
+# [1] 3
+# [1] &quot;Rev.Anticipatory.Incorrect.Responses.nooutlier.rz&quot;
+# [1] 1
+# [1] 2
+
+#save peaks coeff blup plot
+for(i in names(m2.qtl.out)){
+  print(i)
+  peaks &lt;- find_peaks(m2.qtl.out[[i]], map=pmap, threshold=6, drop=1.5)
+  if(nrow(peaks) &gt; 0) {
+      fname &lt;- paste(&quot;output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_&quot;, str_replace_all(i, &quot;[[:punct:]]&quot;, &quot;&quot;) ,&quot;_coefplot_blup.pdf&quot;,sep=&quot;&quot;)
+      pdf(file = fname, width = 16, height =8)
+      for(p in 1:dim(peaks)[1]) {
+        print(p)
+        chr &lt;-peaks[p,3]
+        #coeff plot
+        par(mar=c(4.1, 4.1, 0.6, 0.6))
+        plot_coefCC(m2.sigqtl.blup[[i]][[p]], pmap[chr], scan1_output=m2.qtl.out[[i]], bgcolor=&quot;gray95&quot;, legend=NULL)
+        #plot(m2.sigqtl.snps[[i]][[p]]$lod, m2.sigqtl.snps[[i]][[p]]$snpinfo, drop_hilit=1.5, genes=m2.sigqtl.genes[[i]][[p]])
+        }
+      dev.off()
+    }
+}
+# [1] &quot;Acq.Total.Trials&quot;
+# [1] 1
+# [1] 2
+# [1] &quot;Acq.Anticipatory.Correct.Responses&quot;
+# [1] 1
+# [1] 2
+# [1] 3
+# [1] 4
+# [1] 5
+# [1] 6
+# [1] &quot;Rev.Total.Trials&quot;
+# [1] 1
+# [1] 2
+# [1] &quot;Rev.Anticipatory.Incorrect.Responses&quot;
+# [1] 1
+# [1] 2
+# [1] 3
+# [1] 4
+# [1] 5
+# [1] &quot;Diff.Total.Trials&quot;
+# [1] 1
+# [1] 2
+# [1] &quot;Acq.Anticipatory.Correct.Responses.nooutlier&quot;
+# [1] 1
+# [1] 2
+# [1] 3
+# [1] 4
+# [1] &quot;Rev.Anticipatory.Incorrect.Responses.nooutlier&quot;
+# [1] 1
+# [1] 2
+# [1] 3
+# [1] 4
+# [1] 5
+# [1] 6
+# [1] &quot;Rev.Anticipatory.Incorrect.Responses.boxcox.trans&quot;
+# [1] 1
+# [1] 2
+# [1] 3
+# [1] 4
+# [1] &quot;Acq.Total.Trials.rz&quot;
+# [1] 1
+# [1] 2
+# [1] 3
+# [1] &quot;Acq.Anticipatory.Correct.Responses.rz&quot;
+# [1] 1
+# [1] 2
+# [1] 3
+# [1] &quot;Rev.Total.Trials.rz&quot;
+# [1] 1
+# [1] 2
+# [1] &quot;Rev.Anticipatory.Incorrect.Responses.rz&quot;
+# [1] 1
+# [1] 2
+# [1] 3
+# [1] 4
+# [1] &quot;Diff.Total.Trials.rz&quot;
+# [1] 1
+# [1] 2
+# [1] &quot;Acq.Anticipatory.Correct.Responses.nooutlier.rz&quot;
+# [1] 1
+# [1] 2
+# [1] 3
+# [1] &quot;Rev.Anticipatory.Incorrect.Responses.nooutlier.rz&quot;
+# [1] 1
+# [1] 2</code></pre>
+<pre class="r"><code>#gcta id
+gcta.id &lt;- read.table(&quot;/projects/csna/csna_workflow/data/GCTA/12_batches.fam&quot;, header = F, sep = &quot; &quot;)
+#overlap
+pheno.overlap &lt;- pheno[pheno$mouseID %in% intersect(gcta.id$V1, pheno$mouseID),]
+pheno.overlap$sex &lt;- as.numeric(pheno.overlap$sex)
+pheno.overlap$sex[pheno.overlap$sex == 0] &lt;- 2 #female
+dim(pheno.overlap)
+
+#subset id
+idlist &lt;- cbind(pheno.overlap$mouseID, pheno.overlap$mouseID)
+write.table(idlist, file = &quot;/projects/csna/csna_workflow/data/GCTA/Prj01_RL_pheno_qttl2_DO_11092020/update_id.txt&quot;, sep = &quot;\t&quot;, col.names = FALSE, row.names = FALSE, quote = FALSE)
+
+#update sex
+sex &lt;- data.frame(id1 = pheno.overlap$mouseID,
+                  id2 = pheno.overlap$mouseID,
+                  sex = as.character(pheno.overlap$sex))
+write.table(sex, file = &quot;/projects/csna/csna_workflow/data/GCTA/Prj01_RL_pheno_qttl2_DO_11092020/update_sex.txt&quot;,sep = &quot;\t&quot;, col.names = FALSE, row.names = FALSE, quote = FALSE)
+
+#updated covariate
+covar &lt;- data.frame(id1 = pheno.overlap$mouseID,
+                    id2 = pheno.overlap$mouseID,
+                    sex = as.character(pheno.overlap$sex)
+                    )
+write.table(covar, file = &quot;/projects/csna/csna_workflow/data/GCTA/Prj01_RL_pheno_qttl2_DO_11092020/update_covar.txt&quot;,sep = &quot;\t&quot;, col.names = FALSE, row.names = FALSE, quote = FALSE)
+
+#update pheno
+update.pheno &lt;- cbind(data.frame(FID = pheno.overlap$mouseID,
+                                 IID = pheno.overlap$mouseID),
+                      pheno.overlap[,4:17]
+)
+write.table(update.pheno, file = &quot;/projects/csna/csna_workflow/data/GCTA/Prj01_RL_pheno_qttl2_DO_11092020/update.pheno.txt&quot;,sep = &quot;\t&quot;, col.names = FALSE, row.names = FALSE, quote = FALSE)
+
+
+#subset id and update sex
+system(paste0(&quot;cd /projects/csna/csna_workflow/data/GCTA/Prj01_RL_pheno_qttl2_DO_11092020/; /projects/csna/csna_workflow/data/GCTA/plink -bfile &quot;, 
+       &quot;/projects/csna/csna_workflow/data/GCTA/&quot;,&quot;12_batches &quot;,
+       &quot;--keep update_id.txt &quot;,
+       &quot;--update-sex update_sex.txt &quot;,
+       &quot;--make-bed --out &quot;,
+       &quot;Prj01_RL_pheno_qttl2_DO_11092020&quot;))
+
+# Estimate the GRM
+system(paste0(&quot;cd /projects/csna/csna_workflow/data/GCTA/Prj01_RL_pheno_qttl2_DO_11092020/; /projects/csna/csna_workflow/data/GCTA/gcta64  --bfile &quot;,
+              &quot;Prj01_RL_pheno_qttl2_DO_11092020&quot;,  &quot; --make-grm  --out &quot;,
+              &quot;Prj01_RL_pheno_qttl2_DO_11092020&quot;))
+
+for(i in 1:length(colnames(pheno.overlap)[4:17])){
+  system(
+    paste0(&quot;cd /projects/csna/csna_workflow/data/GCTA/Prj01_RL_pheno_qttl2_DO_11092020/; /projects/csna/csna_workflow/data/GCTA/gcta64 --reml  --grm &quot;,
+           &quot;Prj01_RL_pheno_qttl2_DO_11092020&quot;,  &quot; --pheno update.pheno.txt --covar update_covar.txt --mpheno &quot;,
+           i,&quot; --out &quot;,colnames(pheno.overlap)[4:17][i],&quot;.out&quot;)
+  )
+}
+
+#plot heritability by GCTA
+hsq.gcta &lt;- list()
+phe.name &lt;- colnames(pheno.overlap)[4:17]
+for (i in phe.name){
+  hsq.gcta[[i]] &lt;- read.table(file = paste0(&quot;/projects/csna/csna_workflow/data/GCTA/Prj01_RL_pheno_qttl2_DO_11092020/&quot;,i,&quot;.out.hsq&quot;),sep = &quot;\t&quot;, header = FALSE,fill = TRUE, stringsAsFactors = FALSE)
+}
+h &lt;- data.frame(
+  Phenotype = phe.name,
+  Heritability = as.numeric(as.vector(unlist(lapply(hsq.gcta, FUN = function(x){x[5,2]})))),
+  SE           = as.numeric(as.vector(unlist(lapply(hsq.gcta, FUN = function(x){x[5,3]})))),
+  Sample_size  = as.numeric(as.vector(unlist(lapply(hsq.gcta, FUN = function(x){x[11,2]})))),
+#  Domain = sub(&quot;\\..*&quot;, &quot;&quot;, phe.name),
+  stringsAsFactors = FALSE)
+write.csv(h, file = &quot;/projects/csna/csna_workflow/data/GCTA/Prj01_RL_pheno_qttl2_DO_11092020/h2.csv&quot;, row.names = F, quote = F)
+
+#histgram
+h$Heritability &lt;- round(h$Heritability,2)
+pdf(file = paste0(&quot;/projects/csna/csna_workflow/data/GCTA/Prj01_RL_pheno_qttl2_DO_11092020/&quot;,&quot;Prj01_RL_pheno_qttl2_DO_11092020__heritability_by_GCTA.pdf&quot;), height = 10, width = 10)
+p&lt;-ggplot(data=h, aes(x=Phenotype, y=Heritability)) + #, fill=Domain, color = Domain)) +
+  geom_bar(stat=&quot;identity&quot;, fill = &quot;blue&quot;, color = &quot;blue&quot;, show.legend = FALSE) +
+  scale_y_continuous(breaks=seq(0.0, 1.0, 0.1)) +
+  geom_text(aes(label = Heritability, y = Heritability + 0.005), position = position_dodge(0.9),vjust = 0) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+p
+dev.off()
+
+
+
+#plot heritability by qtl2 array --------------
+herit &lt;- data.frame(Phenotype = names(unlist(qtl.hsq)),
+                    Heritability = round(unlist(qtl.hsq),3))
+herit &lt;- herit %&gt;%
+  arrange(desc(Heritability))
+herit$Phenotype &lt;- factor(herit$Phenotype, levels = herit$Phenotype)
+#histgram
+p2 &lt;- ggplot(data=herit, aes(x=Phenotype, y=Heritability)) + #, fill=Domain, color = Domain)) +
+  geom_bar(stat=&quot;identity&quot;, fill = &quot;blue&quot;, color = &quot;blue&quot;, show.legend = FALSE) +
+  scale_y_continuous(breaks=seq(0.0, 1.0, 0.1)) +
+  geom_text(aes(label = Heritability, y = Heritability + 0.005), position = position_dodge(0.9),vjust = 0) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  ggtitle(&quot;Heritability by qtl2 array&quot;)
+p2
+</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()
+# R version 4.0.3 (2020-10-10)
+# Platform: x86_64-pc-linux-gnu (64-bit)
+# Running under: Ubuntu 20.04.2 LTS
+# 
+# Matrix products: default
+# BLAS/LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.8.so
+# 
+# locale:
+#  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+#  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+#  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C             
+#  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+#  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+# [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+# 
+# attached base packages:
+# [1] parallel  stats     graphics  grDevices utils     datasets  methods  
+# [8] base     
+# 
+# other attached packages:
+#  [1] forcats_0.5.1   stringr_1.4.0   dplyr_1.0.4     purrr_0.3.4    
+#  [5] readr_1.4.0     tidyr_1.1.2     tibble_3.0.6    tidyverse_1.3.0
+#  [9] openxlsx_4.2.3  abind_1.4-5     regress_1.3-21  survival_3.2-7 
+# [13] qtl2_0.24       GGally_2.1.0    gridExtra_2.3   ggplot2_3.3.3  
+# [17] workflowr_1.6.2
+# 
+# loaded via a namespace (and not attached):
+#  [1] httr_1.4.2         bit64_4.0.5        jsonlite_1.7.2     splines_4.0.3     
+#  [5] modelr_0.1.8       assertthat_0.2.1   highr_0.8          blob_1.2.1        
+#  [9] cellranger_1.1.0   yaml_2.2.1         pillar_1.4.7       RSQLite_2.2.3     
+# [13] backports_1.2.1    lattice_0.20-41    glue_1.4.2         digest_0.6.27     
+# [17] RColorBrewer_1.1-2 promises_1.2.0.1   rvest_0.3.6        colorspace_2.0-0  
+# [21] htmltools_0.5.1.1  httpuv_1.5.5       Matrix_1.3-2       plyr_1.8.6        
+# [25] pkgconfig_2.0.3    broom_0.7.4        haven_2.3.1        scales_1.1.1      
+# [29] whisker_0.4        later_1.1.0.1      git2r_0.28.0       generics_0.1.0    
+# [33] ellipsis_0.3.1     cachem_1.0.4       withr_2.4.1        cli_2.3.0         
+# [37] readxl_1.3.1       magrittr_2.0.1     crayon_1.4.1       memoise_2.0.0     
+# [41] evaluate_0.14      fs_1.5.0           xml2_1.3.2         tools_4.0.3       
+# [45] data.table_1.13.6  hms_1.0.0          lifecycle_1.0.0    reprex_1.0.0      
+# [49] munsell_0.5.0      zip_2.1.1          EnvStats_2.4.0     compiler_4.0.3    
+# [53] rlang_1.0.2        grid_4.0.3         rstudioapi_0.13    rmarkdown_2.6     
+# [57] gtable_0.3.0       DBI_1.1.1          reshape_0.8.8      R6_2.5.0          
+# [61] lubridate_1.7.9.2  knitr_1.31         fastmap_1.1.0      bit_4.0.4         
+# [65] rprojroot_2.0.2    stringi_1.5.3      Rcpp_1.0.6         vctrs_0.3.6       
+# [69] dbplyr_2.1.0       tidyselect_1.1.0   xfun_0.21</code></pre>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
