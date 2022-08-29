@@ -1,6 +1,6 @@
 ---
 title: "CSNA_workflow"
-author: "Hao He"
+author: "Developed and maintained by Hao He (hao.he@jax.org)"
 site: workflowr::wflow_site
 output:
   workflowr::wflow_html:
@@ -38,3 +38,6 @@ output:
 
 ### 8 GCTA heritability 
 * [08_gcta_herit.R]
+
+### Reverse learning project
+* [Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd]
