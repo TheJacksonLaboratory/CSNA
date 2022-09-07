@@ -11,7 +11,6 @@
 
 <meta name="author" content="Hao He" />
 
-<meta name="date" content="2022-08-29" />
 
 <title>Prj01_RL_pheno_qtl2_DO_11092020_69k</title>
 
@@ -22,7 +21,11 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
@@ -270,7 +273,73 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
 
 
 
@@ -280,6 +349,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -321,11 +400,18 @@ $(document).ready(function () {
 
 <div class="fluid-row" id="header">
 
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
 
 
 <h1 class="title toc-ignore">Prj01_RL_pheno_qtl2_DO_11092020_69k</h1>
 <h4 class="author">Hao He</h4>
-<h4 class="date">2022-08-29</h4>
 
 </div>
 
@@ -350,7 +436,7 @@ $(document).ready(function () {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-08-29
+<strong>Last updated:</strong> 2022-09-07
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
@@ -553,16 +639,16 @@ data/GCTA/Prj01_RL_pheno_qttl2_DO_11092020/h2.csv
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtree8541f24e3439709e29ad28072f9e2d85a82452b0targetblank8541f24a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/8541f24e3439709e29ad28072f9e2d85a82452b0" target="_blank">8541f24</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsghpdrKylw4hMKNJU2lQgUoU1pPwJIkipy1vf4qZgithubcomTheJacksonLaboratoryCSNAtreebebe974244aadf6463b972f4fb8a096601b6cb8btargetblankbebe974a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://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@github.com/TheJacksonLaboratory/CSNA/tree/bebe974244aadf6463b972f4fb8a096601b6cb8b" target="_blank">bebe974</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomTheJacksonLaboratoryCSNAtree8541f24e3439709e29ad28072f9e2d85a82452b0targetblank8541f24a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsghpdrKylw4hMKNJU2lQgUoU1pPwJIkipy1vf4qZgithubcomTheJacksonLaboratoryCSNAtreebebe974244aadf6463b972f4fb8a096601b6cb8btargetblankbebe974a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/TheJacksonLaboratory/CSNA/tree/8541f24e3439709e29ad28072f9e2d85a82452b0" target="_blank">8541f24</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://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@github.com/TheJacksonLaboratory/CSNA/tree/bebe974244aadf6463b972f4fb8a096601b6cb8b" target="_blank">bebe974</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -576,7 +662,6 @@ Ignored files:
 Untracked files:
     Untracked:  analysis/.nfs0000000135a08b9b00002448
     Untracked:  analysis/.nfs0000000135a08ba50000244a
-    Untracked:  analysis/Prj01_RL_pheno_qtl2_DO_11092020_69k.R
     Untracked:  analysis/Prj01_RL_pheno_qtl2_DO_11092020_69k.sh
     Untracked:  analysis/Prj01_RL_pheno_qtl2_DO_11092020_69k.stderr
     Untracked:  analysis/Prj01_RL_pheno_qtl2_DO_11092020_69k.stdout
@@ -664,7 +749,7 @@ Untracked files:
     Untracked:  output/Prj01_RL_11092020_cutoff6.pheno.herit.csv
     Untracked:  output/Prj01_RL_11092020_cutoff6.qtlout.69k.RData
     Untracked:  output/Prj01_RL_pheno.herit.csv
-    Untracked:  output/RL_prj/
+    Untracked:  output/RL_prj/apr.RDS
     Untracked:  output/archived_output/
     Untracked:  output/archived_qtlmapping/
     Untracked:  output/circle_chromosome.pdf
@@ -759,6 +844,37 @@ Unstaged changes:
     Modified:   csna_workflow.Rproj
     Modified:   data/README.md
     Modified:   output/README.md
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout.pdf
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_AcqAnticipatoryCorrectResponses_coefplot.pdf
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_AcqAnticipatoryCorrectResponses_coefplot_blup.pdf
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_AcqAnticipatoryCorrectResponsesnooutlier_coefplot.pdf
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_AcqAnticipatoryCorrectResponsesnooutlier_coefplot_blup.pdf
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_AcqAnticipatoryCorrectResponsesnooutlierrz_coefplot.pdf
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_AcqAnticipatoryCorrectResponsesnooutlierrz_coefplot_blup.pdf
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_AcqAnticipatoryCorrectResponsesrz_coefplot.pdf
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_AcqAnticipatoryCorrectResponsesrz_coefplot_blup.pdf
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_AcqTotalTrials_coefplot.pdf
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_AcqTotalTrials_coefplot_blup.pdf
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_AcqTotalTrialsrz_coefplot.pdf
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_AcqTotalTrialsrz_coefplot_blup.pdf
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_DiffTotalTrials_coefplot.pdf
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_DiffTotalTrials_coefplot_blup.pdf
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_DiffTotalTrialsrz_coefplot.pdf
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_DiffTotalTrialsrz_coefplot_blup.pdf
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_RevAnticipatoryIncorrectResponses_coefplot.pdf
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_RevAnticipatoryIncorrectResponses_coefplot_blup.pdf
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_RevAnticipatoryIncorrectResponsesboxcoxtrans_coefplot.pdf
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_RevAnticipatoryIncorrectResponsesboxcoxtrans_coefplot_blup.pdf
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_RevAnticipatoryIncorrectResponsesnooutlier_coefplot.pdf
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_RevAnticipatoryIncorrectResponsesnooutlier_coefplot_blup.pdf
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_RevAnticipatoryIncorrectResponsesnooutlierrz_coefplot.pdf
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_RevAnticipatoryIncorrectResponsesnooutlierrz_coefplot_blup.pdf
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_RevAnticipatoryIncorrectResponsesrz_coefplot.pdf
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_RevAnticipatoryIncorrectResponsesrz_coefplot_blup.pdf
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_RevTotalTrials_coefplot.pdf
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_RevTotalTrials_coefplot_blup.pdf
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_RevTotalTrialsrz_coefplot.pdf
+    Modified:   output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout_RevTotalTrialsrz_coefplot_blup.pdf
 
 </code></pre>
 <p>
@@ -802,7 +918,41 @@ Message
 Rmd
 </td>
 <td>
-<a href="https://github.com/TheJacksonLaboratory/CSNA/blob/8541f24e3439709e29ad28072f9e2d85a82452b0/analysis/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd" target="_blank">8541f24</a>
+<a href="https://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@github.com/TheJacksonLaboratory/CSNA/blob/bebe974244aadf6463b972f4fb8a096601b6cb8b/analysis/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd" target="_blank">bebe974</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2022-09-07
+</td>
+<td>
+section
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://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@github.com/TheJacksonLaboratory/CSNA/blob/9baa62463966c404ab353e53ed8fbeaa9b99cf39/docs/Prj01_RL_pheno_qtl2_DO_11092020_69k.html" target="_blank">9baa624</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2022-08-29
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://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@github.com/TheJacksonLaboratory/CSNA/blob/8541f24e3439709e29ad28072f9e2d85a82452b0/analysis/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd" target="_blank">8541f24</a>
 </td>
 <td>
 xhyuo
@@ -821,8 +971,9 @@ Prj01_RL_pheno_qtl2_DO_11092020_69k
 </div>
 </div>
 </div>
-<p><strong>Last update:</strong> 2022-08-29</p>
-<p>###loading libraries</p>
+<p><strong>Last update:</strong> 2022-09-07</p>
+<div id="loading-libraries" class="section level3">
+<h3>loading libraries</h3>
 <pre class="r"><code>library(ggplot2)
 library(gridExtra)
 library(GGally)
@@ -841,7 +992,9 @@ rz.transform &lt;- function(y) {
   return(rzT)
 }
 setwd(&quot;/projects/csna/csna_workflow/&quot;)</code></pre>
-<p>###Read phenotype data</p>
+</div>
+<div id="read-phenotype-data" class="section level3">
+<h3>Read phenotype data</h3>
 <pre class="r"><code>#Prj01_RL_pheno_qttl2_DO_11092020
 pheno &lt;- readr::read_csv(&quot;data/pheno/Prj01_RL_pheno_qttl2_DO_11092020.csv&quot;, na = c(&quot;N/A&quot;, &quot;NA&quot;))
 pheno &lt;- pheno %&gt;%
@@ -882,7 +1035,10 @@ pheno &lt;- pheno %&gt;%
 load(&quot;/projects/csna/csna_workflow/data/69k_grid_pgmap.RData&quot;)
 query_variants &lt;- create_variant_query_func(&quot;/projects/csna/csna_workflow/data/cc_variants.sqlite&quot;)
 query_genes &lt;- create_gene_query_func(&quot;/projects/csna/csna_workflow/data/mouse_genes_mgi.sqlite&quot;)</code></pre>
-<p>###Plot qtl mapping on 69k Plot by using its output Prj01_RL_11092020_cutoff6.qtlout.69k.RData</p>
+</div>
+<div id="plot-qtl-mapping-on-69k" class="section level3">
+<h3>Plot qtl mapping on 69k</h3>
+<p>Plot by using its output Prj01_RL_11092020_cutoff6.qtlout.69k.RData</p>
 <pre class="r"><code>load(&quot;output/Prj01_RL_11092020_cutoff6.qtlout.69k.RData&quot;)
 
 #genome-wide plot
@@ -895,7 +1051,576 @@ for(i in names(m2.qtl.out)){
   abline(h=summary(m2.permu[[i]], alpha=c(0.10, 0.05, 0.01))[[3]], col=&quot;red&quot;)
   title(main = paste0(i))
 }</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-8.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-9.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-10.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-11.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-12.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-13.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-14.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-15.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Plot-qtl-mapping-on-69k-1">
+Past versions of “Plot qtl mapping on 69k-1.png”
+</button>
+</p>
+<div id="fig-no-spaces-Plot-qtl-mapping-on-69k-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://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@github.com/TheJacksonLaboratory/CSNA/blob/9baa62463966c404ab353e53ed8fbeaa9b99cf39/docs/figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot qtl mapping on 69k-1.png" target="_blank">9baa624</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2022-08-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Plot-qtl-mapping-on-69k-2">
+Past versions of “Plot qtl mapping on 69k-2.png”
+</button>
+</p>
+<div id="fig-no-spaces-Plot-qtl-mapping-on-69k-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://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@github.com/TheJacksonLaboratory/CSNA/blob/9baa62463966c404ab353e53ed8fbeaa9b99cf39/docs/figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot qtl mapping on 69k-2.png" target="_blank">9baa624</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2022-08-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Plot-qtl-mapping-on-69k-3">
+Past versions of “Plot qtl mapping on 69k-3.png”
+</button>
+</p>
+<div id="fig-no-spaces-Plot-qtl-mapping-on-69k-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://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@github.com/TheJacksonLaboratory/CSNA/blob/9baa62463966c404ab353e53ed8fbeaa9b99cf39/docs/figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot qtl mapping on 69k-3.png" target="_blank">9baa624</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2022-08-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Plot-qtl-mapping-on-69k-4">
+Past versions of “Plot qtl mapping on 69k-4.png”
+</button>
+</p>
+<div id="fig-no-spaces-Plot-qtl-mapping-on-69k-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://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@github.com/TheJacksonLaboratory/CSNA/blob/9baa62463966c404ab353e53ed8fbeaa9b99cf39/docs/figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot qtl mapping on 69k-4.png" target="_blank">9baa624</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2022-08-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Plot-qtl-mapping-on-69k-5">
+Past versions of “Plot qtl mapping on 69k-5.png”
+</button>
+</p>
+<div id="fig-no-spaces-Plot-qtl-mapping-on-69k-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://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@github.com/TheJacksonLaboratory/CSNA/blob/9baa62463966c404ab353e53ed8fbeaa9b99cf39/docs/figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot qtl mapping on 69k-5.png" target="_blank">9baa624</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2022-08-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Plot-qtl-mapping-on-69k-6">
+Past versions of “Plot qtl mapping on 69k-6.png”
+</button>
+</p>
+<div id="fig-no-spaces-Plot-qtl-mapping-on-69k-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://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@github.com/TheJacksonLaboratory/CSNA/blob/9baa62463966c404ab353e53ed8fbeaa9b99cf39/docs/figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot qtl mapping on 69k-6.png" target="_blank">9baa624</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2022-08-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Plot-qtl-mapping-on-69k-7">
+Past versions of “Plot qtl mapping on 69k-7.png”
+</button>
+</p>
+<div id="fig-no-spaces-Plot-qtl-mapping-on-69k-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://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@github.com/TheJacksonLaboratory/CSNA/blob/9baa62463966c404ab353e53ed8fbeaa9b99cf39/docs/figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot qtl mapping on 69k-7.png" target="_blank">9baa624</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2022-08-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-8.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Plot-qtl-mapping-on-69k-8">
+Past versions of “Plot qtl mapping on 69k-8.png”
+</button>
+</p>
+<div id="fig-no-spaces-Plot-qtl-mapping-on-69k-8" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://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@github.com/TheJacksonLaboratory/CSNA/blob/9baa62463966c404ab353e53ed8fbeaa9b99cf39/docs/figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot qtl mapping on 69k-8.png" target="_blank">9baa624</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2022-08-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-9.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Plot-qtl-mapping-on-69k-9">
+Past versions of “Plot qtl mapping on 69k-9.png”
+</button>
+</p>
+<div id="fig-no-spaces-Plot-qtl-mapping-on-69k-9" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://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@github.com/TheJacksonLaboratory/CSNA/blob/9baa62463966c404ab353e53ed8fbeaa9b99cf39/docs/figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot qtl mapping on 69k-9.png" target="_blank">9baa624</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2022-08-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-10.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Plot-qtl-mapping-on-69k-10">
+Past versions of “Plot qtl mapping on 69k-10.png”
+</button>
+</p>
+<div id="fig-no-spaces-Plot-qtl-mapping-on-69k-10" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://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@github.com/TheJacksonLaboratory/CSNA/blob/9baa62463966c404ab353e53ed8fbeaa9b99cf39/docs/figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot qtl mapping on 69k-10.png" target="_blank">9baa624</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2022-08-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-11.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Plot-qtl-mapping-on-69k-11">
+Past versions of “Plot qtl mapping on 69k-11.png”
+</button>
+</p>
+<div id="fig-no-spaces-Plot-qtl-mapping-on-69k-11" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://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@github.com/TheJacksonLaboratory/CSNA/blob/9baa62463966c404ab353e53ed8fbeaa9b99cf39/docs/figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot qtl mapping on 69k-11.png" target="_blank">9baa624</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2022-08-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-12.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Plot-qtl-mapping-on-69k-12">
+Past versions of “Plot qtl mapping on 69k-12.png”
+</button>
+</p>
+<div id="fig-no-spaces-Plot-qtl-mapping-on-69k-12" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://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@github.com/TheJacksonLaboratory/CSNA/blob/9baa62463966c404ab353e53ed8fbeaa9b99cf39/docs/figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot qtl mapping on 69k-12.png" target="_blank">9baa624</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2022-08-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-13.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Plot-qtl-mapping-on-69k-13">
+Past versions of “Plot qtl mapping on 69k-13.png”
+</button>
+</p>
+<div id="fig-no-spaces-Plot-qtl-mapping-on-69k-13" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://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@github.com/TheJacksonLaboratory/CSNA/blob/9baa62463966c404ab353e53ed8fbeaa9b99cf39/docs/figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot qtl mapping on 69k-13.png" target="_blank">9baa624</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2022-08-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-14.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Plot-qtl-mapping-on-69k-14">
+Past versions of “Plot qtl mapping on 69k-14.png”
+</button>
+</p>
+<div id="fig-no-spaces-Plot-qtl-mapping-on-69k-14" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://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@github.com/TheJacksonLaboratory/CSNA/blob/9baa62463966c404ab353e53ed8fbeaa9b99cf39/docs/figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot qtl mapping on 69k-14.png" target="_blank">9baa624</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2022-08-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-15.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-Plot-qtl-mapping-on-69k-15">
+Past versions of “Plot qtl mapping on 69k-15.png”
+</button>
+</p>
+<div id="fig-no-spaces-Plot-qtl-mapping-on-69k-15" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://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@github.com/TheJacksonLaboratory/CSNA/blob/9baa62463966c404ab353e53ed8fbeaa9b99cf39/docs/figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot qtl mapping on 69k-15.png" target="_blank">9baa624</a>
+</td>
+<td>
+xhyuo
+</td>
+<td>
+2022-08-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>
 pdf(file = paste0(&quot;output/RL_prj/Prj01_RL_11092020_cutoff6.qtlout.pdf&quot;), width = 16, height =8)
 #save genome-wide plo
@@ -910,9 +1635,11 @@ for(i in names(m2.qtl.out)){
 }
 dev.off()
 # png 
-#   2
-  
-#peaks coeff plot
+#   2</code></pre>
+</div>
+<div id="coeff-plot-of-qtl-mapping" class="section level3">
+<h3>Coeff plot of qtl mapping</h3>
+<pre class="r"><code>#peaks coeff plot
 for(i in names(m2.qtl.out)){
   print(i)
   peaks &lt;- find_peaks(m2.qtl.out[[i]], map=pmap, threshold=6, drop=1.5)
@@ -934,9 +1661,9 @@ for(i in names(m2.qtl.out)){
 # 1        1    pheno1   6 88.69893 6.184173  3.77429 147.36991
 # 2        1    pheno1  12 81.73145 6.640822 81.11268  99.75717
 # [1] 1</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-16.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-17.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 2</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-18.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-19.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-4.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] &quot;Acq.Anticipatory.Correct.Responses&quot;
 #   lodindex lodcolumn chr       pos       lod      ci_lo     ci_hi
 # 1        1    pheno1   1 168.41339 11.416644 168.398842 168.52005
@@ -946,25 +1673,25 @@ for(i in names(m2.qtl.out)){
 # 5        1    pheno1  10 117.29331  6.097238 116.264165 118.73253
 # 6        1    pheno1  17  82.91709  6.294987  81.121859  83.40925
 # [1] 1</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-20.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-21.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-6.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 2</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-22.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-23.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-8.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 3</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-24.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-25.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-9.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-10.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 4</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-26.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-27.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-11.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-12.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 5</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-28.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-29.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-13.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-14.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 6</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-30.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-31.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-15.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-16.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] &quot;Rev.Total.Trials&quot;
 #   lodindex lodcolumn chr       pos      lod     ci_lo    ci_hi
 # 1        1    pheno1  14 121.29650 6.542708 121.11874 121.5717
 # 2        1    pheno1  18  83.08088 6.553229  82.31526  90.6726
 # [1] 1</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-32.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-33.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-17.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-18.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 2</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-34.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-35.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-19.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-20.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] &quot;Rev.Anticipatory.Incorrect.Responses&quot;
 #   lodindex lodcolumn chr       pos      lod     ci_lo     ci_hi
 # 1        1    pheno1   1 170.96387 6.571598 168.25531 171.06618
@@ -973,23 +1700,23 @@ for(i in names(m2.qtl.out)){
 # 4        1    pheno1  16  56.17223 7.087466  54.37418  58.59104
 # 5        1    pheno1  17  65.65263 9.228873  64.83160  66.34240
 # [1] 1</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-36.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-37.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-21.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-22.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 2</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-38.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-39.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-23.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-24.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 3</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-40.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-41.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-25.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-26.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 4</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-42.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-43.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-27.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-28.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 5</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-44.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-45.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-29.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-30.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] &quot;Diff.Total.Trials&quot;
 #   lodindex lodcolumn chr       pos      lod     ci_lo     ci_hi
 # 1        1    pheno1   7  80.80292 8.549071  80.09433  81.52958
 # 2        1    pheno1  14 121.29944 6.649824 121.03534 123.78109
 # [1] 1</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-46.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-47.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-31.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-32.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 2</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-48.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-49.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-33.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-34.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] &quot;Acq.Anticipatory.Correct.Responses.nooutlier&quot;
 #   lodindex lodcolumn chr       pos      lod     ci_lo     ci_hi
 # 1        1    pheno1   1 168.40300 8.387058 168.22298 168.52005
@@ -997,13 +1724,13 @@ for(i in names(m2.qtl.out)){
 # 3        1    pheno1  17  82.87091 6.126227  81.12186  83.40925
 # 4        1    pheno1  19  17.71985 6.578499  17.23709  18.07340
 # [1] 1</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-50.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-51.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-35.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-36.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 2</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-52.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-53.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-37.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-38.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 3</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-54.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-55.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-39.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-40.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 4</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-56.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-57.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-41.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-42.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] &quot;Rev.Anticipatory.Incorrect.Responses.nooutlier&quot;
 #   lodindex lodcolumn chr       pos      lod    ci_lo     ci_hi
 # 1        1    pheno1   1 170.96387 6.013441 41.45143 171.18444
@@ -1013,17 +1740,17 @@ for(i in names(m2.qtl.out)){
 # 5        1    pheno1  16  56.17223 6.112808 54.36765  58.59104
 # 6        1    pheno1  17  65.65263 6.545085 28.65423  80.94284
 # [1] 1</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-58.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-59.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-43.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-44.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 2</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-60.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-61.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-45.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-46.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 3</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-62.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-63.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-47.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-48.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 4</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-64.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-65.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-49.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-50.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 5</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-66.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-67.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-51.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-52.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 6</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-68.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-69.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-53.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-54.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] &quot;Rev.Anticipatory.Incorrect.Responses.boxcox.trans&quot;
 #   lodindex lodcolumn chr        pos      lod      ci_lo     ci_hi
 # 1        1    pheno1   1 170.963873 7.614860 168.522985 171.06618
@@ -1031,43 +1758,43 @@ for(i in names(m2.qtl.out)){
 # 3        1    pheno1  14  49.256704 6.241500  48.800840  54.24423
 # 4        1    pheno1  17  65.652629 6.697057  64.831601  66.34240
 # [1] 1</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-70.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-71.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-55.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-56.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 2</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-72.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-73.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-57.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-58.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 3</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-74.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-75.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-59.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-60.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 4</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-76.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-77.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-61.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-62.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] &quot;Acq.Total.Trials.rz&quot;
 #   lodindex lodcolumn chr      pos      lod     ci_lo     ci_hi
 # 1        1    pheno1   4 20.49269 6.027420  6.185280  21.84250
 # 2        1    pheno1   6 88.69893 6.403379  4.194618 125.22781
 # 3        1    pheno1  12 82.15231 6.789289 81.112677  83.46144
 # [1] 1</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-78.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-79.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-63.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-64.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 2</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-80.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-81.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-65.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-66.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 3</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-82.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-83.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-67.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-68.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] &quot;Acq.Anticipatory.Correct.Responses.rz&quot;
 #   lodindex lodcolumn chr       pos      lod     ci_lo     ci_hi
 # 1        1    pheno1   1 168.41339 8.655344 168.23921 168.52005
 # 2        1    pheno1   4  54.37504 6.720086  53.45208  86.15855
 # 3        1    pheno1  14  48.92034 6.057568  44.75345  54.22123
 # [1] 1</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-84.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-85.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-69.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-70.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 2</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-86.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-87.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-71.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-72.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 3</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-88.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-89.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-73.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-74.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] &quot;Rev.Total.Trials.rz&quot;
 #   lodindex lodcolumn chr      pos      lod    ci_lo    ci_hi
 # 1        1    pheno1   2 171.9407 6.492934 168.9687 172.3610
 # 2        1    pheno1  14 121.2965 6.565981 121.0353 121.5717
 # [1] 1</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-90.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-91.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-75.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-76.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 2</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-92.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-93.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-77.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-78.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] &quot;Rev.Anticipatory.Incorrect.Responses.rz&quot;
 #   lodindex lodcolumn chr        pos      lod      ci_lo     ci_hi
 # 1        1    pheno1   1 170.963873 7.424719 168.522985 171.06618
@@ -1075,40 +1802,40 @@ for(i in names(m2.qtl.out)){
 # 3        1    pheno1  14  49.256704 6.106932  48.800840  54.24423
 # 4        1    pheno1  17  65.686785 6.125969  28.589293  66.34240
 # [1] 1</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-94.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-95.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-79.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-80.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 2</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-96.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-97.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-81.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-82.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 3</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-98.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-99.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-83.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-84.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 4</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-100.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-101.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-85.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-86.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] &quot;Diff.Total.Trials.rz&quot;
 #   lodindex lodcolumn chr       pos      lod     ci_lo     ci_hi
 # 1        1    pheno1   7  80.80292 7.763503  80.09433  81.52958
 # 2        1    pheno1  14 121.29944 6.447166 120.54323 123.78109
 # [1] 1</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-102.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-103.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-87.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-88.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 2</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-104.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-105.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-89.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-90.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] &quot;Acq.Anticipatory.Correct.Responses.nooutlier.rz&quot;
 #   lodindex lodcolumn chr        pos      lod      ci_lo      ci_hi
 # 1        1    pheno1   1 168.400920 7.359211 168.222977 170.984487
 # 2        1    pheno1   4  54.375041 6.204213  53.176714 138.505716
 # 3        1    pheno1   6   6.072045 6.729573   4.801035   9.764711
 # [1] 1</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-106.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-107.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-91.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-92.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 2</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-108.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-109.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-93.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-94.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 3</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-110.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-111.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-95.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-96.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] &quot;Rev.Anticipatory.Incorrect.Responses.nooutlier.rz&quot;
 #   lodindex lodcolumn chr      pos      lod    ci_lo    ci_hi
 # 1        1    pheno1   1 170.9639 6.901609 62.68856 171.0662
 # 2        1    pheno1  14  49.2567 6.230687 48.80084  54.2312
 # [1] 1</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-112.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-113.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-97.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-98.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code># [1] 2</code></pre>
-<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-114.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Plot%20qtl%20mapping%20on%2069k-115.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-99.png" width="672" style="display: block; margin: auto;" /><img src="figure/Prj01_RL_pheno_qtl2_DO_11092020_69k.Rmd/Coeff%20plot%20of%20qtl%20mapping-100.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>
 #save peaks coeff plot
 for(i in names(m2.qtl.out)){
@@ -1278,6 +2005,9 @@ for(i in names(m2.qtl.out)){
 # [1] &quot;Rev.Anticipatory.Incorrect.Responses.nooutlier.rz&quot;
 # [1] 1
 # [1] 2</code></pre>
+</div>
+<div id="heritability-by-gcta" class="section level3">
+<h3>heritability by GCTA</h3>
 <pre class="r"><code>#gcta id
 gcta.id &lt;- read.table(&quot;/projects/csna/csna_workflow/data/GCTA/12_batches.fam&quot;, header = F, sep = &quot; &quot;)
 #overlap
@@ -1358,8 +2088,6 @@ p&lt;-ggplot(data=h, aes(x=Phenotype, y=Heritability)) + #, fill=Domain, color =
 p
 dev.off()
 
-
-
 #plot heritability by qtl2 array --------------
 herit &lt;- data.frame(Phenotype = names(unlist(qtl.hsq)),
                     Heritability = round(unlist(qtl.hsq),3))
@@ -1429,6 +2157,7 @@ p2
 # [65] rprojroot_2.0.2    stringi_1.5.3      Rcpp_1.0.6         vctrs_0.3.6       
 # [69] dbplyr_2.1.0       tidyselect_1.1.0   xfun_0.21</code></pre>
 </div>
+</div>
 
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
@@ -1446,6 +2175,8 @@ footer is added to webpages before the MathJax javascript. -->
 
 
 
+</div>
+</div>
 
 </div>
 
@@ -1477,7 +2208,38 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
