@@ -1,8 +1,11 @@
 ---
 title: "Prj01_RL_pheno_qtl2_DO_11092020_69k"
 author: "Hao He"
-date: "`r Sys.Date()`"
-output: workflowr::wflow_html
+output:
+  workflowr::wflow_html:
+    toc: true
+    toc_float: true
+    code_folding: "hide"
 ---
 
 ```{r knitr-opts, include=FALSE}
@@ -15,7 +18,7 @@ knitr::opts_chunk$set(comment = "#",collapse = TRUE)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-###loading libraries
+### loading libraries
 ```{r library, message=FALSE, warning=FALSE}
 library(ggplot2)
 library(gridExtra)
@@ -37,7 +40,7 @@ rz.transform <- function(y) {
 setwd("/projects/csna/csna_workflow/")
 ```
 
-###Read phenotype data
+### Read phenotype data
 ```{r Read phenotype data, message=FALSE, fig.height=8, fig.width=6}
 #Prj01_RL_pheno_qttl2_DO_11092020
 pheno <- readr::read_csv("data/pheno/Prj01_RL_pheno_qttl2_DO_11092020.csv", na = c("N/A", "NA"))
@@ -82,7 +85,7 @@ query_genes <- create_gene_query_func("/projects/csna/csna_workflow/data/mouse_g
 
 ```
 
-###Plot qtl mapping on 69k
+### Plot qtl mapping on 69k
 Plot by using its output Prj01_RL_11092020_cutoff6.qtlout.69k.RData
 ```{r Plot qtl mapping on 69k, message=FALSE, warning=FALSE}
 load("output/Prj01_RL_11092020_cutoff6.qtlout.69k.RData")
@@ -110,7 +113,10 @@ for(i in names(m2.qtl.out)){
   title(main = paste0(i))
 }
 dev.off()
-  
+```
+
+### Coeff plot of qtl mapping
+```{r Coeff plot of qtl mapping, message=FALSE, warning=FALSE}
 #peaks coeff plot
 for(i in names(m2.qtl.out)){
   print(i)
@@ -170,6 +176,7 @@ for(i in names(m2.qtl.out)){
 
 ```
 
+### heritability by GCTA
 ```{r heritability by GCTA, eval=FALSE}
 #gcta id
 gcta.id <- read.table("/projects/csna/csna_workflow/data/GCTA/12_batches.fam", header = F, sep = " ")
@@ -250,8 +257,6 @@ p<-ggplot(data=h, aes(x=Phenotype, y=Heritability)) + #, fill=Domain, color = Do
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 p
 dev.off()
-
-
 
 #plot heritability by qtl2 array --------------
 herit <- data.frame(Phenotype = names(unlist(qtl.hsq)),
