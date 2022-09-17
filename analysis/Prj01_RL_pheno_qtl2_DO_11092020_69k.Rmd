@@ -31,11 +31,41 @@ library(regress)
 library(abind)
 library(openxlsx)
 library(tidyverse)
+library(SimDesign)
+library(MASS)
+library(EnvStats)
+
 
 rz.transform <- function(y) {
   rankY=rank(y, ties.method="average", na.last="keep")
   rzT=qnorm(rankY/(length(na.exclude(rankY))+1))
   return(rzT)
+}
+# heritability
+# function to simulate data to estimate heritability intervals
+h2_sim <- function(trait, K, covar, nsim=100){
+  # trait, K and covar are matrices with row.names in qtl2-style
+  # covar adjustment applied to data but not in simulated data
+
+  # reduce mice to common set with kinship and trait values
+  # mice.names <- intersect(row.names(K), row.names(trait))
+  # K <- K[mice.names, mice.names]
+  # trait <- as.matrix(trait[mice.names,],ncol=1)
+  N <- dim(trait)[1]
+
+  # estimate heritability
+  h2 <- as.numeric(est_herit(trait, K, covar))
+
+  # simulate from kinship matrix and re-estimate
+  h2_sim <- rep(0,nsim)
+  for(i in 1:nsim){
+    trait_sim <- t(rmvnorm(n = 1, mean = rep(0,N), sigma = h2*2*K + (1-h2)*diag(1,N)))
+    rownames(trait_sim) <- rownames(trait)
+    h2_sim[i] <- as.numeric(est_herit(trait_sim, K))
+  }
+
+  # return estimated h2 and simulations
+  list(N=N, h2=h2, sim=h2_sim)
 }
 setwd("/projects/csna/csna_workflow/")
 ```
@@ -273,5 +303,36 @@ p2 <- ggplot(data=herit, aes(x=Phenotype, y=Heritability)) + #, fill=Domain, col
   ggtitle("Heritability by qtl2 array")
 p2
 
+```
+
+### heritability by qtl2 and the bootstrap estimates
+```{r}
+apr <- readRDS("output/RL_prj/apr.RDS")
+#kinship
+k_overall = calc_kinship(probs = apr, type = "overall", use_allele_probs = TRUE, cores = 20)
+
+# #heritability -----------------------------------------------------------
+# loop through traits
+#pheno list
+pheno <- as.data.frame(pheno)
+pheno.names <- colnames(pheno)[4:18]
+pheno.herit <- data.frame(Name = pheno.names, h2=0, N=0, ll=0, ul=0)
+covar = model.matrix(~sex, data = pheno)[,-1, drop=F]
+rownames(covar) <- pheno$mouseID
+colnames(covar)[1] = "sex"
+#loop
+for(i in 1:length(pheno.names)){
+  j = pheno.names[[i]]
+  print(j)
+  phe = pheno[,j,drop=F]
+  rownames(phe) = pheno$mouseID
+  tmp <- h2_sim(phe, k_overall, covar, 100)
+  pheno.herit$N[i] <- tmp$N
+  pheno.herit$h2[i] <- tmp$h2
+  pheno.herit$ll[i] <- quantile(tmp$sim, 0.1)
+  pheno.herit$ul[i] <- quantile(tmp$sim, 0.9)
+}
+write.csv(pheno.herit, file = "output/RL_prj/Prj01_RL_11092020_cutoff6.pheno.herit.csv",
+          row.names = FALSE, quote = F)
 ```
 
