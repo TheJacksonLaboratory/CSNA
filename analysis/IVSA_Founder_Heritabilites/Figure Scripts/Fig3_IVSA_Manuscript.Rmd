@@ -1,0 +1,1104 @@
+---
+title: "Fig3_IVSA_Manuscript"
+author: "Udita Datta"
+date: "11/21/2020"
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    number_sections: true
+    fig_retina: true
+    self_contained: true
+    code_folding: show
+    theme: flatly
+    highlight: default
+    df_print: paged
+---
+
+
+Seting up Working directory
+
+
+```{r setup, warning=FALSE}
+script_root_dir = "C:/Users/dattau/Documents/IVSA_Proj_org/IVSA/IVSA"
+knitr::opts_knit$set(root.dir = script_root_dir)
+```
+
+### R libraries
+
+Calling R libraries necessary for this analysis.
+
+```{r libraries, warning=FALSE}
+library("MASS")
+library("cowplot")
+library("lubridate")
+library("ggbeeswarm")
+library("readxl")
+library("tidyr")
+library("dplyr")
+library("DT")
+library("ANOM")
+library("multcomp")
+library("broom")
+library("ez")
+```
+
+## Dataset Setup
+
+### Importing data
+
+The IVSA and novelty data have already been preprocessed using the `IVSA_novelty_import_preprocess.Rmd` script.
+
+```{r import_data, warning=FALSE}
+# Taking the most recent datasets
+data_path = paste(script_root_dir,"/preprocessed_IVSA_data/", sep = "")
+IVSA_datasets = data.frame(files = list.files(path = data_path, pattern = "\\d{4}-\\d{2}-\\d{2}\\.RDS$"),
+                           date = ymd(gsub("^.*_(\\d{4}-\\d{2}-\\d{2})\\.RDS$","\\1", 
+                                           list.files(path = data_path, 
+                                                      pattern = "\\d{4}-\\d{2}-\\d{2}\\.RDS$")), 
+                                      tz = "America/New_York"),
+                           stringsAsFactors = FALSE)
+most_recent_datasets = paste(data_path, IVSA_datasets[which(IVSA_datasets$date == max(IVSA_datasets$date)),"files"], sep = "")
+
+# IVSA
+IVSA_raw_file = most_recent_datasets[grep("IVSA_raw", most_recent_datasets)]
+IVSA_metadata_file = most_recent_datasets[grep("IVSA_metadata", most_recent_datasets)]
+IVSA_raw = readRDS(IVSA_raw_file)
+row.names(IVSA_raw) = IVSA_raw$DE_Subject
+IVSA_metadata = readRDS(IVSA_metadata_file)
+head(IVSA_raw)
+```
+Getting founders key file.
+
+```{r founders_key_import, warning=FALSE}
+founders_key = readRDS("C:/Users/dattau/Documents/R_IVSA_Troy/IVSA/IVSA/csna_project_4_behavior/data/cc_do_founders_key.RDS")
+row.names(founders_key) = founders_key$strain
+founders_key[9,1] = "J:DO"
+founders_key[9,2] = "DO"
+founders_key[9,5] = "#000000"
+founders_key[9,6] = "#000000"
+row.names(founders_key) = founders_key$strain
+head(IVSA_raw)
+```
+
+### Filtering IVSA data for DO Founders
+
+Getting IVSA data for the eight founders, old DO and CC  strains.
+
+```{r filter_for_founders, warning=FALSE}
+founders_IVSA = IVSA_raw %>%
+  filter(DE_Strain %in% founders_key$strain)
+#rm(list = c("IVSA_raw"))
+founders_IVSA = as.data.frame(founders_IVSA)
+
+founders_IVSA$DE_Strain = factor(founders_IVSA$DE_Strain,
+                                 levels = founders_key$strain,
+                                 ordered = TRUE)
+
+
+Old_DO <- founders_IVSA %>% 
+  filter(DE_birth_date_year == 2016,
+         DE_Strain == "J:DO")
+
+
+New_DO <- founders_IVSA %>% 
+  filter(DE_birth_date_year != 2016,
+         DE_Strain == "J:DO")
+
+No_DO <- founders_IVSA %>% 
+  filter(DE_Strain != "J:DO")
+
+founders_IVSA <- merge(Old_DO,No_DO, all = TRUE)
+
+ids <- c("A2063", "A2810", "A2418", "A3262", "A3261", "A3052", "A3257", "A3256", "A3051", "A2986")
+rm.ids <- which(founders_IVSA$DE_Subject %in% ids)
+founders_IVSA.p1  <- founders_IVSA[-rm.ids,]
+
+founders_IVSA = founders_IVSA.p1
+
+```
+Getting CC key.
+
+```{r}
+CC_key = unique(IVSA_raw$DE_Strain)
+CC_key = CC_key[grep("^CC\\d{3}/",CC_key)]
+#CC_key = stringr::str_extract(CC_key, "^.{5}")
+CC_key
+CC_founders_IVSA_CC = IVSA_raw %>%
+  filter(DE_Strain %in% c(CC_key))
+
+CC_founders_IVSA_CC$DE_Strain = stringr::str_extract(CC_founders_IVSA_CC$DE_Strain, "^.{5}")
+
+CC_key_abv <- unique(CC_founders_IVSA_CC$DE_Strain)
+
+head(CC_founders_IVSA_CC)
+```
+
+Merging old DO, founders and CC. Generating a combined key.
+```{r}
+CC_founders_IVSA <- rbind(founders_IVSA, CC_founders_IVSA_CC)
+Combined_key_abv <- c(founders_key$strain,CC_key_abv)
+```
+
+The environment and datasets are ready for analysis.
+# Analysis
+### Getting IVSA extinction relevant columns
+Selecting the relevant columns for Extinction relevant trait calculations. Choosing the following variables:
+'EX_ALP_Total_s01'to 'EX_ALP_Total_s10': Active lever press for extinction sessions
+'EX_ILP_Total_s01'to 'EX_ILP_Total_s10': Inactive lever press for extinction sessions
+Changing the format from wide to long format.
+```{r extinction_plot, warning=FALSE}
+CC_founders_extinction_df = CC_founders_IVSA %>%
+  select(DE_Subject,
+         DE_Strain,
+         DE_Sex,
+         EX_ALP_Total_s01,
+         EX_ALP_Total_s02,
+         EX_ALP_Total_s03,
+         EX_ALP_Total_s04,
+         EX_ALP_Total_s05,
+         EX_ALP_Total_s06,
+         EX_ALP_Total_s07,
+         EX_ALP_Total_s08,
+         EX_ALP_Total_s09,
+         EX_ALP_Total_s10,
+         EX_ILP_Total_s01,
+         EX_ILP_Total_s02,
+         EX_ILP_Total_s03,
+         EX_ILP_Total_s04,
+         EX_ILP_Total_s05,
+         EX_ILP_Total_s06,
+         EX_ILP_Total_s07,
+         EX_ILP_Total_s08,
+         EX_ILP_Total_s09,
+         EX_ILP_Total_s10)
+
+
+  CC_founders_extinction_df <- CC_founders_extinction_df        %>%
+  gather(key = Lever_Session, value = lever_presses, -DE_Subject, -DE_Strain, -DE_Sex) %>%
+  mutate(Lever = gsub("^EX_([AI])LP_Total_s(\\d{2})$","\\1",Lever_Session),
+         Session = as.numeric(gsub("^EX_([AI])LP_Total_s(\\d{2})$","\\2",Lever_Session))) %>%
+  filter(!is.na(lever_presses), Session <= 8)
+CC_founders_extinction_summary = CC_founders_extinction_df %>%
+  group_by(DE_Strain, DE_Sex, Lever, Session) %>%
+  summarize(mean = mean(lever_presses, na.rm = TRUE),
+            n = length(which(!is.na(lever_presses))),
+            sem = sd(lever_presses, na.rm = TRUE) / sqrt(length(which(!is.na(lever_presses))))) %>%
+  mutate(ul = mean + sem, ll = mean - sem)
+
+CC_founders_extinction_df
+```
+
+Computing slope of extinction lever presses on active and inactive lever, seperately; over the seven extinction sessions.
+Plotting the data from founders, CC and DO on a single plot
+
+```{r extinction_plot, warning=FALSE}
+CC_extinction_df = CC_founders_IVSA %>%
+  select(DE_Subject,
+         DE_Strain,
+         DE_Sex,
+         EX_ALP_Total_s01,
+         EX_ALP_Total_s02,
+         EX_ALP_Total_s03,
+         EX_ALP_Total_s04,
+         EX_ALP_Total_s05,
+         EX_ALP_Total_s06,
+         EX_ALP_Total_s07,
+         EX_ALP_Total_s08,
+         EX_ALP_Total_s09,
+         EX_ALP_Total_s10,
+         EX_ILP_Total_s01,
+         EX_ILP_Total_s02,
+         EX_ILP_Total_s03,
+         EX_ILP_Total_s04,
+         EX_ILP_Total_s05,
+         EX_ILP_Total_s06,
+         EX_ILP_Total_s07,
+         EX_ILP_Total_s08,
+         EX_ILP_Total_s09,
+         EX_ILP_Total_s10) %>%
+  gather(key = Lever_Session, value = lever_presses, -DE_Subject, -DE_Strain, -DE_Sex) %>%
+  mutate(Lever = gsub("^EX_([AI])LP_Total_s(\\d{2})$","\\1",Lever_Session),
+         Session = as.numeric(gsub("^EX_([AI])LP_Total_s(\\d{2})$","\\2",Lever_Session))) %>%
+  filter(!is.na(lever_presses))
+
+CC_extinction_slope = CC_extinction_df %>%
+  group_by(DE_Subject, Lever) %>%
+    do(tidy(lm(lever_presses ~ Session, .)))%>%
+  #  broom::tidy(Sessions_lm) %>%
+  filter(term == "Session") %>%
+  select(DE_Subject, Lever, estimate) %>%
+  mutate(Subject_Lever = paste(DE_Subject, Lever, sep = "_"))
+CC_extinction_slope = as.data.frame(CC_extinction_slope)
+row.names(CC_extinction_slope) = CC_extinction_slope$Subject_Lever
+
+CC_extinction_demodata = CC_extinction_df %>%
+  group_by(DE_Subject, Lever) %>%
+  summarize(DE_Strain = unique(DE_Strain),
+            DE_Sex = unique(DE_Sex)) %>%
+  mutate(Subject_Lever = paste(DE_Subject, Lever, sep = "_"))
+CC_extinction_demodata = as.data.frame(CC_extinction_demodata)
+row.names(CC_extinction_demodata) = CC_extinction_demodata$Subject_Lever
+CC_extinction_demodata = CC_extinction_demodata[,(-1 * which(colnames(CC_extinction_demodata) == "Subject_Lever"))]
+CC_extinction_demodata$Slope = CC_extinction_slope[row.names(CC_extinction_demodata),"estimate"]
+CC_extinction_slope = CC_extinction_demodata; rm(list = c("CC_extinction_demodata"))
+CC_extinction_slope_summary = CC_extinction_slope %>%
+  group_by(DE_Strain, Lever) %>%
+  summarize(mean = mean(Slope, na.rm = TRUE),
+            sem = sd(Slope, na.rm = TRUE) / sqrt(length(which(!is.na(Slope)))),
+            n = length(which(!is.na(Slope)))) %>%
+  mutate(ul = mean + sem,
+         ll = mean - sem)
+CC_extinction_slope_summary = as.data.frame(CC_extinction_slope_summary)
+CC_extinction_slope_summary_ALP = CC_extinction_slope_summary[which(CC_extinction_slope_summary$Lever == "A"),]
+CC_extinction_slope_summary_ALP$Color = rep("#CCCCCC", times = nrow(CC_extinction_slope_summary_ALP))
+row.names(CC_extinction_slope_summary_ALP) = CC_extinction_slope_summary_ALP$DE_Strain
+CC_extinction_slope_summary_ALP[row.names(founders_key),"Color"] = founders_key$collaborative_cross_color_broman
+CC_extinction_slope_summary_ALP  = CC_extinction_slope_summary_ALP[which(!is.na(CC_extinction_slope_summary_ALP$DE_Strain)),]
+CC_extinction_slope_summary_ALP$Label =
+  paste(as.character(CC_extinction_slope_summary_ALP$DE_Strain), sep = "")
+
+CC_extinction_slope_summary_ALP$DE_Strain = factor(CC_extinction_slope_summary_ALP$DE_Strain,
+                                                   levels = CC_extinction_slope_summary_ALP[order(CC_extinction_slope_summary_ALP$mean),"DE_Strain"],
+                                                   ordered = TRUE)
+
+
+CC_extinction_slope_ALP_plot <- ggplot(data = CC_extinction_slope_summary_ALP, aes(x = DE_Strain, y = mean, fill = DE_Strain)) +
+  geom_col(color = "#000000") +
+  geom_errorbar(aes(ymin = ll, ymax = ul), width = 0.5) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust=0.5), legend.position="none") + 
+  geom_text(aes(
+    label= paste(as.character(),CC_extinction_slope_summary_ALP$n, sep = ""),
+    y= -90), size = 2.75, hjust = 0.3, vjust = 0.3, angle = 90) +
+  scale_fill_manual(values = CC_extinction_slope_summary_ALP[order(CC_extinction_slope_summary_ALP$DE_Strain),"Color"]) +
+  xlab(NULL) +
+  ylab("Slope of Extinction Active Lever Presses") +
+  scale_x_discrete(labels = CC_extinction_slope_summary_ALP[order(CC_extinction_slope_summary_ALP$DE_Strain),"Label"]) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))
+
+CC_extinction_slope_ALP_plot
+ggsave("CC_extinction_slope_ALP_plot.pdf")
+```
+Preparing the data to asess strain differences in Slope of extinction with CC and founder strains, combined. Seperating the two active and inactive lever into two distinct column. Looking for strain differences in slope of extinction on active lever and inactive lever.
+```{r}
+CC_extinction_slope_wide <- CC_extinction_slope %>%
+  filter(DE_Strain != "J:DO")%>% 
+  filter(DE_Strain %in% c(Combined_key_abv)) %>%
+spread(Lever, Slope)
+Ex_model_A <- anova(lm(A ~ DE_Strain, data = CC_extinction_slope_wide))
+Ex_model_A
+Ex_model_I <- anova(lm(I ~ DE_Strain, data = CC_extinction_slope_wide))
+Ex_model_I
+```
+
+Preparing the data to asess strain differences in Slope of extinction with only CC strains. Seperating the two active and inactive lever into two distinct column. Looking for strain differences among CC strains.
+
+```{r}
+CC_extinction_slope_wide <- CC_extinction_slope %>%
+  filter(DE_Strain %in% c(CC_key_abv)) %>%
+spread(Lever, Slope)
+Ex_model_A <- anova(lm(A ~ DE_Strain, data = CC_extinction_slope_wide))
+Ex_model_A
+Ex_model_I <- anova(lm(I ~ DE_Strain, data = CC_extinction_slope_wide))
+Ex_model_I
+```
+
+Preparing the data to asess strain differences in Slope of extinction with only founder strains. Seperating the two active and inactive lever into two distinct column.Looking for strain differences among founder strains.
+
+```{r}
+CC_extinction_slope_wide <- CC_extinction_slope %>% 
+  filter(DE_Strain != "J:DO")%>% 
+  filter(DE_Strain %in% c(founders_key$strain)) %>% 
+spread(Lever, Slope)
+Ex_model_A <- anova(lm(A ~ DE_Strain, data = CC_extinction_slope_wide))
+Ex_model_A
+Ex_model_I <- anova(lm(I ~ DE_Strain, data = CC_extinction_slope_wide))
+Ex_model_I
+```
+
+
+
+Working with only CC strains
+Generating a data table for only active lever presses to do a repeated measures ANOVA.
+```{r extinction_plot, warning=FALSE}
+CC_extinction_df = CC_founders_IVSA %>% 
+  filter(DE_Strain %in% c(CC_key_abv)) %>%
+  select(DE_Subject,
+         DE_Strain,
+         DE_Sex,
+         EX_ALP_Total_s01,
+         EX_ALP_Total_s02,
+         EX_ALP_Total_s03,
+         EX_ALP_Total_s04,
+         EX_ALP_Total_s05,
+         EX_ALP_Total_s06,
+         EX_ALP_Total_s07) 
+CC_extinction_df <- CC_extinction_df        %>%
+  gather(key = Lever_Session, value = lever_presses, -DE_Subject, -DE_Strain, -DE_Sex) %>%
+  mutate(Lever = gsub("^EX_([AI])LP_Total_s(\\d{2})$","\\1",Lever_Session),
+         Session = as.numeric(gsub("^EX_([AI])LP_Total_s(\\d{2})$","\\2",Lever_Session))) %>%
+  filter(!is.na(lever_presses), Session <= 8)
+
+  CC_extinction_df 
+```
+Cleaning the dataframe for extinction ANOVA.
+Removing na values
+
+```{r}
+CC_extinction_df_noNA <- na.omit(CC_extinction_df)
+#table(CC_extinction_df_noNA$DE_Subject,CC_extinction_df_noNA$Session)
+#View(CC_extinction_df_noNA)
+```
+Checking to see how many sessions of extinction are available for each individual animal has completed and selecting those with seven sessions
+
+```{r}
+library(plyr)
+CC_extinction_df <- ddply(CC_extinction_df,.(DE_Subject),transform,count=length(Session))
+
+#View(CC_extinction_df)
+CC_extinction_df_completeobs <- subset(CC_extinction_df, count == 7)
+#View(CC_extinction_df_completeobs)
+```
+Summarizing the resulting dataframe for extinction  that contains individuals with lever presses with complete observations for seven extinction sessions.
+
+```{r}
+detach(package:plyr)
+library(dplyr)
+CC_extinction_summary = CC_extinction_df_completeobs %>% group_by(DE_Strain, DE_Sex, Lever, Session,count) %>%
+  summarize(mean = mean(lever_presses, na.rm = TRUE),
+            n = length(which(!is.na(lever_presses))),
+            sem = sd(lever_presses, na.rm = TRUE) / sqrt(length(which(!is.na(lever_presses))))) %>%
+  mutate(ul = mean + sem, ll = mean - sem)
+CC_extinction_summary
+```
+
+Performing ANOVA to test the influence of strain on Active lever Presses with a repeated measures design.
+
+```{r}
+CC_extinction_df_completeobs$Session <- as.factor(CC_extinction_df_completeobs$Session)   
+    
+model3 =ezANOVA(
+  data = CC_extinction_df_completeobs,
+  dv = lever_presses,
+  wid = DE_Subject,
+  within = .(Session),
+  between = .(DE_Strain),
+  #between = .(DE_Strain, DE_Sex),
+  detailed = TRUE,
+  type = 3
+)
+print(model3)
+
+```
+
+Working with CC strains to asess strain difference in extinction. Generating a data table for percent active lever presses to do a repeated measures ANOVA over the seven extinction sessions.
+
+```{r extinction_plot, warning=FALSE}
+CC_EX_pAP_df = CC_founders_IVSA %>% 
+  filter(DE_Strain %in% c(CC_key_abv)) %>%
+  select(DE_Subject,
+         DE_Strain,
+         DE_Sex,
+         EX_pAP_Total_s01,
+         EX_pAP_Total_s02,
+         EX_pAP_Total_s03,
+         EX_pAP_Total_s04,
+         EX_pAP_Total_s05,
+         EX_pAP_Total_s06,
+         EX_pAP_Total_s07) 
+CC_EX_pAP_df <- CC_EX_pAP_df        %>%
+  gather(key = Lever_Session, value = lever_presses, -DE_Subject, -DE_Strain, -DE_Sex) %>%
+  mutate(Lever = gsub("^EX_p([AI])P_Total_s(\\d{2})$","\\1",Lever_Session),
+         Session = as.numeric(gsub("^EX_p([AI])P_Total_s(\\d{2})$","\\2",Lever_Session))) %>%
+  filter(!is.na(lever_presses), Session <= 8)
+
+  CC_EX_pAP_df 
+```
+
+Preparing a dataframe for CC percent active lever press during extinction with complete observations for all seven extinction sessions.
+```{r}
+library(plyr)
+CC_EX_pAP_df <- ddply(CC_EX_pAP_df,.(DE_Subject),transform,count=length(Session))
+
+View(CC_EX_pAP_df)
+CC_EX_pAP_df_completeobs <- subset(CC_EX_pAP_df, count == 7)
+View(CC_EX_pAP_df_completeobs)
+```
+Summarizing the resulting dataframe for extinction  that contains complete observations for all seven extinction sessions.
+```{r}
+detach(package:plyr)
+library(dplyr)
+CC_EX_pAP_df_summary = CC_EX_pAP_df %>% group_by(DE_Strain, DE_Sex, Lever, Session,count) %>%
+  summarize(mean = mean(lever_presses, na.rm = TRUE),
+            n = length(which(!is.na(lever_presses))),
+            sem = sd(lever_presses, na.rm = TRUE) / sqrt(length(which(!is.na(lever_presses))))) %>%
+  mutate(ul = mean + sem, ll = mean - sem)
+CC_EX_pAP_df_summary
+```
+Performing ANOVA to test the influence of strain on Percent Active lever Presses with a repeated measures design.
+
+```{r}
+CC_EX_pAP_df_completeobs$Session <- as.factor(CC_EX_pAP_df_completeobs$Session)   
+
+
+model3 =ezANOVA(
+  data = CC_EX_pAP_df_completeobs,
+  dv = lever_presses,
+  wid = DE_Subject,
+  within = .(Session),
+  between = .(DE_Strain),
+  #between = .(DE_Strain, DE_Sex),
+  detailed = TRUE,
+  type = 3
+)
+print(model3)
+```
+Working with founder and CC strains to asess strain difference in extinction. Generating a data table for active lever presses to do a repeated measures ANOVA over the seven extinction sessions.
+
+```{r extinction_plot, warning=FALSE}
+CC_EX_ALP_df = CC_founders_IVSA %>%
+  filter(DE_Strain != "J:DO")%>% 
+  filter(DE_Strain %in% c(Combined_key_abv)) %>%
+  select(DE_Subject,
+         DE_Strain,
+         DE_Sex,
+         EX_ALP_Total_s01,
+         EX_ALP_Total_s02,
+         EX_ALP_Total_s03,
+         EX_ALP_Total_s04,
+         EX_ALP_Total_s05,
+         EX_ALP_Total_s06,
+         EX_ALP_Total_s07) 
+CC_EX_ALP_df <- CC_EX_ALP_df        %>%
+  gather(key = Lever_Session, value = lever_presses, -DE_Subject, -DE_Strain, -DE_Sex) %>%
+ mutate(Lever = gsub("^EX_([AI])LP_Total_s(\\d{2})$","\\1",Lever_Session),
+         Session = as.numeric(gsub("^EX_([AI])LP_Total_s(\\d{2})$","\\2",Lever_Session))) %>%
+  filter(!is.na(lever_presses), Session <= 8)
+
+  CC_EX_ALP_df 
+```
+
+Preparing a dataframe for CC and founder active lever press during extinction with complete observations for all seven extinction sessions.
+```{r}
+library(plyr)
+CC_EX_ALP_df <- ddply(CC_EX_ALP_df,.(DE_Subject),transform,count=length(Session))
+
+#View(CC_EX_ALP_df)
+CC_EX_ALP_df_completeobs <- subset(CC_EX_ALP_df, count == 7)
+#View(CC_EX_pAP_df_completeobs)
+```
+Summarizing the resulting dataframe for extinction  that contains complete observations for all seven extinction sessions.
+```{r}
+detach(package:plyr)
+library(dplyr)
+CC_EX_ALP_df_summary = CC_EX_ALP_df %>% group_by(DE_Strain, DE_Sex, Lever, Session,count) %>%
+  summarize(mean = mean(lever_presses, na.rm = TRUE),
+            n = length(which(!is.na(lever_presses))),
+            sem = sd(lever_presses, na.rm = TRUE) / sqrt(length(which(!is.na(lever_presses))))) %>%
+  mutate(ul = mean + sem, ll = mean - sem)
+CC_EX_ALP_df_summary
+```
+
+Performing ANOVA to test the influence of strain on Active lever Presses with a repeated measures design.
+
+```{r}
+CC_EX_ALP_df_completeobs$Session <- as.factor(CC_EX_ALP_df_completeobs$Session)   
+
+
+model3 =ezANOVA(
+  data = CC_EX_ALP_df_completeobs,
+  dv = lever_presses,
+  wid = DE_Subject,
+  within = .(Session),
+  between = .(DE_Strain),
+  #between = .(DE_Strain, DE_Sex),
+  detailed = TRUE,
+  type = 3
+)
+print(model3)
+```
+Working with founder and CC strains to asess strain difference in extinction. Generating a data table for active lever presses to do a repeated measures ANOVA over the seven extinction sessions.
+
+```{r extinction_plot, warning=FALSE}
+CC_EX_ILP_df = CC_founders_IVSA %>%
+  filter(DE_Strain != "J:DO")%>% 
+  filter(DE_Strain %in% c(Combined_key_abv)) %>%
+  select(DE_Subject,
+         DE_Strain,
+         DE_Sex,
+         EX_ILP_Total_s01,
+         EX_ILP_Total_s02,
+         EX_ILP_Total_s03,
+         EX_ILP_Total_s04,
+         EX_ILP_Total_s05,
+         EX_ILP_Total_s06,
+         EX_ILP_Total_s07) 
+CC_EX_ILP_df <- CC_EX_ILP_df        %>%
+  gather(key = Lever_Session, value = lever_presses, -DE_Subject, -DE_Strain, -DE_Sex) %>%
+ mutate(Lever = gsub("^EX_([AI])LP_Total_s(\\d{2})$","\\1",Lever_Session),
+         Session = as.numeric(gsub("^EX_([AI])LP_Total_s(\\d{2})$","\\2",Lever_Session))) %>%
+  filter(!is.na(lever_presses), Session <= 8)
+
+  CC_EX_ILP_df 
+```
+
+Preparing a dataframe for CC and founder active lever press during extinction with complete observations for all seven extinction sessions.
+```{r}
+library(plyr)
+CC_EX_ILP_df <- ddply(CC_EX_ILP_df,.(DE_Subject),transform,count=length(Session))
+
+#View(CC_EX_ALP_df)
+CC_EX_ILP_df_completeobs <- subset(CC_EX_ILP_df, count == 7)
+#View(CC_EX_pAP_df_completeobs)
+```
+Summarizing the resulting dataframe for extinction  that contains complete observations for all seven extinction sessions.
+```{r}
+detach(package:plyr)
+library(dplyr)
+CC_EX_ILP_df_summary = CC_EX_ILP_df %>% group_by(DE_Strain, DE_Sex, Lever, Session,count) %>%
+  summarize(mean = mean(lever_presses, na.rm = TRUE),
+            n = length(which(!is.na(lever_presses))),
+            sem = sd(lever_presses, na.rm = TRUE) / sqrt(length(which(!is.na(lever_presses))))) %>%
+  mutate(ul = mean + sem, ll = mean - sem)
+CC_EX_ILP_df_summary
+```
+
+Performing ANOVA to test the influence of strain on Percent Active lever Presses with a repeated measures design.
+
+```{r}
+CC_EX_ILP_df_completeobs$Session <- as.factor(CC_EX_ILP_df_completeobs$Session)   
+
+
+model3 =ezANOVA(
+  data = CC_EX_ILP_df_completeobs,
+  dv = lever_presses,
+  wid = DE_Subject,
+  within = .(Session),
+  between = .(DE_Strain),
+  #between = .(DE_Strain, DE_Sex),
+  detailed = TRUE,
+  type = 3
+)
+print(model3)
+```
+Identifying the last day of extinction for each CC strain. Asessing strain differences in sessions to extinction
+
+```{r}
+CC_final_day_EX_ALP = CC_founders_IVSA %>% 
+  filter(DE_Strain %in% c(CC_key_abv)) %>%
+  select(DE_Subject,
+         DE_Strain,
+         DE_Sex,
+         EX_ALP_Total_s01,
+         EX_ALP_Total_s02,
+         EX_ALP_Total_s03,
+         EX_ALP_Total_s04,
+         EX_ALP_Total_s05,
+         EX_ALP_Total_s06,
+         EX_ALP_Total_s07,
+         EX_ALP_Total_s08,
+         EX_ALP_Total_s09,
+         EX_ALP_Total_s10) 
+CC_final_day_EX_ALP <- CC_final_day_EX_ALP        %>%
+  gather(key = Lever_Session, value = lever_presses, -DE_Subject, -DE_Strain, -DE_Sex) %>%
+  mutate(Lever = gsub("^EX_([AI])LP_Total_s(\\d{2})$","\\1",Lever_Session),
+         Session = as.numeric(gsub("^EX_([AI])LP_Total_s(\\d{2})$","\\2",Lever_Session))) %>%
+  filter(!is.na(lever_presses), Session <= 10)
+
+CC_final_day_EX_ALP = CC_final_day_EX_ALP %>%
+  group_by(DE_Strain, DE_Sex, Lever) %>%
+  filter(!is.na(lever_presses) & Lever == "A")
+
+
+CC_final_day_EX_ALP <- CC_final_day_EX_ALP %>%
+  filter(!is.na(lever_presses), Session == max(Session)) %>%
+  group_by(DE_Strain) 
+
+anova(lm(Session ~ DE_Strain, data = CC_final_day_EX_ALP))
+
+CC_final_day_EX_ALP %>% group_by(DE_Strain) %>% tally()
+
+CC_final_day_summary = CC_final_day_EX_ALP %>%
+  group_by(DE_Strain) %>%
+  summarize(CC_final_day_mean = mean(Session, na.rm = TRUE),
+            CC_final_day_sem = sd(Session, na.rm = TRUE) / sqrt(length(which(!is.na(Session)))))
+CC_final_day_summary
+```
+
+
+Selecting the relevant columns for Extinction relevant trait calculations. Choosing the following variables:
+'EX_ALP_Total_s01'to 'EX_ALP_Total_s10': Active lever press for extinction sessions
+'EX_ILP_Total_s01'to 'EX_ILP_Total_s10': Inactive lever press for extinction sessions
+Changing the format from wide to long format.
+```{r extinction_plot, warning=FALSE}
+founders_extinction_df = founders_IVSA %>%
+  select(DE_Subject,
+         DE_Strain,
+         DE_Sex,
+         EX_ALP_Total_s01,
+         EX_ALP_Total_s02,
+         EX_ALP_Total_s03,
+         EX_ALP_Total_s04,
+         EX_ALP_Total_s05,
+         EX_ALP_Total_s06,
+         EX_ALP_Total_s07,
+         EX_ALP_Total_s08,
+         EX_ALP_Total_s09,
+         EX_ALP_Total_s10,
+         EX_ILP_Total_s01,
+         EX_ILP_Total_s02,
+         EX_ILP_Total_s03,
+         EX_ILP_Total_s04,
+         EX_ILP_Total_s05,
+         EX_ILP_Total_s06,
+         EX_ILP_Total_s07,
+         EX_ILP_Total_s08,
+         EX_ILP_Total_s09,
+         EX_ILP_Total_s10)
+
+
+  founders_extinction_df <- founders_extinction_df        %>%
+  gather(key = Lever_Session, value = lever_presses, -DE_Subject, -DE_Strain, -DE_Sex) %>%
+  mutate(Lever = gsub("^EX_([AI])LP_Total_s(\\d{2})$","\\1",Lever_Session),
+         Session = as.numeric(gsub("^EX_([AI])LP_Total_s(\\d{2})$","\\2",Lever_Session))) %>%
+  filter(!is.na(lever_presses), Session <= 8)
+founders_extinction_summary = founders_extinction_df %>%
+  group_by(DE_Strain, DE_Sex, Lever, Session) %>%
+  summarize(mean = mean(lever_presses, na.rm = TRUE),
+            n = length(which(!is.na(lever_presses))),
+            sem = sd(lever_presses, na.rm = TRUE) / sqrt(length(which(!is.na(lever_presses))))) %>%
+  mutate(ul = mean + sem, ll = mean - sem)
+
+founders_extinction_df
+```
+Computing slope of extinction lever presses on active and inactive lever, seperately; over the seven extinction sessions.
+```{r}
+Founders_extinction_slope = founders_extinction_df %>%
+  group_by(DE_Subject, Lever) %>%
+  do(Sessions_lm = (lm(lever_presses ~ Session, data = .))) %>%
+  broom::tidy(Sessions_lm) %>%
+  filter(term == "Session") %>%
+  select(DE_Subject, Lever, estimate) %>%
+  mutate(Subject_Lever = paste(DE_Subject, Lever, sep = "_"))
+Founders_extinction_slope = as.data.frame(Founders_extinction_slope)
+row.names(Founders_extinction_slope) = Founders_extinction_slope$Subject_Lever
+
+Founders_extinction_demodata = founders_extinction_df%>%
+  group_by(DE_Subject, Lever) %>%
+  summarize(DE_Strain = unique(DE_Strain),
+            DE_Sex = unique(DE_Sex)) %>%
+  mutate(Subject_Lever = paste(DE_Subject, Lever, sep = "_"))
+Founders_extinction_demodata = as.data.frame(Founders_extinction_demodata)
+row.names(Founders_extinction_demodata) = Founders_extinction_demodata$Subject_Lever
+Founders_extinction_demodata = Founders_extinction_demodata[,(-1 * which(colnames(Founders_extinction_demodata) == "Subject_Lever"))]
+Founders_extinction_demodata$Slope = Founders_extinction_slope[row.names(Founders_extinction_demodata),"estimate"]
+Founders_extinction_slope = Founders_extinction_demodata; rm(list = c("Founders_extinction_demodata"))
+```
+
+Seperating the two active and inactive lever into two distinct column.
+```{r}
+Founders_extinction_slope_wide <- spread(Founders_extinction_slope, Lever, Slope)
+```
+
+Viewing the generated datarame versions
+```{r}
+founders_IVSA
+Founders_extinction_slope
+Founders_extinction_slope_wide
+
+```
+ANOVA on slope of active lever presses during extinction session
+```{r}
+Founders_extinction_slope_wide %>%
+  filter(!is.na(A)) %>%
+  group_by(DE_Strain) %>%
+  summarize(n = length(A))
+anova(lm(A ~ DE_Strain, data = Founders_extinction_slope_wide))
+```
+
+Generating a data table for only active lever presses to do a repeated measures ANOVA.
+```{r extinction_plot, warning=FALSE}
+founders_extinction_df = founders_IVSA %>%
+  select(DE_Subject,
+         DE_Strain,
+         DE_Sex,
+         EX_ALP_Total_s01,
+         EX_ALP_Total_s02,
+         EX_ALP_Total_s03,
+         EX_ALP_Total_s04,
+         EX_ALP_Total_s05,
+         EX_ALP_Total_s06,
+         EX_ALP_Total_s07) 
+founders_extinction_df <- founders_extinction_df %>%
+  filter(DE_Strain != "J:DO")%>% 
+  gather(key = Lever_Session, value = lever_presses, -DE_Subject, -DE_Strain, -DE_Sex) %>%
+  mutate(Lever = gsub("^EX_([AI])LP_Total_s(\\d{2})$","\\1",Lever_Session),
+         Session = as.numeric(gsub("^EX_([AI])LP_Total_s(\\d{2})$","\\2",Lever_Session))) %>%
+  filter(!is.na(lever_presses), Session <= 8)
+
+  founders_extinction_df 
+```
+Cleaning the dataframe for extinction ANOVA.
+Removing na values
+```{r}
+founders_extinction_df
+founders_extinction_df_noNA <- na.omit(founders_extinction_df)
+founders_extinction_df_noNA
+table(founders_extinction_df_noNA$DE_Subject,founders_extinction_df_noNA$Session)
+View(founders_extinction_df_noNA)
+founders_extinction_summary = founders_extinction_df_noNA %>%
+  group_by(DE_Strain, Lever, Session) %>%
+  summarize(mean = mean(lever_presses, na.rm = TRUE),
+            n = length(which(!is.na(lever_presses))),
+            sem = sd(lever_presses, na.rm = TRUE) / sqrt(length(which(!is.na(lever_presses))))) %>%
+  mutate(ul = mean + sem, ll = mean - sem)
+founders_extinction_summary 
+
+```
+Checking to see how many sessions of extinction are available for each individual animal has completed and selecting those with seven sessions
+
+```{r}
+library(plyr)
+founders_extinction_df <- ddply(founders_extinction_df,.(DE_Subject),transform,count=length(Session))
+
+View(founders_extinction_df)
+founders_extinction_df_completeobs <- subset(founders_extinction_df, count == 7)
+View(founders_extinction_df_completeobs)
+```
+Summarizing the resulting dataframe for extinction  that contains individuals with lever presses with complete observations for seven extinction sessions.
+
+```{r}
+detach(package:plyr)
+library(dplyr)
+founders_extinction_summary = founders_extinction_df_completeobs %>% group_by(DE_Strain, DE_Sex, Lever, Session,count) %>%
+  summarize(mean = mean(lever_presses, na.rm = TRUE),
+            n = length(which(!is.na(lever_presses))),
+            sem = sd(lever_presses, na.rm = TRUE) / sqrt(length(which(!is.na(lever_presses))))) %>%
+  mutate(ul = mean + sem, ll = mean - sem)
+founders_extinction_summary
+```
+
+Performing ANOVA to test the influence of strain on Active lever Presses with a repeated measures design.
+
+```{r}
+founders_extinction_df_completeobs$Session <- as.factor(founders_extinction_df_completeobs$Session)   
+    
+model3 =ezANOVA(
+  data = founders_extinction_df_completeobs,
+  dv = lever_presses,
+  wid = DE_Subject,
+  within = .(Session),
+  between = .(DE_Strain),
+  #between = .(DE_Strain, DE_Sex),
+  detailed = TRUE,
+  type = 3
+)
+print(model3)
+
+```
+Contrast analysis
+```{r}
+IVSA_data_contr = founders_extinction_df_completeobs
+IVSA_data_contr$Session <- as.factor(IVSA_data_contr$Session)
+contrasts(IVSA_data_contr$Session) = contr.poly(7)
+summary(lm(lever_presses ~ Session, IVSA_data_contr))
+```
+
+Generating a data table for percent active lever presses to do a repeated measures ANOVA over the seven extinction sessions.
+
+```{r extinction_plot, warning=FALSE}
+founders_EX_pAP_df = founders_IVSA %>%
+  select(DE_Subject,
+         DE_Strain,
+         DE_Sex,
+         EX_pAP_Total_s01,
+         EX_pAP_Total_s02,
+         EX_pAP_Total_s03,
+         EX_pAP_Total_s04,
+         EX_pAP_Total_s05,
+         EX_pAP_Total_s06,
+         EX_pAP_Total_s07) 
+founders_EX_pAP_df <- founders_EX_pAP_df        %>%
+  gather(key = Lever_Session, value = lever_presses, -DE_Subject, -DE_Strain, -DE_Sex) %>%
+  mutate(Lever = gsub("^EX_p([AI])P_Total_s(\\d{2})$","\\1",Lever_Session),
+         Session = as.numeric(gsub("^EX_p([AI])P_Total_s(\\d{2})$","\\2",Lever_Session))) %>%
+  filter(!is.na(lever_presses), Session <= 8)
+
+  founders_EX_pAP_df 
+```
+
+Preparing a dataframe for percent active lever press during extinction with complete observations for all seven extinction sessions.
+```{r}
+library(plyr)
+founders_EX_pAP_df <- ddply(founders_EX_pAP_df,.(DE_Subject),transform,count=length(Session))
+
+View(founders_EX_pAP_df)
+founders_EX_pAP_df_completeobs <- subset(founders_EX_pAP_df, count == 7)
+View(founders_EX_pAP_df_completeobs)
+```
+Summarizing the resulting dataframe for extinction  that contains complete observations for all seven extinction sessions.
+```{r}
+detach(package:plyr)
+library(dplyr)
+founders_EX_pAP_summary = founders_EX_pAP_df %>% group_by(DE_Strain, DE_Sex, Lever, Session,count) %>%
+  summarize(mean = mean(lever_presses, na.rm = TRUE),
+            n = length(which(!is.na(lever_presses))),
+            sem = sd(lever_presses, na.rm = TRUE) / sqrt(length(which(!is.na(lever_presses))))) %>%
+  mutate(ul = mean + sem, ll = mean - sem)
+founders_extinction_summary
+```
+Performing ANOVA to test the influence of strain on Percent Active lever Presses with a repeated measures design.
+
+```{r}
+founders_EX_pAP_df_completeobs$Session <- as.factor(founders_EX_pAP_df_completeobs$Session)   
+
+
+model3 =ezANOVA(
+  data = founders_EX_pAP_df_completeobs,
+  dv = lever_presses,
+  wid = DE_Subject,
+  within = .(Session),
+  between = .(DE_Strain),
+  #between = .(DE_Strain, DE_Sex),
+  detailed = TRUE,
+  type = 3
+)
+print(model3)
+```
+Selecting the relevant columns for Extinction relevant trait calculations. Choosing the following variables:
+'DR_ALP_Total_1p8mgkg' : last day of cocaine
+'EX_ALP_Total_s01'to 'EX_ALP_Total_s03': Active lever press for reinstatement sessions.
+Changing the format from wide to long format.
+
+```{r}
+Founders_DR_EX_ALP_df = founders_IVSA %>%
+  select(DE_Subject,
+         DE_Strain,
+         DE_Sex,
+         EX_ALP_Total_s01,
+         EX_ALP_Total_s02,
+         EX_ALP_Total_s03) %>%
+  gather(key = Session, value = ALP, -DE_Subject, -DE_Strain, -DE_Sex) %>%
+  mutate(Session = as.numeric(gsub("^EX_ALP_Total_s(\\d{2})$","\\1",Session))) %>%
+  filter(!is.na(ALP))
+Founders_DR_EX_ALP_df = as.data.frame(Founders_DR_EX_ALP_df)
+Founders_DR_EX_ALP_df
+
+Founders_final_day_DR_ALP = founders_IVSA %>%     
+  select(DE_Subject,
+         DR_ALP_Total_1p8mgkg)%>%
+  group_by(DE_Subject) 
+Founders_final_day_DR_ALP = as.data.frame(Founders_final_day_DR_ALP)
+Founders_final_day_DR_ALP
+
+row.names(Founders_final_day_DR_ALP) = Founders_final_day_DR_ALP$DE_Subject 
+Founders_final_day_DR_ALP
+
+Founders_DR_EX_ALP_df$final_DR_ALP_1p8 = Founders_final_day_DR_ALP[Founders_DR_EX_ALP_df$DE_Subject,"DR_ALP_Total_1p8mgkg"]
+Founders_DR_EX_ALP_df
+
+Founders_DR_EX_ALP_df = Founders_DR_EX_ALP_df[which(Founders_DR_EX_ALP_df$Session == 1),]
+
+Founders_DR_EX_ALP_df$percent_change_final_DR = ((Founders_DR_EX_ALP_df$ALP - Founders_DR_EX_ALP_df$final_DR_ALP_1p8 + 1) / (Founders_DR_EX_ALP_df$final_DR_ALP_1p8 + 1)) * 100
+
+Founders_DR_EX_ALP_df$ratio_final_DR = (Founders_DR_EX_ALP_df$ALP + 1) / (Founders_DR_EX_ALP_df$final_DR_ALP_1p8 + 1)
+Founders_DR_EX_ALP_df
+```
+Perfroming ANOVA on the calculated measures of extinction:
+% change in Active lever press on first day of extinction relative to last dose of DR
+Ratio final DR by first extinction session
+```{r}
+Founders_DR_EX_ALP_df %>%
+  filter(!is.na(percent_change_final_DR)) %>%
+  group_by(DE_Strain) %>%
+  summarize(n = length(percent_change_final_DR))
+
+
+anova(lm(percent_change_final_DR ~ DE_Strain * DE_Sex, data = Founders_DR_EX_ALP_df))
+anova(lm(ratio_final_DR ~ DE_Strain * DE_Sex, data = Founders_DR_EX_ALP_df))
+anova(lm(percent_change_final_DR ~ DE_Strain, data = Founders_DR_EX_ALP_df))
+anova(lm(ratio_final_DR ~ DE_Strain, data = Founders_DR_EX_ALP_df))
+```
+Repeated measures to test the effect of strain on last day of DR with first day of extinction.
+
+```{r}
+Founders_DR_EX_ALP_df = founders_IVSA %>%
+  select(DE_Subject,
+         DE_Strain,
+         DE_Sex,
+         EX_ALP_Total_s01,
+         EX_ALP_Total_s02,
+         EX_ALP_Total_s03) %>%
+  gather(key = Session, value = ALP, -DE_Subject, -DE_Strain, -DE_Sex) %>%
+  mutate(Session = as.numeric(gsub("^EX_ALP_Total_s(\\d{2})$","\\1",Session))) %>%
+  filter(!is.na(ALP))
+Founders_DR_EX_ALP_df = as.data.frame(Founders_DR_EX_ALP_df)
+Founders_DR_EX_ALP_df
+
+Founders_final_day_DR_ALP = founders_IVSA %>%     
+  select(DE_Subject,
+         DR_ALP_Total_1p8mgkg)%>%
+  group_by(DE_Subject) 
+Founders_final_day_DR_ALP = as.data.frame(Founders_final_day_DR_ALP)
+Founders_final_day_DR_ALP
+
+row.names(Founders_final_day_DR_ALP) = Founders_final_day_DR_ALP$DE_Subject 
+Founders_final_day_DR_ALP
+
+Founders_DR_EX_ALP_df$final_DR_ALP_1p8 = Founders_final_day_DR_ALP[Founders_DR_EX_ALP_df$DE_Subject,"DR_ALP_Total_1p8mgkg"]
+Founders_DR_EX_ALP_df
+
+Founders_DR_EX_ALP_df = Founders_DR_EX_ALP_df[which(Founders_DR_EX_ALP_df$Session == 1),]
+Founders_DR_EX_ALP_df
+
+
+Founders_DR_EX_ALP_df = Founders_DR_EX_ALP_df %>%
+  rename(
+    "2" = ALP, 
+    "1" = final_DR_ALP_1p8
+    )
+Founders_DR_EX_ALP_df 
+
+Founders_DR_EX_ALP_df = Founders_DR_EX_ALP_df%>%
+  gather(key = Session, value = ALP, "2":"1", -DE_Subject, -DE_Strain, -DE_Sex) 
+
+Founders_DR_EX_ALP_df = as.data.frame(Founders_DR_EX_ALP_df)
+
+Founders_DR_EX_ALP_df$Session <- as.factor(Founders_DR_EX_ALP_df$Session)   
+
+
+complete_obs <- na.omit(Founders_DR_EX_ALP_df)
+complete_obs
+
+complete_obs %>%
+  group_by(DE_Strain)%>%
+  summarize(n())
+  
+ezDesign(
+    data = complete_obs
+    , x = .(Session)
+    , y = .(DE_Subject)
+  
+)
+temp = as.data.frame(table(complete_obs$DE_Subject))
+temp[temp$Freq<2,]
+
+complete_obs = complete_obs[!(complete_obs$DE_Subject%in%temp$Var1[temp$Freq<2]),]
+
+ezDesign(
+    data = complete_obs
+    , x = .(Session)
+    , y = .(DE_Subject)
+  
+)
+complete_obs$Session <- as.factor(complete_obs$Session)
+model3 =ezANOVA(
+  data = complete_obs,
+  dv = ALP,
+  wid = DE_Subject,
+  within = .(Session),
+  between = .(DE_Strain),
+  #between = .(DE_Strain, DE_Sex),
+  detailed = TRUE,
+  type = 3
+)
+print(model3)
+```
+
+
+## Fig4 - Extinction in Founders
+Extinction graphs should distinguish between active and inactive lever presses, showing when they cross.
+```{r extinction, warning=FALSE}
+founders_extinction_df = founders_IVSA %>%
+  dplyr::select(DE_Subject,
+         DE_Strain,
+         DE_Sex,
+         DR_ALP_TfASoTD_1p8mgkg,
+         EX_ALP_Total_s01,
+         EX_ALP_Total_s02,
+         EX_ALP_Total_s03,
+         EX_ALP_Total_s04,
+         EX_ALP_Total_s05,
+         EX_ALP_Total_s06,
+         EX_ALP_Total_s07,
+         EX_ALP_Total_s08,
+         EX_ALP_Total_s09,
+         EX_ALP_Total_s10,
+         DR_ILP_TfASoTD_1p8mgkg,
+         EX_ILP_Total_s01,
+         EX_ILP_Total_s02,
+         EX_ILP_Total_s03,
+         EX_ILP_Total_s04,
+         EX_ILP_Total_s05,
+         EX_ILP_Total_s06,
+         EX_ILP_Total_s07,
+         EX_ILP_Total_s08,
+         EX_ILP_Total_s09,
+         EX_ILP_Total_s10) 
+
+  colnames(founders_extinction_df)[4] <- "EX_ALP_Total_s00"
+  colnames(founders_extinction_df)[15] <- "EX_ILP_Total_s00"
+  
+  founders_extinction_df <- founders_extinction_df        %>%
+  gather(key = Lever_Session, value = lever_presses, -DE_Subject, -DE_Strain, -DE_Sex) %>%
+  mutate(Lever = gsub("^EX_([AI])LP_Total_s(\\d{2})$","\\1",Lever_Session),
+         Session = as.numeric(gsub("^EX_([AI])LP_Total_s(\\d{2})$","\\2",Lever_Session))) %>%
+  filter(!is.na(lever_presses), Session <= 8)
+
+founders_extinction_summary = founders_extinction_df %>%
+  group_by(DE_Strain, Lever, Session) %>%
+  summarize(mean = mean(lever_presses, na.rm = TRUE),
+            n = length(which(!is.na(lever_presses))),
+            sem = sd(lever_presses, na.rm = TRUE) / sqrt(length(which(!is.na(lever_presses))))) %>%
+  mutate(ul = mean + sem, ll = mean - sem)
+
+extinction_plot = ggplot(data = founders_extinction_summary, aes(x = Session, 
+                                               y = mean, 
+                                               color = DE_Strain,
+                                               linetype = Lever,
+                                               shape = Lever,
+                                               fill = Lever)) +
+  geom_errorbar(aes(ymin = ll, ymax = ul), width = 0.2) +
+  geom_line() +
+  geom_point() +
+  theme_bw() +
+  theme(legend.position="none")+
+  facet_grid(cols = vars(DE_Strain)) +
+  scale_x_continuous(limits = c(0,7), breaks = c(0,1,2,3,4,5,6,7)) +
+  scale_color_manual(values = founders_key[c("A/J","C57BL/6J","NOD/ShiLtJ","NZO/HlLtJ","CAST/EiJ","PWK/PhJ","WSB/EiJ", "J:DO"),"collaborative_cross_color_broman"]) +
+  scale_fill_manual(values = c("#000000","#FFFFFF")) +
+  scale_shape_manual(values = c(16,21)) +
+  theme(panel.grid = element_blank()) +
+  scale_y_continuous(limits =  c(0,375)) +
+  xlab("Extinction Session") +
+  ylab("Number of Lever Presses")
+
+extinction_plot
+ggsave("extinction_plot.pdf")
+
+extinction_plot_2 = ggplot(data = founders_extinction_summary, aes(x = Session, 
+                                               y = mean, 
+                                               color = DE_Strain,
+                                               linetype = Lever,
+                                               shape = Lever,
+                                               fill = Lever)) +
+  geom_errorbar(aes(ymin = ll, ymax = ul), width = 0.2) +
+  geom_line() +
+  geom_point() +
+  theme_bw() +
+  facet_grid(cols = vars(DE_Strain)) +
+  scale_x_continuous(limits = c(0,7), breaks = c(0,1,2,3,4,5,6,7)) +
+  scale_color_manual(values = founders_key[c("A/J","C57BL/6J","NOD/ShiLtJ","NZO/HlLtJ","CAST/EiJ","PWK/PhJ","WSB/EiJ", "J:DO"),"collaborative_cross_color_broman"]) +
+  scale_fill_manual(values = c("#000000","#FFFFFF")) +
+  scale_shape_manual(values = c(16,21)) +
+  theme(panel.grid = element_blank()) +
+  scale_y_continuous(limits =  c(0,2500)) +
+  xlab("Extinction Session") +
+  ylab("Number of Lever Presses")
+
+
+extinction_plot_2
+ggsave("extinction_plot_2.pdf")
+```

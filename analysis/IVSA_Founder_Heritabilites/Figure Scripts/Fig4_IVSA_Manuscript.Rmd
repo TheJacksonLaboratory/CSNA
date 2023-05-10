@@ -1,0 +1,924 @@
+---
+title: "Fig4_IVSA_Manuscript"
+author: "Udita Datta"
+date: "12/10/2020"
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    number_sections: true
+    fig_retina: true
+    self_contained: true
+    code_folding: show
+    theme: flatly
+    highlight: default
+    df_print: paged
+---
+
+
+Seting up Working directory
+
+
+```{r setup, warning=FALSE}
+script_root_dir = "C:/Users/dattau/Documents/IVSA_Proj_org/IVSA/IVSA"
+knitr::opts_knit$set(root.dir = script_root_dir)
+```
+
+### R libraries
+
+Calling R libraries necessary for this analysis.
+
+```{r libraries, warning=FALSE}
+library("MASS")
+library("cowplot")
+library("lubridate")
+library("ggbeeswarm")
+library("readxl")
+library("tidyr")
+library("dplyr")
+library("DT")
+library("ANOM")
+library("multcomp")
+library("ez")
+```
+
+## Dataset Setup
+
+### Importing data
+
+The IVSA and novelty data have already been preprocessed using the `IVSA_novelty_import_preprocess.Rmd` script.
+
+```{r import_data, warning=FALSE}
+# Taking the most recent datasets
+data_path = paste(script_root_dir,"/preprocessed_IVSA_data/", sep = "")
+IVSA_datasets = data.frame(files = list.files(path = data_path, pattern = "\\d{4}-\\d{2}-\\d{2}\\.RDS$"),
+                           date = ymd(gsub("^.*_(\\d{4}-\\d{2}-\\d{2})\\.RDS$","\\1", 
+                                           list.files(path = data_path, 
+                                                      pattern = "\\d{4}-\\d{2}-\\d{2}\\.RDS$")), 
+                                      tz = "America/New_York"),
+                           stringsAsFactors = FALSE)
+most_recent_datasets = paste(data_path, IVSA_datasets[which(IVSA_datasets$date == max(IVSA_datasets$date)),"files"], sep = "")
+
+# IVSA
+IVSA_raw_file = most_recent_datasets[grep("IVSA_raw", most_recent_datasets)]
+IVSA_metadata_file = most_recent_datasets[grep("IVSA_metadata", most_recent_datasets)]
+IVSA_raw = readRDS(IVSA_raw_file)
+row.names(IVSA_raw) = IVSA_raw$DE_Subject
+IVSA_metadata = readRDS(IVSA_metadata_file)
+head(IVSA_raw)
+```
+Getting founders key file.
+
+```{r founders_key_import, warning=FALSE}
+founders_key = readRDS("C:/Users/dattau/Documents/R_IVSA_Troy/IVSA/IVSA/csna_project_4_behavior/data/cc_do_founders_key.RDS")
+row.names(founders_key) = founders_key$strain
+founders_key[9,1] = "J:DO"
+founders_key[9,2] = "DO"
+founders_key[9,5] = "#000000"
+founders_key[9,6] = "#000000"
+row.names(founders_key) = founders_key$strain
+head(IVSA_raw)
+```
+
+### Filtering IVSA data for DO Founders
+
+Getting IVSA data for the eight founders, old DO and CC  strains.
+
+```{r filter_for_founders, warning=FALSE}
+founders_IVSA = IVSA_raw %>%
+  filter(DE_Strain %in% founders_key$strain)
+#rm(list = c("IVSA_raw"))
+founders_IVSA = as.data.frame(founders_IVSA)
+
+founders_IVSA$DE_Strain = factor(founders_IVSA$DE_Strain,
+                                 levels = founders_key$strain,
+                                 ordered = TRUE)
+
+
+Old_DO <- founders_IVSA %>% 
+  filter(DE_birth_date_year == 2016,
+         DE_Strain == "J:DO")
+
+
+New_DO <- founders_IVSA %>% 
+  filter(DE_birth_date_year != 2016,
+         DE_Strain == "J:DO")
+
+No_DO <- founders_IVSA %>% 
+  filter(DE_Strain != "J:DO")
+
+founders_IVSA <- merge(Old_DO,No_DO, all = TRUE)
+
+ids <- c("A2063", "A2810", "A2418", "A3262", "A3261", "A3052", "A3257", "A3256", "A3051", "A2986")
+rm.ids <- which(founders_IVSA$DE_Subject %in% ids)
+founders_IVSA.p1  <- founders_IVSA[-rm.ids,]
+
+founders_IVSA = founders_IVSA.p1
+
+```
+
+Getting CC key.
+
+```{r}
+CC_key = unique(IVSA_raw$DE_Strain)
+CC_key = CC_key[grep("^CC\\d{3}/",CC_key)]
+#CC_key = stringr::str_extract(CC_key, "^.{5}")
+CC_key
+CC_founders_IVSA_CC = IVSA_raw %>%
+  filter(DE_Strain %in% c(CC_key))
+
+CC_founders_IVSA_CC$DE_Strain = stringr::str_extract(CC_founders_IVSA_CC$DE_Strain, "^.{5}")
+
+CC_key_abv <- unique(CC_founders_IVSA_CC$DE_Strain)
+
+head(CC_founders_IVSA_CC)
+```
+Merging old DO, founders and CC. Generating a combined key.
+```{r}
+CC_founders_IVSA <- rbind(founders_IVSA, CC_founders_IVSA_CC)
+Combined_key_abv <- c(founders_key$strain,CC_key_abv)
+```
+
+Merging old DO, founders and CC
+```{r}
+CC_founders_IVSA <- rbind(founders_IVSA, CC_founders_IVSA_CC)
+```
+
+The environment and datasets are ready for analysis.
+# Analysis
+### Getting IVSA extinction relevant columns
+Selecting the relevant columns for Extinction relevant trait calculations. Choosing the following variables:
+'EX_ALP_Total_s01'to 'EX_ALP_Total_s10': Active lever press for extinction sessions
+'EX_ILP_Total_s01'to 'EX_ILP_Total_s10': Inactive lever press for extinction sessions
+Changing the format from wide to long format.
+```{r extinction_plot, warning=FALSE}
+CC_extinction_df = CC_founders_IVSA %>%
+  select(DE_Subject,
+         DE_Strain,
+         DE_Sex,
+         EX_ALP_Total_s01,
+         EX_ALP_Total_s02,
+         EX_ALP_Total_s03,
+         EX_ALP_Total_s04,
+         EX_ALP_Total_s05,
+         EX_ALP_Total_s06,
+         EX_ALP_Total_s07,
+         EX_ALP_Total_s08,
+         EX_ALP_Total_s09,
+         EX_ALP_Total_s10,
+         EX_ILP_Total_s01,
+         EX_ILP_Total_s02,
+         EX_ILP_Total_s03,
+         EX_ILP_Total_s04,
+         EX_ILP_Total_s05,
+         EX_ILP_Total_s06,
+         EX_ILP_Total_s07,
+         EX_ILP_Total_s08,
+         EX_ILP_Total_s09,
+         EX_ILP_Total_s10) %>%
+  gather(key = Lever_Session, value = lever_presses, -DE_Subject, -DE_Strain, -DE_Sex) %>%
+  mutate(Lever = gsub("^EX_([AI])LP_Total_s(\\d{2})$","\\1",Lever_Session),
+         Session = as.numeric(gsub("^EX_([AI])LP_Total_s(\\d{2})$","\\2",Lever_Session))) %>%
+  filter(!is.na(lever_presses))
+```
+
+### Getting IVSA Reinstatement relevant columns
+
+```{r}
+CC_founders_RI_ALP_df = CC_founders_IVSA %>%
+  select(DE_Subject,
+         DE_Strain,
+         DE_Sex,
+         RI_ALP_Total_s01,
+         RI_ALP_Total_s02,
+         RI_ALP_Total_s03) %>%
+  gather(key = Session, value = ALP, -DE_Subject, -DE_Strain, -DE_Sex) %>%
+  mutate(Session = as.numeric(gsub("^RI_ALP_Total_s(\\d{2})$","\\1",Session))) %>%
+  filter(!is.na(ALP))
+CC_founders_RI_ALP_df = as.data.frame(CC_founders_RI_ALP_df)
+
+CC_founders_final_day_EX_ALP = CC_extinction_df %>%
+  group_by(DE_Subject) %>%
+  filter(!is.na(lever_presses) & Lever == "A") %>%
+  summarize(ALP = lever_presses[which(Session == max(Session))])
+CC_founders_final_day_EX_ALP = as.data.frame(CC_founders_final_day_EX_ALP)
+row.names(CC_founders_final_day_EX_ALP) = CC_founders_final_day_EX_ALP$DE_Subject 
+
+CC_founders_RI_ALP_df$final_EX_ALP = CC_founders_final_day_EX_ALP[CC_founders_RI_ALP_df$DE_Subject,"ALP"]
+CC_founders_RI_ALP_df = CC_founders_RI_ALP_df[which(CC_founders_RI_ALP_df$Session == 1),]
+CC_founders_RI_ALP_df$percent_final_EX = ((CC_founders_RI_ALP_df$ALP - CC_founders_RI_ALP_df$final_EX_ALP + 1) / (CC_founders_RI_ALP_df$final_EX_ALP + 1)) * 100
+CC_founders_RI_ALP_df$ratio_final_EX = (CC_founders_RI_ALP_df$ALP + 1) / (CC_founders_RI_ALP_df$final_EX_ALP + 1)
+CC_founders_RI_ALP_df
+```
+Looking for strain differences among founder and CC strains. No DO.
+```{r}
+ CC_RI_ALP_df <- CC_founders_RI_ALP_df %>%
+  filter(DE_Strain != "J:DO")%>% 
+  filter(DE_Strain %in% c(Combined_key_abv))
+CC_RI_model <- anova(lm(percent_final_EX ~ DE_Strain, data = CC_RI_ALP_df))
+CC_RI_model
+CC_RI_model <- anova(lm(percent_final_EX ~ DE_Strain*DE_Sex, data = CC_RI_ALP_df))
+CC_RI_model
+```
+
+
+Looking for strain differences among founder strains. No DO.
+
+```{r}
+Founders_RI_ALP_df <- CC_founders_RI_ALP_df %>%
+  filter(DE_Strain != "J:DO") 
+Founders_RI_model <- anova(lm(percent_final_EX ~ DE_Strain, data = Founders_RI_ALP_df))
+Founders_RI_model
+Founders_RI_model <- anova(lm(percent_final_EX ~ DE_Strain*DE_Sex, data = Founders_RI_ALP_df))
+Founders_RI_model
+```
+Looking for strain differences among CC strains.
+
+```{r}
+ CC_RI_ALP_df <- CC_founders_RI_ALP_df %>%
+  filter(DE_Strain %in% c(CC_key_abv))
+CC_RI_model <- anova(lm(percent_final_EX ~ DE_Strain, data = CC_RI_ALP_df))
+CC_RI_model
+CC_RI_model <- anova(lm(percent_final_EX ~ DE_Strain*DE_Sex, data = CC_RI_ALP_df))
+CC_RI_model
+```
+
+### IVSA Reinstatement plot
+```{r}
+CC_founders_RI_ALP_df_summary = CC_founders_RI_ALP_df %>%
+  group_by(DE_Strain) %>%
+  summarize(mean = mean(percent_final_EX, na.rm = TRUE),
+            sem = sd(percent_final_EX, na.rm = TRUE) / sqrt(length(which(!is.na(percent_final_EX)))),
+            n = length(which(!is.na(percent_final_EX)))) %>%
+  mutate(ul = mean + sem,
+         ll = mean - sem)
+CC_founders_RI_ALP_df_summary= as.data.frame(CC_founders_RI_ALP_df_summary)
+CC_founders_RI_ALP_df_summary$Color = rep("#CCCCCC", times = nrow(CC_founders_RI_ALP_df_summary))
+row.names(CC_founders_RI_ALP_df_summary) = CC_founders_RI_ALP_df_summary$DE_Strain
+CC_founders_RI_ALP_df_summary[row.names(founders_key),"Color"] = founders_key$collaborative_cross_color_broman
+CC_founders_RI_ALP_df_summary  = CC_founders_RI_ALP_df_summary[which(!is.na(CC_founders_RI_ALP_df_summary$DE_Strain)),]
+CC_founders_RI_ALP_df_summary$Label = paste(CC_founders_RI_ALP_df_summary$DE_Strain,
+                                              sep="")
+CC_founders_RI_ALP_df_summary$DE_Strain = factor(CC_founders_RI_ALP_df_summary$DE_Strain,
+                                                   levels = CC_founders_RI_ALP_df_summary[order(CC_founders_RI_ALP_df_summary$mean),"DE_Strain"],
+                                                   ordered = TRUE)
+
+CC_founders_RI_ALP_plot = ggplot(data = CC_founders_RI_ALP_df_summary, aes(x = DE_Strain, y = mean, fill = DE_Strain)) +
+  geom_col(color = "#000000") +
+  geom_errorbar(aes(ymin = ll, ymax = ul), width = 0.5) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust=0.5), legend.position="none") +
+  scale_fill_manual(values = CC_founders_RI_ALP_df_summary[order(CC_founders_RI_ALP_df_summary$DE_Strain),"Color"]) +
+  xlab(NULL) +
+  ylab("% inc. in Active Lever Presses during RI") +
+  geom_text(aes(
+    label= paste(as.character(),CC_founders_RI_ALP_df_summary$n, sep = ""),
+    y= -1000), size = 2.75, hjust = 0.3, vjust = 0.3, angle = 90) 
+CC_founders_RI_ALP_plot <- CC_founders_RI_ALP_plot + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))
+CC_founders_RI_ALP_plot
+ggsave("CC_founders_RI_ALP_plot.pdf")
+```
+```{r}
+CC_founders_RI_ALP_df_summary = CC_founders_RI_ALP_df %>%
+  group_by(DE_Strain) %>%
+  summarize(mean = mean(percent_final_EX, na.rm = TRUE),
+            sem = sd(percent_final_EX, na.rm = TRUE) / sqrt(length(which(!is.na(percent_final_EX)))),
+            n = length(which(!is.na(percent_final_EX)))) %>%
+  mutate(ul = mean + sem,
+         ll = mean - sem)
+CC_founders_RI_ALP_df_summary= as.data.frame(CC_founders_RI_ALP_df_summary)
+CC_founders_RI_ALP_df_summary$Color = rep("#CCCCCC", times = nrow(CC_founders_RI_ALP_df_summary))
+row.names(CC_founders_RI_ALP_df_summary) = CC_founders_RI_ALP_df_summary$DE_Strain
+CC_founders_RI_ALP_df_summary[row.names(founders_key),"Color"] = founders_key$collaborative_cross_color_broman
+CC_founders_RI_ALP_df_summary  = CC_founders_RI_ALP_df_summary[which(!is.na(CC_founders_RI_ALP_df_summary$DE_Strain)),]
+CC_founders_RI_ALP_df_summary$Label = paste(CC_founders_RI_ALP_df_summary$DE_Strain,
+                                              sep="")
+CC_founders_RI_ALP_df_summary$DE_Strain = factor(CC_founders_RI_ALP_df_summary$DE_Strain,
+                                                   levels = CC_founders_RI_ALP_df_summary[order(CC_founders_RI_ALP_df_summary$mean),"DE_Strain"],
+                                                   ordered = TRUE)
+CC_founders_RI_ALP_df_summary
+```
+
+```{r}
+CC_founders_RI_ALP_df_summary_no_CC035 <- CC_founders_RI_ALP_df_summary[which(CC_founders_RI_ALP_df_summary$DE_Strain != "CC035"),]
+CC_founders_RI_ALP_plot_no_CC035 = ggplot(data = CC_founders_RI_ALP_df_summary_no_CC035, aes(x = DE_Strain, y = mean, fill = DE_Strain)) +
+  geom_col(color = "#000000") +
+  geom_errorbar(aes(ymin = ll, ymax = ul), width = 0.5) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5), legend.position="none") +
+  scale_fill_manual(values = CC_founders_RI_ALP_df_summary_no_CC035[order(CC_founders_RI_ALP_df_summary_no_CC035$DE_Strain),"Color"]) +
+  xlab(NULL) +
+  ylab("% inc. in Active Lever Presses during RI") +
+ geom_text(aes(
+    label= paste(as.character(),CC_founders_RI_ALP_df_summary_no_CC035$n, sep = ""),
+    y= -150), size = 2.75, hjust = 0.3, vjust = 0.3, angle = 90) 
+CC_founders_RI_ALP_plot_no_CC035 <- CC_founders_RI_ALP_plot_no_CC035 + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))
+
+CC_founders_RI_ALP_plot_no_CC035
+ggsave("CC_founders_RI_ALP_plot_no_CC035.pdf")  
+
+```
+
+
+
+```{r}
+CC_RI_ALP_df = CC_founders_IVSA %>%
+  select(DE_Subject,
+         DE_Strain,
+         DE_Sex,
+         RI_ALP_Total_s01,
+         RI_ALP_Total_s02,
+         RI_ALP_Total_s03) %>%
+  gather(key = Session, value = ALP, -DE_Subject, -DE_Strain, -DE_Sex) %>%
+  mutate(Session = as.numeric(gsub("^RI_ALP_Total_s(\\d{2})$","\\1",Session))) %>%
+  filter(!is.na(ALP))
+CC_RI_ALP_df = as.data.frame(CC_RI_ALP_df)
+
+CC_final_day_EX_ALP = CC_extinction_df %>%
+  group_by(DE_Subject) %>%
+  filter(!is.na(lever_presses) & Lever == "A") %>%
+  summarize(ALP = lever_presses[which(Session == max(Session))])
+CC_final_day_EX_ALP = as.data.frame(CC_final_day_EX_ALP)
+row.names(CC_final_day_EX_ALP) = CC_final_day_EX_ALP$DE_Subject 
+
+CC_RI_ALP_df$final_EX_ALP = CC_final_day_EX_ALP[CC_RI_ALP_df$DE_Subject,"ALP"]
+CC_RI_ALP_df = CC_RI_ALP_df[which(CC_RI_ALP_df$Session == 1),]
+CC_RI_ALP_df$percent_final_EX = ((CC_RI_ALP_df$ALP - CC_RI_ALP_df$final_EX_ALP + 1) / (CC_RI_ALP_df$final_EX_ALP + 1)) * 100
+CC_RI_ALP_df$ratio_final_EX = (CC_RI_ALP_df$ALP + 1) / (CC_RI_ALP_df$final_EX_ALP + 1)
+
+
+CC_RI_ALP_summary = CC_RI_ALP_df %>%
+  group_by(DE_Strain) %>%
+  summarize(mean = mean(percent_final_EX, na.rm = TRUE),
+            sem = sd(percent_final_EX, na.rm = TRUE) / sqrt(length(which(!is.na(percent_final_EX)))),
+            n = length(which(!is.na(percent_final_EX)))) %>%
+  mutate(ul = mean + sem, 
+         ll = mean - sem,
+         off_scale = ifelse(mean > 500, "YES", "no"))
+CC_RI_ALP_summary = as.data.frame(CC_RI_ALP_summary)
+row.names(CC_RI_ALP_summary) = CC_RI_ALP_summary$DE_Strain
+CC_RI_ALP_summary$Color = rep("#CCCCCC", times = nrow(CC_RI_ALP_summary))
+CC_RI_ALP_summary[row.names(founders_key),"Color"] = founders_key$collaborative_cross_color_broman
+CC_RI_ALP_summary = CC_RI_ALP_summary[which(!is.na(CC_RI_ALP_summary$DE_Strain)),]
+CC_RI_ALP_summary = CC_RI_ALP_summary[which(!is.na(CC_RI_ALP_summary$off_scale) |
+                                              CC_RI_ALP_summary$off_scale == "YES"),]
+
+CC_RI_ALP_summary$DE_Strain = factor(CC_RI_ALP_summary$DE_Strain,
+                                     levels = CC_RI_ALP_summary[order(CC_RI_ALP_summary$mean),"DE_Strain"],
+                                     ordered = TRUE)
+RI_plot = ggplot(data = CC_RI_ALP_summary, aes(x = DE_Strain, y = mean, fill = DE_Strain)) +
+  geom_col(color = "#000000") +
+  geom_errorbar(aes(ymin = ll, ymax = ul), width = 0.2) +
+  facet_wrap(vars(off_scale), scales = "free") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust=0.5), legend.position="none",
+        strip.background = element_blank(), strip.text.x = element_blank()) +
+  scale_fill_manual(values = CC_RI_ALP_summary[order(CC_RI_ALP_summary$DE_Strain),"Color"]) +
+  xlab(NULL) +
+  ylab("Percent Increase in ALPs in Reinstatement Session 1")
+RI_plot_grob = ggplotGrob(RI_plot)
+facet.columns = RI_plot_grob$layout$l[grepl("panel", RI_plot_grob$layout$name)]
+x.var = sapply(ggplot_build(RI_plot)$layout$panel_scales_x,
+                function(l) length(l$range$range))
+RI_plot_grob$widths[facet.columns] = RI_plot_grob$widths[facet.columns] * x.var
+RI_plot
+
+RI_plot<- RI_plot + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))
+
+RI_plot
+ggsave("RI_plot.pdf") 
+```
+```{r}
+DO_founders_RI_histogram <- CC_founders_RI_ALP_df %>%
+  filter(DE_Strain %in% founders_key$strain)  
+
+DO_founders_RI_histogram %>%  ggplot(aes(x = percent_final_EX, y = DE_Strain, height = stat(density), fill = DE_Strain)) + 
+  geom_density_ridges(
+    stat = "binline", bins = 30, scale = 0.95,
+    draw_baseline = FALSE) + 
+  scale_fill_manual(values = founders_key[which(founders_key$strain %in% DO_founders_RI_histogram$DE_Strain),"collaborative_cross_color_broman"]) + 
+  theme_bw() +
+  theme(panel.grid = element_blank())+ theme(legend.position = "none")+   theme(aspect.ratio = 1)
+
+```
+
+```{r}
+DO_founders_RI_histogram <- CC_founders_RI_ALP_df %>%
+  filter(DE_Strain %in% founders_key$strain)  
+
+DO_founders_RI_histogram <- DO_founders_RI_histogram[which(DO_founders_RI_histogram$percent_final_EX <=5000), ]
+
+DO_founders_RI_histogram %>%  ggplot(aes(x = percent_final_EX, y = DE_Strain, height = stat(density), fill = DE_Strain)) + 
+  geom_density_ridges(
+    stat = "binline", bins = 30, scale = 0.95,
+    draw_baseline = FALSE) + 
+  scale_fill_manual(values = founders_key[which(founders_key$strain %in% DO_founders_RI_histogram$DE_Strain),"collaborative_cross_color_broman"]) + 
+  theme_bw() +
+  theme(panel.grid = element_blank())+ theme(legend.position = "none")+   theme(aspect.ratio = 1)
+
+```
+
+## Reinstatement plot for founders and DO.
+Last day of cocaine self-administration, last day of extinction and two reinstatement sessions. Adjusted y axis. Unadjusted y-xis.
+```{r}
+founders_reinstatement_df = founders_IVSA %>%
+  dplyr::select(DE_Subject,
+         DE_Strain,
+         DE_Sex,
+         DR_ALP_TfASoTD_1p8mgkg,
+         EX_ALP_Total_s07,
+         RI_ALP_Total_s01,
+         RI_ALP_Total_s02,
+         RI_ALP_Total_s03,
+         DR_ILP_TfASoTD_1p8mgkg,
+         EX_ILP_Total_s07,
+         RI_ILP_Total_s01,
+         RI_ILP_Total_s02,
+         RI_ILP_Total_s03) 
+
+  colnames(founders_reinstatement_df)[4] <- "RI_ALP_Total_s00"
+  colnames(founders_reinstatement_df)[5] <- "RI_ALP_Total_s07"
+  colnames(founders_reinstatement_df)[9] <- "RI_ILP_Total_s00"
+  colnames(founders_reinstatement_df)[10] <- "RI_ILP_Total_s07"
+
+  founders_reinstatement_df <- founders_reinstatement_df%>%
+  gather(key = Lever_Session, value = lever_presses, -DE_Subject, -DE_Strain, -DE_Sex) %>%
+  mutate(Lever = gsub("^RI_([AI])LP_Total_s(\\d{2})$","\\1",Lever_Session),
+         Session = as.numeric(gsub("^RI_([AI])LP_Total_s(\\d{2})$","\\2",Lever_Session))) %>%
+  filter(!is.na(lever_presses), Session < 8)
+
+founders_reinstatement_summary = founders_reinstatement_df %>%
+  group_by(DE_Strain, Lever, Session) %>%
+  summarize(mean = mean(lever_presses, na.rm = TRUE),
+            n = length(which(!is.na(lever_presses))),
+            sem = sd(lever_presses, na.rm = TRUE) / sqrt(length(which(!is.na(lever_presses))))) %>%
+  mutate(ul = mean + sem, ll = mean - sem)
+
+founders_reinstatement_summary$Session <- gsub(founders_reinstatement_summary$Session, pattern = "2", replacement = "3")
+founders_reinstatement_summary$Session <- gsub(founders_reinstatement_summary$Session, pattern = "1", replacement = "2")
+founders_reinstatement_summary$Session <- gsub(founders_reinstatement_summary$Session, pattern = "7", replacement = "1")
+
+founders_reinstatement_summary$Session <- as.numeric(founders_reinstatement_summary$Session)
+
+reinstatment_plot = ggplot(data = founders_reinstatement_summary, aes(x = Session, 
+                                               y = mean, 
+                                               color = DE_Strain,
+                                               linetype = Lever,
+                                               shape = Lever,
+                                               fill = Lever)) +
+  geom_errorbar(aes(ymin = ll, ymax = ul), width = 0.2) +
+  geom_line(size=1.05) +
+  geom_point() +
+  theme_bw() +
+  facet_grid(cols = vars(DE_Strain)) +
+  scale_x_continuous(limits = c(0,3), breaks = c(0,1,2,3), labels = c("DR-1.8mgkg","EX-LastSession","RI-S01","RI-S02")) +
+  scale_color_manual(values = founders_key[c("A/J","C57BL/6J","NOD/ShiLtJ","NZO/HlLtJ","CAST/EiJ","PWK/PhJ","WSB/EiJ", "J:DO"),"collaborative_cross_color_broman"]) +
+  scale_fill_manual(values = c("#000000","#FFFFFF")) +
+  scale_shape_manual(values = c(16,21)) +
+  theme(panel.grid = element_blank()) +
+  theme(text = element_text(size=18)) +
+  scale_y_continuous(limits =  c(0,375)) +
+  xlab("Session") +
+  ylab("Number of Lever Presses") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+reinstatment_plot
+
+reinstatment_plot_bar = ggplot(data = founders_reinstatement_summary) +
+  geom_bar(aes(x = Session, y = mean, fill = Lever), stat = "identity", position = "dodge") + 
+  #geom_errorbar(aes(ymin = ll, ymax = ul), width = 0.2) +
+  #geom_point() +
+  theme_bw() +
+  facet_grid(cols = vars(DE_Strain)) +
+  scale_x_continuous(limits = c(0,3), breaks = c(0,1,2,3), labels = c("DR-1.8mgkg","EX-LastSession","RI-S01","RI-S02")) +
+  scale_color_manual(values = founders_key[c("A/J","C57BL/6J","NOD/ShiLtJ","NZO/HlLtJ","CAST/EiJ","PWK/PhJ","WSB/EiJ","J:DO"),"collaborative_cross_color_broman"]) +
+  #scale_fill_manual(values = c("#000000","#FFFFFF")) +
+  #scale_shape_manual(values = c(16,21)) +
+  theme(panel.grid = element_blank()) +
+  theme(text = element_text(size=18)) +
+  scale_y_continuous(limits =  c(0,375)) +
+  xlab("Session") +
+  ylab("Number of Lever Presses") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+reinstatment_plot = ggplot(data = founders_reinstatement_summary, aes(x = Session, 
+                                               y = mean, 
+                                               color = DE_Strain,
+                                               linetype = Lever,
+                                               shape = Lever,
+                                               fill = Lever)) +
+  geom_errorbar(aes(ymin = ll, ymax = ul), width = 0.2) +
+  geom_line(size=1.05) +
+  geom_point() +
+  theme_bw() +
+  facet_grid(cols = vars(DE_Strain)) +
+  scale_x_continuous(limits = c(0,3), breaks = c(0,1,2,3), labels = c("DR-1.8mgkg","EX-LastSession","RI-S01","RI-S02")) +
+  scale_color_manual(values = founders_key[c("A/J","C57BL/6J","NOD/ShiLtJ","NZO/HlLtJ","CAST/EiJ","PWK/PhJ","WSB/EiJ","J:DO"),"collaborative_cross_color_broman"]) +
+  scale_fill_manual(values = c("#000000","#FFFFFF")) +
+  scale_shape_manual(values = c(16,21)) +
+  theme(panel.grid = element_blank()) +
+  theme(text = element_text(size=18)) +
+  #scale_y_continuous(limits =  c(0,375)) +
+  xlab("Session") +
+  ylab("Number of Lever Presses") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+reinstatment_plot
+```
+## Reinstatement plot for founders and DO.
+Last day \of extinction and two reinstatement sessions. Adjusted y axis. Unadjusted y-xis.
+
+
+```{r}
+founders_reinstatement_df = founders_IVSA %>%
+  dplyr::select(DE_Subject,
+         DE_Strain,
+         DE_Sex,
+         EX_ALP_Total_s07,
+         RI_ALP_Total_s01,
+         RI_ALP_Total_s02,
+         RI_ALP_Total_s03,
+         EX_ILP_Total_s07,
+         RI_ILP_Total_s01,
+         RI_ILP_Total_s02,
+         RI_ILP_Total_s03) 
+
+  colnames(founders_reinstatement_df)[4] <- "RI_ALP_Total_s00"
+
+  colnames(founders_reinstatement_df)[8] <- "RI_ILP_Total_s00"
+
+  founders_reinstatement_df <- founders_reinstatement_df%>%
+  gather(key = Lever_Session, value = lever_presses, -DE_Subject, -DE_Strain, -DE_Sex) %>%
+  mutate(Lever = gsub("^RI_([AI])LP_Total_s(\\d{2})$","\\1",Lever_Session),
+         Session = as.numeric(gsub("^RI_([AI])LP_Total_s(\\d{2})$","\\2",Lever_Session))) %>%
+  filter(!is.na(lever_presses), Session < 8)
+
+founders_reinstatement_summary = founders_reinstatement_df %>%
+  group_by(DE_Strain, Lever, Session) %>%
+  summarize(mean = mean(lever_presses, na.rm = TRUE),
+            n = length(which(!is.na(lever_presses))),
+            sem = sd(lever_presses, na.rm = TRUE) / sqrt(length(which(!is.na(lever_presses))))) %>%
+  mutate(ul = mean + sem, ll = mean - sem)
+
+
+
+founders_reinstatement_summary$Session <- as.numeric(founders_reinstatement_summary$Session)
+
+reinstatment_plot = ggplot(data = founders_reinstatement_summary, aes(x = Session, 
+                                               y = mean, 
+                                               color = DE_Strain,
+                                               linetype = Lever,
+                                               shape = Lever,
+                                               fill = Lever)) +
+  geom_errorbar(aes(ymin = ll, ymax = ul), width = 0.2) +
+  geom_line(size=1.05) +
+  geom_point() +
+  theme_bw() +
+  facet_grid(cols = vars(DE_Strain)) +
+  scale_x_continuous(limits = c(0,2), breaks = c(0,1,2), labels = c("EX-LastSession","RI-S01","RI-S02")) +
+  scale_color_manual(values = founders_key[c("A/J","C57BL/6J","NOD/ShiLtJ","NZO/HlLtJ","CAST/EiJ","PWK/PhJ","WSB/EiJ", "J:DO"),"collaborative_cross_color_broman"]) +
+  scale_fill_manual(values = c("#000000","#FFFFFF")) +
+  scale_shape_manual(values = c(16,21)) +
+  theme(panel.grid = element_blank()) +
+  theme(text = element_text(size=18)) +
+  scale_y_continuous(limits =  c(0,375)) +
+  xlab("Session") +
+  ylab("Number of Lever Presses") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+reinstatment_plot
+
+reinstatment_plot_bar = ggplot(data = founders_reinstatement_summary) +
+  geom_bar(aes(x = Session, y = mean, fill = Lever), stat = "identity", position = "dodge") + 
+  #geom_errorbar(aes(ymin = ll, ymax = ul), width = 0.2) +
+  #geom_point() +
+  theme_bw() +
+  facet_grid(cols = vars(DE_Strain)) +
+  scale_x_continuous(limits = c(0,2), breaks = c(0,1,2), labels = c("EX-LastSession","RI-S01","RI-S02")) +
+  scale_color_manual(values = founders_key[c("A/J","C57BL/6J","NOD/ShiLtJ","NZO/HlLtJ","CAST/EiJ","PWK/PhJ","WSB/EiJ","J:DO"),"collaborative_cross_color_broman"]) +
+  #scale_fill_manual(values = c("#000000","#FFFFFF")) +
+  #scale_shape_manual(values = c(16,21)) +
+  theme(panel.grid = element_blank()) +
+  theme(text = element_text(size=18)) +
+  scale_y_continuous(limits =  c(0,375)) +
+  xlab("Session") +
+  ylab("Number of Lever Presses") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+reinstatment_plot = ggplot(data = founders_reinstatement_summary, aes(x = Session, 
+                                               y = mean, 
+                                               color = DE_Strain,
+                                               linetype = Lever,
+                                               shape = Lever,
+                                               fill = Lever)) +
+  geom_errorbar(aes(ymin = ll, ymax = ul), width = 0.2) +
+  geom_line(size=1.05) +
+  geom_point() +
+  theme_bw() +
+  theme(legend.position="none")+
+  facet_grid(cols = vars(DE_Strain)) +
+  scale_x_continuous(limits = c(0,2), breaks = c(0,1,2), labels = c("EX-LastSession","RI-S01","RI-S02")) +
+  scale_color_manual(values = founders_key[c("A/J","C57BL/6J","NOD/ShiLtJ","NZO/HlLtJ","CAST/EiJ","PWK/PhJ","WSB/EiJ","J:DO"),"collaborative_cross_color_broman"]) +
+  scale_fill_manual(values = c("#000000","#FFFFFF")) +
+  scale_shape_manual(values = c(16,21)) +
+  theme(panel.grid = element_blank()) +
+  theme(text = element_text(size=18)) +
+  #scale_y_continuous(limits =  c(0,375)) +
+  xlab("Session") +
+  ylab("Number of Lever Presses") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+reinstatment_plot
+ggsave("reinstatment_plot.pdf")
+```
+
+Selecting the relevant columns for Reinstatement relevant trait calculations. Choosing the following variables:
+'EX_ALP_Total_*last session': Active lever press for the final extinction session
+```{r extinction_plot, warning=FALSE}
+founders_extinction_df = founders_IVSA %>%
+  select(DE_Subject,
+         DE_Strain,
+         DE_Sex,
+         EX_ALP_Total_s01,
+         EX_ALP_Total_s02,
+         EX_ALP_Total_s03,
+         EX_ALP_Total_s04,
+         EX_ALP_Total_s05,
+         EX_ALP_Total_s06,
+         EX_ALP_Total_s07) 
+founders_extinction_df <- founders_extinction_df        %>%
+  gather(key = Lever_Session, value = lever_presses, -DE_Subject, -DE_Strain, -DE_Sex) %>%
+  mutate(Lever = gsub("^EX_([AI])LP_Total_s(\\d{2})$","\\1",Lever_Session),
+         Session = as.numeric(gsub("^EX_([AI])LP_Total_s(\\d{2})$","\\2",Lever_Session))) %>%
+  filter(!is.na(lever_presses), Session <= 8)
+
+  founders_extinction_df 
+```
+
+'RI_Inf_Total_*s01_03'three extinction sessions.
+Calculating %inc. in active lever press in first reinstatement sessions relative to last extinction session as a percent and also as a ratio.
+Changing the format from wide to long format.
+
+```{r}
+
+Founders_RI_df = founders_IVSA %>%
+  select(DE_Subject,
+         DE_Strain,
+         DE_Sex,
+         RI_Inf_Total_s01,
+         RI_Inf_Total_s02,
+         RI_Inf_Total_s03) %>%
+  gather(key = Session, value = Infusions, -DE_Subject, -DE_Strain, -DE_Sex) %>%
+  mutate(Session = as.numeric(gsub("^RI_Inf_Total_s(\\d{2})$","\\1",Session))) %>%
+  filter(!is.na(Infusions))
+
+Founders_RI_ALP_df = founders_IVSA %>%
+  select(DE_Subject,
+         DE_Strain,
+         DE_Sex,
+         RI_ALP_Total_s01,
+         RI_ALP_Total_s02,
+         RI_ALP_Total_s03) %>%
+  gather(key = Session, value = ALP, -DE_Subject, -DE_Strain, -DE_Sex) %>%
+  mutate(Session = as.numeric(gsub("^RI_ALP_Total_s(\\d{2})$","\\1",Session))) %>%
+  filter(!is.na(ALP))
+Founders_RI_ALP_df = as.data.frame(Founders_RI_ALP_df)
+Founders_RI_ALP_df
+Founders_final_day_EX_ALP = founders_extinction_df %>%
+  group_by(DE_Subject) %>%
+  filter(!is.na(lever_presses) & Lever == "A") %>%
+  summarize(ALP = lever_presses[which(Session == max(Session))])
+Founders_final_day_EX_ALP = as.data.frame(Founders_final_day_EX_ALP)
+row.names(Founders_final_day_EX_ALP) = Founders_final_day_EX_ALP$DE_Subject 
+Founders_final_day_EX_ALP 
+Founders_RI_ALP_df
+Founders_RI_ALP_df$final_EX_ALP = Founders_final_day_EX_ALP[Founders_RI_ALP_df$DE_Subject,"ALP"]
+Founders_RI_ALP_df
+Founders_RI_ALP_df = Founders_RI_ALP_df[which(Founders_RI_ALP_df$Session == 1),]
+Founders_RI_ALP_df$percent_inc_final_EX = ((Founders_RI_ALP_df$ALP - Founders_RI_ALP_df$final_EX_ALP + 1) / (Founders_RI_ALP_df$final_EX_ALP + 1)) * 100
+Founders_RI_ALP_df$ratio_final_EX = (Founders_RI_ALP_df$ALP + 1) / (Founders_RI_ALP_df$final_EX_ALP + 1)
+Founders_RI_ALP_df
+```
+Excluding DO. Asessing Strain and Sex effects on %inc in lever presses on first reinstatement session relative to extinction.
+```{r}
+Founders_RI_ALP_df <- Founders_RI_ALP_df %>%
+  filter(DE_Strain != "J:DO") %>%
+  filter(DE_Strain %in% founders_key$strain)
+anova(lm(percent_inc_final_EX ~ DE_Strain * DE_Sex, data = Founders_RI_ALP_df))
+anova(lm(ratio_final_EX ~ DE_Strain * DE_Sex, data = Founders_RI_ALP_df))
+anova(lm(percent_inc_final_EX ~ DE_Strain, data = Founders_RI_ALP_df))
+anova(lm(ratio_final_EX ~ DE_Strain, data = Founders_RI_ALP_df))
+
+continuous.model <- lm(ALP~ DE_Strain, data = Founders_RI_ALP_df)
+summary(continuous.model)
+plot(continuous.model)
+coef(continuous.model)
+```
+Asessing strain differences on increase in lever press during first reinstatement relative to last session of extinction as repeated measures. 
+
+```{r}
+Founders_RI_ALP_df <- Founders_RI_ALP_df %>%
+  filter(DE_Strain != "J:DO") %>%
+  filter(DE_Strain %in% founders_key$strain)
+
+Founders_RI_ALP_df %>%
+  filter(!is.na(percent_inc_final_EX)) %>%
+  group_by(DE_Strain) %>%
+  summarize(n = length(percent_inc_final_EX))
+
+
+Founders_RI_ALP_df = Founders_RI_ALP_df %>%
+  rename(
+    "2" = ALP, 
+    "1" = final_EX_ALP
+    )
+Founders_RI_ALP_df 
+
+Founders_RI_ALP_df  = Founders_RI_ALP_df %>%
+  gather(key = Session, value = ALP, "2":"1", -DE_Subject, -DE_Strain, -DE_Sex) 
+Founders_RI_ALP_df 
+
+Founders_RI_ALP_df  = as.data.frame(Founders_RI_ALP_df)
+
+Founders_RI_ALP_df$Session <- as.factor(Founders_RI_ALP_df$Session)   
+
+
+complete_obs <- na.omit(Founders_RI_ALP_df)
+complete_obs
+
+complete_obs %>%
+  group_by(DE_Strain)%>%
+  summarize(n())
+
+complete_obs$Session <- as.factor(complete_obs$Session)
+model3 =ezANOVA(
+  data = complete_obs,
+  dv = ALP,
+  wid = DE_Subject,
+  within = .(Session),
+  between = .(DE_Strain),
+  #between = .(DE_Strain, DE_Sex),
+  detailed = TRUE,
+  type = 3
+)
+print(model3)
+summary(model3)
+
+```
+Excluding DO. Asessing Strain and Sex effects on %inc in percent active lever presses on reinstatement relative to extinction and ratio of pALP on extinction and reinstatement.
+```{r}
+Founders_RI_pALP_df = founders_IVSA %>%
+  select(DE_Subject,
+         DE_Strain,
+         DE_Sex,
+         RI_pAP_Total_s01,
+         RI_pAP_Total_s02,
+         RI_pAP_Total_s03) %>%
+  gather(key = Session, value = pALP, -DE_Subject, -DE_Strain, -DE_Sex) %>%
+  mutate(Session = as.numeric(gsub("^RI_pAP_Total_s(\\d{2})$","\\1",Session))) %>%
+  filter(!is.na(pALP))
+Founders_RI_pALP_df = as.data.frame(Founders_RI_pALP_df)
+Founders_RI_pALP_df
+Founders_final_day_EX_pALP = founders_extinction_df %>%
+  group_by(DE_Subject) %>%
+  filter(!is.na(lever_presses) & Lever == "A") %>%
+  summarize(pALP = lever_presses[which(Session == max(Session))])
+Founders_final_day_EX_pALP = as.data.frame(Founders_final_day_EX_pALP)
+row.names(Founders_final_day_EX_pALP) = Founders_final_day_EX_pALP$DE_Subject 
+Founders_final_day_EX_pALP 
+Founders_RI_pALP_df
+Founders_RI_pALP_df$final_EX_pALP = Founders_final_day_EX_pALP[Founders_RI_pALP_df$DE_Subject,"pALP"]
+Founders_RI_pALP_df
+Founders_RI_pALP_df = Founders_RI_pALP_df[which(Founders_RI_pALP_df$Session == 1),]
+Founders_RI_pALP_df$percent_inc_final_EX = ((Founders_RI_pALP_df$pALP - Founders_RI_pALP_df$final_EX_pALP + 1) / (Founders_RI_pALP_df$final_EX_pALP + 1)) * 100
+Founders_RI_pALP_df$ratio_final_EX = (Founders_RI_pALP_df$pALP + 1) / (Founders_RI_pALP_df$final_EX_pALP + 1)
+Founders_RI_pALP_df <- Founders_RI_pALP_df %>%
+  filter(DE_Strain != "J:DO") %>%
+  filter(DE_Strain %in% founders_key$strain)
+Founders_RI_pALP_df
+```
+
+```{r}
+
+Founders_RI_pALP_df %>%
+  filter(!is.na(percent_inc_final_EX)) %>%
+  group_by(DE_Strain) %>%
+  summarize(n = length(percent_inc_final_EX))
+
+
+Founders_RI_pALP_df = Founders_RI_pALP_df %>%
+  rename(
+    "2" = pALP, 
+    "1" = final_EX_pALP
+    )
+Founders_RI_ALP_df 
+
+Founders_RI_pALP_df  = Founders_RI_pALP_df %>%
+  gather(key = Session, value = pALP, "2":"1", -DE_Subject, -DE_Strain, -DE_Sex) 
+Founders_RI_pALP_df 
+
+Founders_RI_pALP_df  = as.data.frame(Founders_RI_pALP_df)
+
+Founders_RI_pALP_df$Session <- as.factor(Founders_RI_pALP_df$Session)   
+
+
+complete_obs <- na.omit(Founders_RI_pALP_df)
+complete_obs
+
+complete_obs %>%
+  group_by(DE_Strain)%>%
+  summarize(n())
+
+complete_obs$Session <- as.factor(complete_obs$Session)
+model3 =ezANOVA(
+  data = complete_obs,
+  dv = pALP,
+  wid = DE_Subject,
+  within = .(Session),
+  between = .(DE_Strain),
+  #between = .(DE_Strain, DE_Sex),
+  detailed = TRUE,
+  type = 3
+)
+print(model3)
+
+```
+Preparing dataframe to asess strain differences on increase in percent active lever press during reinstatement as an average of session 1 and 2 relative to last session of extinction as repeated measures. 
+```{r}
+Founders_RI_pALP_df = founders_IVSA %>%
+  select(DE_Subject,
+         DE_Strain,
+         DE_Sex,
+         RI_pAP_Total_s01,
+         RI_pAP_Total_s02,
+         RI_pAP_Total_s03) %>%
+  gather(key = Session, value = pALP, -DE_Subject, -DE_Strain, -DE_Sex) %>%
+  mutate(Session = as.numeric(gsub("^RI_pAP_Total_s(\\d{2})$","\\1",Session))) %>%
+  filter(!is.na(pALP))
+Founders_RI_pALP_df = as.data.frame(Founders_RI_pALP_df)
+Founders_RI_pALP_df
+Founders_final_day_EX_pALP = founders_extinction_df %>%
+  group_by(DE_Subject) %>%
+  filter(!is.na(lever_presses) & Lever == "A") %>%
+  summarize(pALP = lever_presses[which(Session == max(Session))])
+Founders_final_day_EX_pALP = as.data.frame(Founders_final_day_EX_pALP)
+row.names(Founders_final_day_EX_pALP) = Founders_final_day_EX_pALP$DE_Subject 
+Founders_final_day_EX_pALP 
+Founders_RI_pALP_df
+Founders_RI_pALP_df_wide <- spread(Founders_RI_pALP_df, Session, pALP)
+Founders_RI_pALP_df_wide 
+Founders_RI_pALP_df_wide $final_EX_pALP = Founders_final_day_EX_pALP[Founders_RI_pALP_df_wide$DE_Subject,"pALP"]
+Founders_RI_pALP_df_wide
+Founders_RI_pALP_df_wide = Founders_RI_pALP_df_wide %>%
+  rename(
+   RI_1 = "1", 
+   RI_2 = "2"
+    )
+Founders_RI_pALP_df_wide$avg_RI_pALP = (Founders_RI_pALP_df_wide$RI_1 + Founders_RI_pALP_df_wide$RI_2) / 2
+Founders_RI_pALP_df_wide <- Founders_RI_pALP_df_wide %>%
+  filter(DE_Strain != "J:DO") %>%
+  filter(DE_Strain %in% founders_key$strain)
+Founders_RI_pALP_df_wide 
+```
+
+
+```{r}
+Founders_RI_avg_pALP_df  = Founders_RI_pALP_df_wide %>%
+  gather(key = Session, value = pALP, "final_EX_pALP":"avg_RI_pALP", -DE_Subject, -DE_Strain, -DE_Sex) 
+Founders_RI_avg_pALP_df
+
+
+Founders_RI_avg_pALP_df  = as.data.frame(Founders_RI_avg_pALP_df)
+
+Founders_RI_avg_pALP_df$Session <- as.factor(Founders_RI_avg_pALP_df$Session)   
+
+
+complete_obs <- na.omit(Founders_RI_avg_pALP_df)
+complete_obs
+
+complete_obs %>%
+  group_by(DE_Strain)%>%
+  summarize(n())
+
+complete_obs$Session <- as.factor(complete_obs$Session)
+model3 =ezANOVA(
+  data = complete_obs,
+  dv = pALP,
+  wid = DE_Subject,
+  within = .(Session),
+  between = .(DE_Strain),
+  #between = .(DE_Strain, DE_Sex),
+  detailed = TRUE,
+  type = 3
+)
+print(model3)
+
+```

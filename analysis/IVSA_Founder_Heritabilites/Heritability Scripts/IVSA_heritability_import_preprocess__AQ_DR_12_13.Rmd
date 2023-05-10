@@ -1,0 +1,238 @@
+---
+title: "IVSA Data: Preprocessing"
+author: "Michael C. Saul (michael.saul [at] jax.org)"
+adapted by: "Udita Datta (udita.datta [at] jax.org)"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    number_sections: true
+    fig_retina: true
+    self_contained: true
+    code_folding: show
+    theme: flatly
+    highlight: default
+    df_print: paged
+---
+
+# Background
+
+## Motivation
+
+### Purpose of analysis
+
+This analysis is performed to preprocess the intravenous self-administration data to:
+
+1) Make sure all data are clean and deduplicated.
+2) Make short and simple column names.
+3) Clean up duplicate IDs in novelty data in a rational way.
+4) Prepare data for cross-platform compatibility in both Python and R.
+
+**These data were collected by RAs from the CSNA's behavioral core. Intellectual contributions will be assessed in discussions with Leona Gagnon.**
+
+# Analysis
+
+## Setup
+
+### Working directory
+
+All chunks will run in the working folder for this experiment.
+
+```{r setup}
+script_root_dir = "C:/Users/dattau/Documents/IVSA_Proj_org/IVSA/IVSA"
+knitr::opts_knit$set(root.dir = script_root_dir)
+```
+
+Getting current date
+
+```{r}
+current_date = format(Sys.time(),"%Y-%m-%d")
+```
+
+### R libraries
+
+Calling R libraries necessary for this analysis.
+
+```{r}
+library("dplyr")
+library("tidyverse")
+library("lubridate")
+library("readxl")
+library("nlme")
+library("ez")
+```
+
+## Importing data
+
+
+```{r import_data, warning=FALSE}
+# Taking the most recent datasets
+data_path = paste(script_root_dir,"/preprocessed_IVSA_data/", sep = "")
+IVSA_datasets = data.frame(files = list.files(path = data_path, pattern = "\\d{4}-\\d{2}-\\d{2}\\.RDS$"),
+                           date = ymd(gsub("^.*_(\\d{4}-\\d{2}-\\d{2})\\.RDS$","\\1", 
+                                           list.files(path = data_path, 
+                                                      pattern = "\\d{4}-\\d{2}-\\d{2}\\.RDS$")), 
+                                      tz = "America/New_York"),
+                           stringsAsFactors = FALSE)
+most_recent_datasets = paste(data_path, IVSA_datasets[which(IVSA_datasets$date == max(IVSA_datasets$date)),"files"], sep = "")
+
+# IVSA
+IVSA_raw_file = most_recent_datasets[grep("IVSA_raw", most_recent_datasets)]
+IVSA_metadata_file = most_recent_datasets[grep("IVSA_metadata", most_recent_datasets)]
+IVSA_raw = readRDS(IVSA_raw_file)
+row.names(IVSA_raw) = IVSA_raw$DE_Subject
+IVSA_metadata = readRDS(IVSA_metadata_file)
+head(IVSA_raw)
+```
+Getting founders key file.
+
+```{r founders_key_import, warning=FALSE}
+founders_key = readRDS("C:/Users/dattau/Documents/IVSA_Proj_org/IVSA/IVSA/csna_project_4_behavior/data/cc_do_founders_key.RDS")
+row.names(founders_key) = founders_key$strain
+founders_key[9,1] = "J:DO"
+founders_key[9,2] = "DO"
+founders_key[9,5] = "#000000"
+founders_key[9,6] = "#000000"
+row.names(founders_key) = founders_key$strain
+head(IVSA_raw)
+```
+
+```{r filter_for_founders, warning=FALSE}
+founders_IVSA = IVSA_raw %>%
+  filter(DE_Strain %in% founders_key$strain)
+#rm(list = c("IVSA_raw"))
+founders_IVSA = as.data.frame(founders_IVSA)
+
+founders_IVSA$DE_Strain = factor(founders_IVSA$DE_Strain,
+                                 levels = founders_key$strain,
+                                 ordered = TRUE)
+
+
+Old_DO <- founders_IVSA %>% 
+  filter(DE_birth_date_year == 2016,
+         DE_Strain == "J:DO")
+
+
+New_DO <- founders_IVSA %>% 
+  filter(DE_birth_date_year != 2016,
+         DE_Strain == "J:DO")
+
+No_DO <- founders_IVSA %>% 
+  filter(DE_Strain != "J:DO")
+
+founders_IVSA <- merge(Old_DO,No_DO, all = TRUE)
+
+ids <- c("A2063", "A2810", "A2418", "A3262", "A3261", "A3052", "A3257", "A3256", "A3051", "A2986")
+rm.ids <- which(founders_IVSA$DE_Subject %in% ids)
+founders_IVSA.p1  <- founders_IVSA[-rm.ids,]
+
+founders_IVSA = founders_IVSA.p1
+
+```
+Getting CC key.
+
+```{r}
+CC_key = unique(IVSA_raw$DE_Strain)
+CC_key = CC_key[grep("^CC\\d{3}/",CC_key)]
+#CC_key = stringr::str_extract(CC_key, "^.{5}")
+CC_key
+CC_founders_IVSA_CC = IVSA_raw %>%
+  filter(DE_Strain %in% c(CC_key))
+
+CC_founders_IVSA_CC$DE_Strain = stringr::str_extract(CC_founders_IVSA_CC$DE_Strain, "^.{5}")
+CC_founders_IVSA_CC
+```
+
+Merging old DO, founders and CC
+```{r}
+CC_founders_IVSA <- rbind(founders_IVSA, CC_founders_IVSA_CC)
+```
+
+The environment and datasets are ready for analysis.
+# Analysis
+
+## Acquisition
+
+Excluding animals who were found dead who didn't acquire and changing the failed acquisition animals to 28 sessions.
+
+
+```{r}
+CC_founders_IVSA_filtered = CC_founders_IVSA %>%
+  dplyr::filter(!(DE_Exit_Reason == "FD" & is.na(AQ_SessionsToAcquisition)))
+
+CC_founders_IVSA_filtered[which(CC_founders_IVSA_filtered$DE_Exit_Reason == "IVSA Acquisition Only"),"AQ_SessionsToAcquisition"] = 28
+CC_founders_IVSA_filtered
+```
+Looking at the rest of the data.
+
+```{r}
+CC_founders_IVSA_filtered[which(is.na(CC_founders_IVSA_filtered$AQ_SessionsToAcquisition)),]
+
+subset(CC_founders_IVSA_filtered,is.na(CC_founders_IVSA_filtered$AQ_SessionsToAcquisition) & CC_founders_IVSA_filtered$DE_Exit_Reason == "Finished Pipeline")
+
+```
+
+Among founders: Animal `575` appears to have finished the pipeline, but the script could not calculate a sessions to acquisition criterion for it. All the other animals have exit reasons that should exclude them. Excluding these data.
+
+A total of 1 DO and 5 CC individuals have finished the pipeline but the script could not calculate a sessions to acquisition criterion for it.
+
+```{r}
+CC_founders_IVSA_filtered = CC_founders_IVSA_filtered %>%
+  filter(!is.na(AQ_SessionsToAcquisition))
+```
+
+Counting each cell to see if there's sufficient data to estimate heritability. Starting with `DR_Inf_Total_1p0mgkg`
+```{r}
+CC_founders_IVSA_filtered %>%
+  filter(!is.na(DR_Inf_Total_1p0mgkg)) %>%
+  group_by(DE_Strain) %>%
+  summarize(n = length(DR_Inf_Total_1p0mgkg))
+```
+
+There appears to be adequate sampling for this dataset. Counting each cell of the `AQ_SessionsToAcquisition` data.
+
+```{r}
+CC_founders_IVSA_filtered %>%
+  filter(!is.na(AQ_SessionsToAcquisition)) %>%
+  group_by(DE_Strain) %>%
+  summarize(n = length(AQ_SessionsToAcquisition))
+```
+Counting each cell of the `DR_Inf_Total_AUC` data.
+
+```{r}
+CC_founders_IVSA_filtered %>%
+  filter(!is.na(DR_Inf_Total_AUC)) %>%
+  group_by(DE_Strain) %>%
+  summarize(n = length(DR_Inf_Total_AUC))
+```
+
+
+This looks ready for downstream heritability analysis.
+
+Saving these IVSA data for downstream use in the paper and in sharing on MPD.
+
+
+```{r}
+saveRDS(CC_founders_IVSA_filtered, paste("C:/Users/dattau/Documents/IVSA_Proj_org/IVSA/IVSA/csna_project_4_behavior/data/IVSA_data_preprocessed_AQ_DR_",current_date,".RDS",sep=""))
+write.table(CC_founders_IVSA_filtered, paste("C:/Users/dattau/Documents/IVSA_Proj_org/IVSA/IVSA/csna_project_4_behavior/data/IVSA_data_preprocessed_AQ_DR_",current_date,".tsv",sep=""),
+            sep = "\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
+```
+
+# Reproducibility Information
+
+## Software Used
+
+### R session and OS information
+
+```{r sessionInfo}
+IVSA_data_prep_sessionInfo = sessionInfo()
+IVSA_data_prep_sessionInfo
+saveRDS(IVSA_data_prep_sessionInfo, paste("C:/Users/dattau/Documents/IVSA_Proj_org/IVSA/IVSA/csna_project_4_behavior/output/IVSA_data_prep_sessionInfo_",current_date,".RDS", sep = ""), compress="xz")
+```
+
+## Document Control
+
+This document was prepared using RMarkdown in RStudio.

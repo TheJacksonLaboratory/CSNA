@@ -1,0 +1,1272 @@
+---
+title: "Fig2_IVSA_Manuscript"
+author: "Udita Datta"
+date: "11/21/2020"
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    number_sections: true
+    fig_retina: true
+    self_contained: true
+    code_folding: show
+    theme: flatly
+    highlight: default
+    df_print: paged
+---
+
+
+Seting up Working directory
+
+
+```{r setup, warning=FALSE}
+script_root_dir = "C:/Users/dattau/Documents/IVSA_Proj_org/IVSA/IVSA"
+knitr::opts_knit$set(root.dir = script_root_dir)
+```
+
+### R libraries
+
+Calling R libraries necessary for this analysis.
+
+```{r libraries, warning=FALSE}
+library("MASS")
+library("cowplot")
+library("lubridate")
+library("ggbeeswarm")
+library("readxl")
+library("tidyr")
+library("dplyr")
+library("DT")
+library("ANOM")
+library("multcomp")
+library("ez")
+```
+
+## Dataset Setup
+
+### Importing data
+
+The IVSA and novelty data have already been preprocessed using the `IVSA_novelty_import_preprocess.Rmd` script.
+
+```{r import_data, warning=FALSE}
+# Taking the most recent datasets
+data_path = paste(script_root_dir,"/preprocessed_IVSA_data/", sep = "")
+IVSA_datasets = data.frame(files = list.files(path = data_path, pattern = "\\d{4}-\\d{2}-\\d{2}\\.RDS$"),
+                           date = ymd(gsub("^.*_(\\d{4}-\\d{2}-\\d{2})\\.RDS$","\\1", 
+                                           list.files(path = data_path, 
+                                                      pattern = "\\d{4}-\\d{2}-\\d{2}\\.RDS$")), 
+                                      tz = "America/New_York"),
+                           stringsAsFactors = FALSE)
+most_recent_datasets = paste(data_path, IVSA_datasets[which(IVSA_datasets$date == max(IVSA_datasets$date)),"files"], sep = "")
+
+# IVSA
+IVSA_raw_file = most_recent_datasets[grep("IVSA_raw", most_recent_datasets)]
+IVSA_metadata_file = most_recent_datasets[grep("IVSA_metadata", most_recent_datasets)]
+IVSA_raw = readRDS(IVSA_raw_file)
+row.names(IVSA_raw) = IVSA_raw$DE_Subject
+IVSA_metadata = readRDS(IVSA_metadata_file)
+head(IVSA_raw)
+```
+Getting founders key file.
+
+```{r founders_key_import, warning=FALSE}
+founders_key = readRDS("C:/Users/dattau/Documents/IVSA_Proj_org/IVSA/IVSA/csna_project_4_behavior/data/cc_do_founders_key.RDS")
+row.names(founders_key) = founders_key$strain
+founders_key[9,1] = "J:DO"
+founders_key[9,2] = "DO"
+founders_key[9,5] = "#000000"
+founders_key[9,6] = "#000000"
+row.names(founders_key) = founders_key$strain
+head(IVSA_raw)
+```
+
+### Filtering IVSA data for DO Founders
+
+Getting IVSA data for the eight founders, old DO and CC  strains.
+
+```{r filter_for_founders, warning=FALSE}
+founders_IVSA = IVSA_raw %>%
+  filter(DE_Strain %in% founders_key$strain)
+#rm(list = c("IVSA_raw"))
+founders_IVSA = as.data.frame(founders_IVSA)
+
+founders_IVSA$DE_Strain = factor(founders_IVSA$DE_Strain,
+                                 levels = founders_key$strain,
+                                 ordered = TRUE)
+
+
+Old_DO <- founders_IVSA %>% 
+  filter(DE_birth_date_year == 2016,
+         DE_Strain == "J:DO")
+
+
+New_DO <- founders_IVSA %>% 
+  filter(DE_birth_date_year != 2016,
+         DE_Strain == "J:DO")
+
+No_DO <- founders_IVSA %>% 
+  filter(DE_Strain != "J:DO")
+
+founders_IVSA <- merge(Old_DO,No_DO, all = TRUE)
+
+ids <- c("A2063", "A2810", "A2418", "A3262", "A3261", "A3052", "A3257", "A3256", "A3051", "A2986")
+rm.ids <- which(founders_IVSA$DE_Subject %in% ids)
+founders_IVSA.p1  <- founders_IVSA[-rm.ids,]
+
+founders_IVSA = founders_IVSA.p1
+
+```
+Getting CC key.
+
+```{r}
+CC_key = unique(IVSA_raw$DE_Strain)
+CC_key = CC_key[grep("^CC\\d{3}/",CC_key)]
+#CC_key = stringr::str_extract(CC_key, "^.{5}")
+CC_key
+CC_founders_IVSA_CC = IVSA_raw %>%
+  filter(DE_Strain %in% c(CC_key))
+
+CC_founders_IVSA_CC$DE_Strain = stringr::str_extract(CC_founders_IVSA_CC$DE_Strain, "^.{5}")
+
+CC_key_abv <- unique(CC_founders_IVSA_CC$DE_Strain)
+
+head(CC_founders_IVSA_CC)
+```
+
+Merging old DO, founders and CC
+```{r}
+CC_founders_IVSA <- rbind(founders_IVSA, CC_founders_IVSA_CC)
+Combined_key_abv <- c(founders_key$strain,CC_key_abv)
+```
+
+
+The environment and datasets are ready for analysis.
+# Analysis
+### Getting IVSA dose-response relevant columns
+Doing this for the eight dose series for the Founders and old DO.
+```{r dose_response, warning=FALSE}
+founders_doseresponse_vars = c("DR_Inf_Total_0p032mgkg",
+                               "DR_Inf_Total_0p056mgkg",
+                               "DR_Inf_Total_0p1mgkg",
+                               "DR_Inf_Total_0p18mgkg",
+                               "DR_Inf_Total_0p32mgkg",
+                               "DR_Inf_Total_0p56mgkg",
+                               "DR_Inf_Total_1p0mgkg",
+                               "DR_Inf_Total_1p8mgkg")
+IVSA_Descriptive_vars = IVSA_metadata[which(IVSA_metadata$vartype == "Descriptive"),"variable"]
+
+founders_doseresponse_IVSA_raw = founders_IVSA[which((rowSums(is.na(founders_IVSA[,founders_doseresponse_vars])) == 0)),c(IVSA_Descriptive_vars,founders_doseresponse_vars)]
+
+
+founders_doseresponse_IVSA_raw_long = founders_doseresponse_IVSA_raw %>% 
+  gather(key = Dose_Active, value = Lever_Presses, -DE_Subject, -DE_Experiment, -DE_Active_Lever, -DE_Sex, -DE_Control_Unit, -DE_Group, -DE_Strain, -DE_Box, -DE_Stock_ID, -DE_Breeding, -DE_Protocol, -DE_Study, -DE_birth_date_year,-DE_birth_date_month,-DE_birth_date_day,-DE_arrival_date_year,-DE_arrival_date_month,-DE_arrival_date_day,-DE_exit_date_year,-DE_exit_date_month,-DE_exit_date_day,-DE_Exit_Reason,-DE_DO_Center_Status)
+
+founders_doseresponse_IVSA_raw_long = founders_doseresponse_IVSA_raw_long[grep("^DR_Inf_Total_\\d{1}p\\d{1,2}mgkg$",founders_doseresponse_IVSA_raw_long$Dose_Active),]
+founders_doseresponse_IVSA_raw_long$Dose = as.numeric(gsub(".*_(\\d{1})p(\\d+)mgkg$", "\\1.\\2", founders_doseresponse_IVSA_raw_long$Dose_Active))
+
+founders_doseresponse_IVSA_mean = founders_doseresponse_IVSA_raw %>%
+  group_by(DE_Strain) %>%
+  summarize(DR_0p032_mgkg_Inf = mean(DR_Inf_Total_0p032mgkg, na.rm = TRUE),
+            DR_0p056_mgkg_Inf = mean(DR_Inf_Total_0p056mgkg, na.rm = TRUE),
+            DR_0p1_mgkg_Inf = mean(DR_Inf_Total_0p1mgkg, na.rm = TRUE),
+            DR_0p18_mgkg_Inf = mean(DR_Inf_Total_0p18mgkg, na.rm = TRUE),
+            DR_0p32_mgkg_Inf = mean(DR_Inf_Total_0p32mgkg, na.rm = TRUE),
+            DR_0p56_mgkg_Inf = mean(DR_Inf_Total_0p56mgkg, na.rm = TRUE),
+            DR_1p0_mgkg_Inf = mean(DR_Inf_Total_1p0mgkg, na.rm = TRUE),
+            DR_1p8_mgkg_Inf = mean(DR_Inf_Total_1p8mgkg, na.rm = TRUE)) %>%
+  gather(key = Dose, value = Mean, -DE_Strain)
+
+founders_doseresponse_IVSA_sem = founders_doseresponse_IVSA_raw %>%
+  group_by(DE_Strain) %>%
+  summarize(DR_0p032_mgkg_Inf = sd(DR_Inf_Total_0p032mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p032mgkg)))),
+            DR_0p056_mgkg_Inf = sd(DR_Inf_Total_0p056mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p056mgkg)))),
+            DR_0p1_mgkg_Inf = sd(DR_Inf_Total_0p1mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p1mgkg)))),
+            DR_0p18_mgkg_Inf = sd(DR_Inf_Total_0p18mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p18mgkg)))),
+            DR_0p32_mgkg_Inf = sd(DR_Inf_Total_0p32mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p32mgkg)))),
+            DR_0p56_mgkg_Inf = sd(DR_Inf_Total_0p56mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p56mgkg)))),
+            DR_1p0_mgkg_Inf = sd(DR_Inf_Total_1p0mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_1p0mgkg)))),
+            DR_1p8_mgkg_Inf = sd(DR_Inf_Total_1p8mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_1p8mgkg))))) %>%
+  gather(key = Dose, value = SEM, -DE_Strain)
+
+founders_doseresponse_IVSA_mean = as.data.frame(founders_doseresponse_IVSA_mean)
+row.names(founders_doseresponse_IVSA_mean) = paste(founders_doseresponse_IVSA_mean$DE_Strain,
+                                                   founders_doseresponse_IVSA_mean$Dose,
+                                                   sep = "-")
+
+founders_doseresponse_IVSA_sem = as.data.frame(founders_doseresponse_IVSA_sem)
+row.names(founders_doseresponse_IVSA_sem) = paste(founders_doseresponse_IVSA_sem$DE_Strain,
+                                                         founders_doseresponse_IVSA_sem$Dose,
+                                                  sep = "-")
+
+founders_doseresponse_IVSA_mean$SEM = founders_doseresponse_IVSA_sem[row.names(founders_doseresponse_IVSA_mean),"SEM"]
+founders_doseresponse_IVSA_mean$ul = founders_doseresponse_IVSA_mean$Mean + founders_doseresponse_IVSA_mean$SEM
+founders_doseresponse_IVSA_mean$ll = founders_doseresponse_IVSA_mean$Mean - founders_doseresponse_IVSA_mean$SEM
+founders_doseresponse_IVSA_mean$dose_mg_per_kg = factor(gsub("^DR_(\\d{1})p(\\d+)_mgkg_Inf$","\\1.\\2",founders_doseresponse_IVSA_mean$Dose),
+                                                        levels = c("0.032","0.056","0.1","0.18","0.32","0.56","1.0","1.8"),
+                                                        ordered = TRUE)
+founders_doseresponse_IVSA_mean$DE_Strain = factor(founders_doseresponse_IVSA_mean$DE_Strain, 
+                                                   levels = founders_key$strain,
+                                                   ordered = TRUE)
+
+founders_doseresponse_infusions_plot = ggplot(data = founders_doseresponse_IVSA_mean, aes(x = dose_mg_per_kg, y = Mean, color = DE_Strain, group = DE_Strain)) + 
+  theme_cowplot() +
+  geom_point() +
+  geom_line(size = 1) +
+  geom_errorbar(aes(ymin = ll, ymax = ul), width = 0.1, size = 1) +
+  scale_color_manual(values = founders_key[which(founders_key$strain %in% founders_doseresponse_IVSA_mean$DE_Strain),"collaborative_cross_color_broman"]) +
+  ylab("Total n Infusions") +
+  xlab("Dose (mg/kg per infusion)")+
+  theme_bw() +
+  theme(panel.grid = element_blank())+ theme(legend.position = "none")+   theme(aspect.ratio = 1)
+founders_doseresponse_infusions_plot 
+ggsave("founders_doseresponse_infusions_plot.pdf")
+```
+Plotting the eight dose series for the Founders, without DO.
+```{r dose_response, warning=FALSE}
+founders_key_no_DO = founders_key %>% dplyr::filter((strain != "J:DO"))
+founders_doseresponse_vars = c("DR_Inf_Total_0p032mgkg",
+                               "DR_Inf_Total_0p056mgkg",
+                               "DR_Inf_Total_0p1mgkg",
+                               "DR_Inf_Total_0p18mgkg",
+                               "DR_Inf_Total_0p32mgkg",
+                               "DR_Inf_Total_0p56mgkg",
+                               "DR_Inf_Total_1p0mgkg",
+                               "DR_Inf_Total_1p8mgkg")
+IVSA_Descriptive_vars = IVSA_metadata[which(IVSA_metadata$vartype == "Descriptive"),"variable"]
+
+founders_doseresponse_IVSA_raw = founders_IVSA[which((rowSums(is.na(founders_IVSA[,founders_doseresponse_vars])) == 0)),c(IVSA_Descriptive_vars,founders_doseresponse_vars)]
+
+founders_doseresponse_IVSA_raw_no_DO = founders_doseresponse_IVSA_raw %>% dplyr::filter((DE_Strain != "J:DO"))
+
+founders_doseresponse_IVSA_raw_no_DO_long = founders_doseresponse_IVSA_raw_no_DO %>% 
+  gather(key = Dose_Active, value = Lever_Presses, -DE_Subject, -DE_Experiment, -DE_Active_Lever, -DE_Sex, -DE_Control_Unit, -DE_Group, -DE_Strain, -DE_Box, -DE_Stock_ID, -DE_Breeding, -DE_Protocol, -DE_Study, -DE_birth_date_year,-DE_birth_date_month,-DE_birth_date_day,-DE_arrival_date_year,-DE_arrival_date_month,-DE_arrival_date_day,-DE_exit_date_year,-DE_exit_date_month,-DE_exit_date_day,-DE_Exit_Reason,-DE_DO_Center_Status)
+
+founders_doseresponse_IVSA_raw_no_DO_long = founders_doseresponse_IVSA_raw_no_DO_long[grep("^DR_Inf_Total_\\d{1}p\\d{1,2}mgkg$",founders_doseresponse_IVSA_raw_no_DO_long$Dose_Active),]
+founders_doseresponse_IVSA_raw_no_DO_long$Dose = as.numeric(gsub(".*_(\\d{1})p(\\d+)mgkg$", "\\1.\\2", founders_doseresponse_IVSA_raw_no_DO_long$Dose_Active))
+
+founders_doseresponse_IVSA_no_DO_mean = founders_doseresponse_IVSA_raw_no_DO %>%
+  group_by(DE_Strain) %>%
+  summarize(DR_0p032_mgkg_Inf = mean(DR_Inf_Total_0p032mgkg, na.rm = TRUE),
+            DR_0p056_mgkg_Inf = mean(DR_Inf_Total_0p056mgkg, na.rm = TRUE),
+            DR_0p1_mgkg_Inf = mean(DR_Inf_Total_0p1mgkg, na.rm = TRUE),
+            DR_0p18_mgkg_Inf = mean(DR_Inf_Total_0p18mgkg, na.rm = TRUE),
+            DR_0p32_mgkg_Inf = mean(DR_Inf_Total_0p32mgkg, na.rm = TRUE),
+            DR_0p56_mgkg_Inf = mean(DR_Inf_Total_0p56mgkg, na.rm = TRUE),
+            DR_1p0_mgkg_Inf = mean(DR_Inf_Total_1p0mgkg, na.rm = TRUE),
+            DR_1p8_mgkg_Inf = mean(DR_Inf_Total_1p8mgkg, na.rm = TRUE)) %>%
+  gather(key = Dose, value = Mean, -DE_Strain)
+
+founders_doseresponse_IVSA_no_DO_sem = founders_doseresponse_IVSA_raw_no_DO %>%
+  group_by(DE_Strain) %>%
+  summarize(DR_0p032_mgkg_Inf = sd(DR_Inf_Total_0p032mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p032mgkg)))),
+            DR_0p056_mgkg_Inf = sd(DR_Inf_Total_0p056mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p056mgkg)))),
+            DR_0p1_mgkg_Inf = sd(DR_Inf_Total_0p1mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p1mgkg)))),
+            DR_0p18_mgkg_Inf = sd(DR_Inf_Total_0p18mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p18mgkg)))),
+            DR_0p32_mgkg_Inf = sd(DR_Inf_Total_0p32mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p32mgkg)))),
+            DR_0p56_mgkg_Inf = sd(DR_Inf_Total_0p56mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p56mgkg)))),
+            DR_1p0_mgkg_Inf = sd(DR_Inf_Total_1p0mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_1p0mgkg)))),
+            DR_1p8_mgkg_Inf = sd(DR_Inf_Total_1p8mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_1p8mgkg))))) %>%
+  gather(key = Dose, value = SEM, -DE_Strain)
+
+founders_doseresponse_IVSA_no_DO_mean = as.data.frame(founders_doseresponse_IVSA_no_DO_mean)
+row.names(founders_doseresponse_IVSA_no_DO_mean) = paste(founders_doseresponse_IVSA_no_DO_mean$DE_Strain,
+                                                   founders_doseresponse_IVSA_no_DO_mean$Dose,
+                                                   sep = "-")
+
+founders_doseresponse_IVSA_no_DO_sem = as.data.frame(founders_doseresponse_IVSA_no_DO_sem)
+row.names(founders_doseresponse_IVSA_no_DO_sem) = paste(founders_doseresponse_IVSA_no_DO_sem$DE_Strain,
+                                                         founders_doseresponse_IVSA_no_DO_sem$Dose,
+                                                  sep = "-")
+
+founders_doseresponse_IVSA_no_DO_mean$SEM = founders_doseresponse_IVSA_no_DO_sem[row.names(founders_doseresponse_IVSA_no_DO_mean),"SEM"]
+founders_doseresponse_IVSA_no_DO_mean$ul = founders_doseresponse_IVSA_no_DO_mean$Mean + founders_doseresponse_IVSA_no_DO_mean$SEM
+founders_doseresponse_IVSA_no_DO_mean$ll = founders_doseresponse_IVSA_no_DO_mean$Mean - founders_doseresponse_IVSA_no_DO_mean$SEM
+founders_doseresponse_IVSA_no_DO_mean$dose_mg_per_kg = factor(gsub("^DR_(\\d{1})p(\\d+)_mgkg_Inf$","\\1.\\2",founders_doseresponse_IVSA_no_DO_mean$Dose),
+                                                        levels = c("0.032","0.056","0.1","0.18","0.32","0.56","1.0","1.8"),
+                                                        ordered = TRUE)
+founders_doseresponse_IVSA_no_DO_mean$DE_Strain = factor(founders_doseresponse_IVSA_no_DO_mean$DE_Strain, 
+                                                   levels = founders_key$strain,
+                                                   ordered = TRUE)
+
+founders_doseresponse_IVSA_no_DO_infusions_plot = ggplot(data = founders_doseresponse_IVSA_no_DO_mean, aes(x = dose_mg_per_kg, y = Mean, color = DE_Strain, group = DE_Strain)) + 
+  theme_cowplot() +
+  geom_point() +
+  geom_line(size = 1) +
+  geom_errorbar(aes(ymin = ll, ymax = ul), width = 0.1, size = 1) +
+  scale_color_manual(values = founders_key_no_DO[which(founders_key_no_DO$strain %in% founders_doseresponse_IVSA_no_DO_mean$DE_Strain),"collaborative_cross_color_broman"]) +
+  ylab("Total n Infusions") +
+  xlab("Dose (mg/kg per infusion)")+
+  theme_bw() +
+  theme(panel.grid = element_blank())+ theme(legend.position = "none")+   theme(aspect.ratio = 1)
+#founders_doseresponse_infusions_plot  + theme(legend.position = "none")
+founders_doseresponse_IVSA_no_DO_infusions_plot 
+ggsave("founders_doseresponse_IVSA_no_DO_infusions_plot.pdf")
+```
+```{r dose_response, warning=FALSE}
+founders_doseresponse_vars = c("DR_ALP_Total_0p032mgkg",
+                               "DR_ALP_Total_0p056mgkg",
+                               "DR_ALP_Total_0p1mgkg",
+                               "DR_ALP_Total_0p18mgkg",
+                               "DR_ALP_Total_0p32mgkg",
+                               "DR_ALP_Total_0p56mgkg",
+                               "DR_ALP_Total_1p0mgkg",
+                               "DR_ALP_Total_1p8mgkg")
+IVSA_Descriptive_vars = IVSA_metadata[which(IVSA_metadata$vartype == "Descriptive"),"variable"]
+
+founders_doseresponse_IVSA_raw = founders_IVSA[which((rowSums(is.na(founders_IVSA[,founders_doseresponse_vars])) == 0)),c(IVSA_Descriptive_vars,founders_doseresponse_vars)]
+
+
+founders_doseresponse_IVSA_raw_long = founders_doseresponse_IVSA_raw %>% 
+  gather(key = Dose_Active, value = Lever_Presses, -DE_Subject, -DE_Experiment, -DE_Active_Lever, -DE_Sex, -DE_Control_Unit, -DE_Group, -DE_Strain, -DE_Box, -DE_Stock_ID, -DE_Breeding, -DE_Protocol, -DE_Study, -DE_birth_date_year,-DE_birth_date_month,-DE_birth_date_day,-DE_arrival_date_year,-DE_arrival_date_month,-DE_arrival_date_day,-DE_exit_date_year,-DE_exit_date_month,-DE_exit_date_day,-DE_Exit_Reason,-DE_DO_Center_Status)
+
+founders_doseresponse_IVSA_raw_long = founders_doseresponse_IVSA_raw_long[grep("^DR_ALP_Total_\\d{1}p\\d{1,2}mgkg$",founders_doseresponse_IVSA_raw_long$Dose_Active),]
+founders_doseresponse_IVSA_raw_long$Dose = as.numeric(gsub(".*_(\\d{1})p(\\d+)mgkg$", "\\1.\\2", founders_doseresponse_IVSA_raw_long$Dose_Active))
+
+founders_doseresponse_IVSA_mean = founders_doseresponse_IVSA_raw %>%
+  group_by(DE_Strain) %>%
+  summarize(DR_0p032_mgkg_ALP = mean(DR_ALP_Total_0p032mgkg, na.rm = TRUE),
+            DR_0p056_mgkg_ALP = mean(DR_ALP_Total_0p056mgkg, na.rm = TRUE),
+            DR_0p1_mgkg_ALP = mean(DR_ALP_Total_0p1mgkg, na.rm = TRUE),
+            DR_0p18_mgkg_ALP = mean(DR_ALP_Total_0p18mgkg, na.rm = TRUE),
+            DR_0p32_mgkg_ALP = mean(DR_ALP_Total_0p32mgkg, na.rm = TRUE),
+            DR_0p56_mgkg_ALP = mean(DR_ALP_Total_0p56mgkg, na.rm = TRUE),
+            DR_1p0_mgkg_ALP = mean(DR_ALP_Total_1p0mgkg, na.rm = TRUE),
+            DR_1p8_mgkg_ALP = mean(DR_ALP_Total_1p8mgkg, na.rm = TRUE)) %>%
+  gather(key = Dose, value = Mean, -DE_Strain)
+
+founders_doseresponse_IVSA_sem = founders_doseresponse_IVSA_raw %>%
+  group_by(DE_Strain) %>%
+  summarize(DR_0p032_mgkg_ALP= sd(DR_ALP_Total_0p032mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_ALP_Total_0p032mgkg)))),
+            DR_0p056_mgkg_ALP = sd(DR_ALP_Total_0p056mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_ALP_Total_0p056mgkg)))),
+            DR_0p1_mgkg_ALP = sd(DR_ALP_Total_0p1mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_ALP_Total_0p1mgkg)))),
+            DR_0p18_mgkg_ALP = sd(DR_ALP_Total_0p18mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_ALP_Total_0p18mgkg)))),
+            DR_0p32_mgkg_ALP = sd(DR_ALP_Total_0p32mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_ALP_Total_0p32mgkg)))),
+            DR_0p56_mgkg_ALP = sd(DR_ALP_Total_0p56mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_ALP_Total_0p56mgkg)))),
+            DR_1p0_mgkg_ALP = sd(DR_ALP_Total_1p0mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_ALP_Total_1p0mgkg)))),
+            DR_1p8_mgkg_ALP = sd(DR_ALP_Total_1p8mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_ALP_Total_1p8mgkg))))) %>%
+  gather(key = Dose, value = SEM, -DE_Strain)
+
+founders_doseresponse_IVSA_mean = as.data.frame(founders_doseresponse_IVSA_mean)
+row.names(founders_doseresponse_IVSA_mean) = paste(founders_doseresponse_IVSA_mean$DE_Strain,
+                                                   founders_doseresponse_IVSA_mean$Dose,
+                                                   sep = "-")
+
+founders_doseresponse_IVSA_sem = as.data.frame(founders_doseresponse_IVSA_sem)
+row.names(founders_doseresponse_IVSA_sem) = paste(founders_doseresponse_IVSA_sem$DE_Strain,
+                                                         founders_doseresponse_IVSA_sem$Dose,
+                                                  sep = "-")
+
+founders_doseresponse_IVSA_mean$SEM = founders_doseresponse_IVSA_sem[row.names(founders_doseresponse_IVSA_mean),"SEM"]
+founders_doseresponse_IVSA_mean$ul = founders_doseresponse_IVSA_mean$Mean + founders_doseresponse_IVSA_mean$SEM
+founders_doseresponse_IVSA_mean$ll = founders_doseresponse_IVSA_mean$Mean - founders_doseresponse_IVSA_mean$SEM
+founders_doseresponse_IVSA_mean$dose_mg_per_kg = factor(gsub("^DR_(\\d{1})p(\\d+)_mgkg_ALP$","\\1.\\2",founders_doseresponse_IVSA_mean$Dose),
+                                                        levels = c("0.032","0.056","0.1","0.18","0.32","0.56","1.0","1.8"),
+                                                        ordered = TRUE)
+founders_doseresponse_IVSA_mean$DE_Strain = factor(founders_doseresponse_IVSA_mean$DE_Strain, 
+                                                   levels = founders_key$strain,
+                                                   ordered = TRUE)
+
+founders_doseresponse_infusions_plot = ggplot(data = founders_doseresponse_IVSA_mean, aes(x = dose_mg_per_kg, y = Mean, color = DE_Strain, group = DE_Strain)) + 
+  theme_cowplot() +
+  geom_point() +
+  geom_line(size = 1) +
+  geom_errorbar(aes(ymin = ll, ymax = ul), width = 0.1, size = 1) +
+  scale_color_manual(values = founders_key[which(founders_key$strain %in% founders_doseresponse_IVSA_mean$DE_Strain),"collaborative_cross_color_broman"]) +
+  scale_y_continuous(limits =  c(0,2000)) +
+  ylab("Total ALP") +
+  xlab("Dose (mg/kg per infusion)")+
+  theme_bw() +
+  theme(panel.grid = element_blank())+ theme(legend.position = "none")+   theme(aspect.ratio = 1)
+founders_doseresponse_infusions_plot 
+ggsave("founders_doseresponse_infusions_plot.pdf")
+```
+
+```{r}
+founders_doseresponse_IVSA_raw %>%
+  group_by(DE_Strain, DE_Sex)%>%
+  summarize(n())
+```
+Faceting by sex. DO included.
+
+```{r dose_response, warning=FALSE}
+founders_doseresponse_vars = c("DR_Inf_Total_0p032mgkg",
+                               "DR_Inf_Total_0p056mgkg",
+                               "DR_Inf_Total_0p1mgkg",
+                               "DR_Inf_Total_0p18mgkg",
+                               "DR_Inf_Total_0p32mgkg",
+                               "DR_Inf_Total_0p56mgkg",
+                               "DR_Inf_Total_1p0mgkg",
+                               "DR_Inf_Total_1p8mgkg")
+IVSA_Descriptive_vars = IVSA_metadata[which(IVSA_metadata$vartype == "Descriptive"),"variable"]
+
+founders_doseresponse_IVSA_raw = founders_IVSA[which((rowSums(is.na(founders_IVSA[,founders_doseresponse_vars])) == 0)),c(IVSA_Descriptive_vars,founders_doseresponse_vars)]
+
+
+founders_doseresponse_IVSA_raw_long = founders_doseresponse_IVSA_raw %>% 
+  gather(key = Dose_Active, value = Lever_Presses, -DE_Subject, -DE_Experiment, -DE_Active_Lever, -DE_Sex, -DE_Control_Unit, -DE_Group, -DE_Strain, -DE_Box, -DE_Stock_ID, -DE_Breeding, -DE_Protocol, -DE_Study, -DE_birth_date_year,-DE_birth_date_month,-DE_birth_date_day,-DE_arrival_date_year,-DE_arrival_date_month,-DE_arrival_date_day,-DE_exit_date_year,-DE_exit_date_month,-DE_exit_date_day,-DE_Exit_Reason,-DE_DO_Center_Status)
+
+founders_doseresponse_IVSA_raw_long = founders_doseresponse_IVSA_raw_long[grep("^DR_Inf_Total_\\d{1}p\\d{1,2}mgkg$",founders_doseresponse_IVSA_raw_long$Dose_Active),]
+founders_doseresponse_IVSA_raw_long$Dose = as.numeric(gsub(".*_(\\d{1})p(\\d+)mgkg$", "\\1.\\2", founders_doseresponse_IVSA_raw_long$Dose_Active))
+
+founders_doseresponse_IVSA_mean = founders_doseresponse_IVSA_raw %>%
+  group_by(DE_Strain, DE_Sex) %>%
+  summarize(DR_0p032_mgkg_Inf = mean(DR_Inf_Total_0p032mgkg, na.rm = TRUE),
+            DR_0p056_mgkg_Inf = mean(DR_Inf_Total_0p056mgkg, na.rm = TRUE),
+            DR_0p1_mgkg_Inf = mean(DR_Inf_Total_0p1mgkg, na.rm = TRUE),
+            DR_0p18_mgkg_Inf = mean(DR_Inf_Total_0p18mgkg, na.rm = TRUE),
+            DR_0p32_mgkg_Inf = mean(DR_Inf_Total_0p32mgkg, na.rm = TRUE),
+            DR_0p56_mgkg_Inf = mean(DR_Inf_Total_0p56mgkg, na.rm = TRUE),
+            DR_1p0_mgkg_Inf = mean(DR_Inf_Total_1p0mgkg, na.rm = TRUE),
+            DR_1p8_mgkg_Inf = mean(DR_Inf_Total_1p8mgkg, na.rm = TRUE)) %>%
+  gather(key = Dose, value = Mean, -DE_Strain, -DE_Sex)
+
+founders_doseresponse_IVSA_sem = founders_doseresponse_IVSA_raw %>%
+  group_by(DE_Strain, DE_Sex) %>%
+  summarize(DR_0p032_mgkg_Inf = sd(DR_Inf_Total_0p032mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p032mgkg)))),
+            DR_0p056_mgkg_Inf = sd(DR_Inf_Total_0p056mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p056mgkg)))),
+            DR_0p1_mgkg_Inf = sd(DR_Inf_Total_0p1mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p1mgkg)))),
+            DR_0p18_mgkg_Inf = sd(DR_Inf_Total_0p18mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p18mgkg)))),
+            DR_0p32_mgkg_Inf = sd(DR_Inf_Total_0p32mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p32mgkg)))),
+            DR_0p56_mgkg_Inf = sd(DR_Inf_Total_0p56mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p56mgkg)))),
+            DR_1p0_mgkg_Inf = sd(DR_Inf_Total_1p0mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_1p0mgkg)))),
+            DR_1p8_mgkg_Inf = sd(DR_Inf_Total_1p8mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_1p8mgkg))))) %>%
+  gather(key = Dose, value = SEM, -DE_Strain, -DE_Sex)
+
+founders_doseresponse_IVSA_mean = as.data.frame(founders_doseresponse_IVSA_mean)
+row.names(founders_doseresponse_IVSA_mean) = paste(founders_doseresponse_IVSA_mean$DE_Strain,
+                                                   founders_doseresponse_IVSA_mean$DE_Sex,
+                                                   founders_doseresponse_IVSA_mean$Dose,
+                                                   sep = "-")
+
+founders_doseresponse_IVSA_sem = as.data.frame(founders_doseresponse_IVSA_sem)
+row.names(founders_doseresponse_IVSA_sem) = paste(founders_doseresponse_IVSA_sem$DE_Strain,
+                                                   founders_doseresponse_IVSA_mean$DE_Sex,
+                                                         founders_doseresponse_IVSA_sem$Dose,
+                                                  sep = "-")
+
+founders_doseresponse_IVSA_mean$SEM = founders_doseresponse_IVSA_sem[row.names(founders_doseresponse_IVSA_mean),"SEM"]
+founders_doseresponse_IVSA_mean$ul = founders_doseresponse_IVSA_mean$Mean + founders_doseresponse_IVSA_mean$SEM
+founders_doseresponse_IVSA_mean$ll = founders_doseresponse_IVSA_mean$Mean - founders_doseresponse_IVSA_mean$SEM
+founders_doseresponse_IVSA_mean$dose_mg_per_kg = factor(gsub("^DR_(\\d{1})p(\\d+)_mgkg_Inf$","\\1.\\2",founders_doseresponse_IVSA_mean$Dose),
+                                                        levels = c("0.032","0.056","0.1","0.18","0.32","0.56","1.0","1.8"),
+                                                        ordered = TRUE)
+founders_doseresponse_IVSA_mean$DE_Strain = factor(founders_doseresponse_IVSA_mean$DE_Strain, 
+                                                   levels = founders_key$strain,
+                                                   ordered = TRUE)
+
+founders_doseresponse_infusions_plot = ggplot(data = founders_doseresponse_IVSA_mean, aes(x = dose_mg_per_kg, y = Mean, color = DE_Strain, group = DE_Strain)) + 
+  theme_cowplot() +
+  geom_point() +
+  #facet_grid(DE_Sex~.) +
+  facet_grid(rows = vars(DE_Sex)) +
+  geom_line(size = 1) +
+  geom_errorbar(aes(ymin = ll, ymax = ul), width = 0.1, size = 1) +
+  scale_color_manual(values = founders_key[which(founders_key$strain %in% founders_doseresponse_IVSA_mean$DE_Strain),"collaborative_cross_color_broman"]) +
+  theme(axis.text.x = element_text(size = 15, angle = 90, hjust = 1, vjust=0.5), legend.position="none") +
+  ylab("Total n Infusions") +
+  xlab("Dose (mg/kg per infusion)") 
+#founders_doseresponse_infusions_plot  + theme(legend.position = "none")
+founders_doseresponse_infusions_plot 
+ggsave("founders_doseresponse_infusions_plot.pdf")
+```
+Plotting founder dose response faceted by sex. Excluding DO.
+
+```{r dose_response, warning=FALSE}
+founders_key_no_DO = founders_key %>% dplyr::filter((strain != "J:DO"))
+founders_doseresponse_vars = c("DR_Inf_Total_0p032mgkg",
+                               "DR_Inf_Total_0p056mgkg",
+                               "DR_Inf_Total_0p1mgkg",
+                               "DR_Inf_Total_0p18mgkg",
+                               "DR_Inf_Total_0p32mgkg",
+                               "DR_Inf_Total_0p56mgkg",
+                               "DR_Inf_Total_1p0mgkg",
+                               "DR_Inf_Total_1p8mgkg")
+IVSA_Descriptive_vars = IVSA_metadata[which(IVSA_metadata$vartype == "Descriptive"),"variable"]
+
+founders_doseresponse_IVSA_raw = founders_IVSA[which((rowSums(is.na(founders_IVSA[,founders_doseresponse_vars])) == 0)),c(IVSA_Descriptive_vars,founders_doseresponse_vars)]
+
+founders_doseresponse_IVSA_raw_no_DO = founders_doseresponse_IVSA_raw %>% dplyr::filter((DE_Strain != "J:DO"))
+
+founders_doseresponse_IVSA_raw_no_DO_long = founders_doseresponse_IVSA_raw_no_DO %>% 
+  gather(key = Dose_Active, value = Lever_Presses, -DE_Subject, -DE_Experiment, -DE_Active_Lever, -DE_Sex, -DE_Control_Unit, -DE_Group, -DE_Strain, -DE_Box, -DE_Stock_ID, -DE_Breeding, -DE_Protocol, -DE_Study, -DE_birth_date_year,-DE_birth_date_month,-DE_birth_date_day,-DE_arrival_date_year,-DE_arrival_date_month,-DE_arrival_date_day,-DE_exit_date_year,-DE_exit_date_month,-DE_exit_date_day,-DE_Exit_Reason,-DE_DO_Center_Status)
+
+founders_doseresponse_IVSA_raw_no_DO_long = founders_doseresponse_IVSA_raw_no_DO_long[grep("^DR_Inf_Total_\\d{1}p\\d{1,2}mgkg$",founders_doseresponse_IVSA_raw_no_DO_long$Dose_Active),]
+founders_doseresponse_IVSA_raw_no_DO_long$Dose = as.numeric(gsub(".*_(\\d{1})p(\\d+)mgkg$", "\\1.\\2", founders_doseresponse_IVSA_raw_no_DO_long$Dose_Active))
+
+founders_doseresponse_IVSA_raw_no_DO_mean = founders_doseresponse_IVSA_raw_no_DO%>%
+  group_by(DE_Strain, DE_Sex) %>%
+  summarize(DR_0p032_mgkg_Inf = mean(DR_Inf_Total_0p032mgkg, na.rm = TRUE),
+            DR_0p056_mgkg_Inf = mean(DR_Inf_Total_0p056mgkg, na.rm = TRUE),
+            DR_0p1_mgkg_Inf = mean(DR_Inf_Total_0p1mgkg, na.rm = TRUE),
+            DR_0p18_mgkg_Inf = mean(DR_Inf_Total_0p18mgkg, na.rm = TRUE),
+            DR_0p32_mgkg_Inf = mean(DR_Inf_Total_0p32mgkg, na.rm = TRUE),
+            DR_0p56_mgkg_Inf = mean(DR_Inf_Total_0p56mgkg, na.rm = TRUE),
+            DR_1p0_mgkg_Inf = mean(DR_Inf_Total_1p0mgkg, na.rm = TRUE),
+            DR_1p8_mgkg_Inf = mean(DR_Inf_Total_1p8mgkg, na.rm = TRUE)) %>%
+  gather(key = Dose, value = Mean, -DE_Strain, -DE_Sex)
+
+founders_doseresponse_IVSA_raw_no_DO_sem = founders_doseresponse_IVSA_raw_no_DO %>%
+  group_by(DE_Strain, DE_Sex) %>%
+  summarize(DR_0p032_mgkg_Inf = sd(DR_Inf_Total_0p032mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p032mgkg)))),
+            DR_0p056_mgkg_Inf = sd(DR_Inf_Total_0p056mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p056mgkg)))),
+            DR_0p1_mgkg_Inf = sd(DR_Inf_Total_0p1mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p1mgkg)))),
+            DR_0p18_mgkg_Inf = sd(DR_Inf_Total_0p18mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p18mgkg)))),
+            DR_0p32_mgkg_Inf = sd(DR_Inf_Total_0p32mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p32mgkg)))),
+            DR_0p56_mgkg_Inf = sd(DR_Inf_Total_0p56mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p56mgkg)))),
+            DR_1p0_mgkg_Inf = sd(DR_Inf_Total_1p0mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_1p0mgkg)))),
+            DR_1p8_mgkg_Inf = sd(DR_Inf_Total_1p8mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_1p8mgkg))))) %>%
+  gather(key = Dose, value = SEM, -DE_Strain, -DE_Sex)
+
+founders_doseresponse_IVSA_raw_no_DO_mean = as.data.frame(founders_doseresponse_IVSA_raw_no_DO_mean)
+row.names(founders_doseresponse_IVSA_raw_no_DO_mean) = paste(founders_doseresponse_IVSA_raw_no_DO_mean$DE_Strain,
+                                                   founders_doseresponse_IVSA_raw_no_DO_mean$DE_Sex,
+                                                   founders_doseresponse_IVSA_raw_no_DO_mean$Dose,
+                                                   sep = "-")
+
+founders_doseresponse_IVSA_raw_no_DO_sem = as.data.frame(founders_doseresponse_IVSA_raw_no_DO_sem)
+row.names(founders_doseresponse_IVSA_raw_no_DO_sem) = paste(founders_doseresponse_IVSA_raw_no_DO_sem$DE_Strain,
+                                                   founders_doseresponse_IVSA_raw_no_DO_mean$DE_Sex,
+                                                         founders_doseresponse_IVSA_raw_no_DO_sem$Dose,
+                                                  sep = "-")
+
+founders_doseresponse_IVSA_raw_no_DO_mean$SEM = founders_doseresponse_IVSA_raw_no_DO_sem[row.names(founders_doseresponse_IVSA_raw_no_DO_mean),"SEM"]
+founders_doseresponse_IVSA_raw_no_DO_mean$ul = founders_doseresponse_IVSA_raw_no_DO_mean$Mean + founders_doseresponse_IVSA_raw_no_DO_mean$SEM
+founders_doseresponse_IVSA_raw_no_DO_mean$ll = founders_doseresponse_IVSA_raw_no_DO_mean$Mean - founders_doseresponse_IVSA_raw_no_DO_mean$SEM
+founders_doseresponse_IVSA_raw_no_DO_mean$dose_mg_per_kg = factor(gsub("^DR_(\\d{1})p(\\d+)_mgkg_Inf$","\\1.\\2",founders_doseresponse_IVSA_raw_no_DO_mean$Dose),
+                                                        levels = c("0.032","0.056","0.1","0.18","0.32","0.56","1.0","1.8"),
+                                                        ordered = TRUE)
+founders_doseresponse_IVSA_raw_no_DO_mean$DE_Strain = factor(founders_doseresponse_IVSA_raw_no_DO_mean$DE_Strain, 
+                                                   levels = founders_key$strain,
+                                                   ordered = TRUE)
+
+founders_doseresponse_IVSA_raw_no_DO_infusions_plot = ggplot(data = founders_doseresponse_IVSA_raw_no_DO_mean, aes(x = dose_mg_per_kg, y = Mean, color = DE_Strain, group = DE_Strain)) + 
+  theme_cowplot() +
+  geom_point() +
+  facet_grid(DE_Sex~.) +
+  geom_line(size = 1) +
+  geom_errorbar(aes(ymin = ll, ymax = ul), width = 0.1, size = 1) +
+  scale_color_manual(values = founders_key[which(founders_key$strain %in% founders_doseresponse_IVSA_mean$DE_Strain),"collaborative_cross_color_broman"]) +
+  ylab("Total n Infusions") +
+  xlab("Dose (mg/kg per infusion)")
+#founders_doseresponse_infusions_plot  + theme(legend.position = "none")
+founders_doseresponse_IVSA_raw_no_DO_infusions_plot 
+ggsave("founders_doseresponse_infusions_plot.pdf")
+```
+Plotting the four dose series for the CC.
+```{r}
+CC_doseresponse_vars = c("DR_Inf_Total_0p032mgkg",
+                               "DR_Inf_Total_0p1mgkg",
+                               "DR_Inf_Total_0p32mgkg",
+                               "DR_Inf_Total_1p0mgkg")
+IVSA_Descriptive_vars = IVSA_metadata[which(IVSA_metadata$vartype == "Descriptive"),"variable"]
+CC_doseresponse_IVSA_raw = CC_founders_IVSA[which((rowSums(is.na(CC_founders_IVSA[,CC_doseresponse_vars])) == 0)),c(IVSA_Descriptive_vars,CC_doseresponse_vars)]
+
+# Making long table
+CC_doseresponse_IVSA_raw_long = CC_doseresponse_IVSA_raw %>% 
+  gather(key = Dose_Active, value = Lever_Presses, -DE_Subject, -DE_Experiment, -DE_Active_Lever, -DE_Sex, -DE_Control_Unit, -DE_Group, -DE_Strain, -DE_Box)
+CC_doseresponse_IVSA_raw_long = CC_doseresponse_IVSA_raw_long[grep("^DR_Inf_Total_\\d{1}p\\d{1,2}mgkg$",CC_doseresponse_IVSA_raw_long$Dose_Active),]
+CC_doseresponse_IVSA_raw_long$Dose = as.numeric(gsub(".*_(\\d{1})p(\\d+)mgkg$", "\\1.\\2", CC_doseresponse_IVSA_raw_long$Dose_Active))
+
+CC_doseresponse_IVSA_mean = CC_doseresponse_IVSA_raw %>%
+  group_by(DE_Strain) %>%
+  summarize(DR_0p032_mgkg_Inf = mean(DR_Inf_Total_0p032mgkg, na.rm = TRUE),
+            DR_0p1_mgkg_Inf = mean(DR_Inf_Total_0p1mgkg, na.rm = TRUE),
+            DR_0p32_mgkg_Inf = mean(DR_Inf_Total_0p32mgkg, na.rm = TRUE),
+            DR_1p0_mgkg_Inf = mean(DR_Inf_Total_1p0mgkg, na.rm = TRUE)) %>%
+  gather(key = Dose, value = Mean, -DE_Strain)
+
+CC_doseresponse_IVSA_sem = CC_doseresponse_IVSA_raw %>%
+  group_by(DE_Strain) %>%
+  summarize(DR_0p032_mgkg_Inf = sd(DR_Inf_Total_0p032mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p032mgkg)))),
+            DR_0p1_mgkg_Inf = sd(DR_Inf_Total_0p1mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p1mgkg)))),
+            DR_0p32_mgkg_Inf = sd(DR_Inf_Total_0p32mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p32mgkg)))),
+            DR_1p0_mgkg_Inf = sd(DR_Inf_Total_1p0mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_1p0mgkg))))) %>%
+  gather(key = Dose, value = SEM, -DE_Strain)
+
+
+CC_doseresponse_IVSA_mean = as.data.frame(CC_doseresponse_IVSA_mean)
+row.names(CC_doseresponse_IVSA_mean) = paste(CC_doseresponse_IVSA_mean$DE_Strain,
+                                                   CC_doseresponse_IVSA_mean$Dose,
+                                                   sep = "-")
+
+CC_doseresponse_IVSA_sem = as.data.frame(CC_doseresponse_IVSA_sem)
+row.names(CC_doseresponse_IVSA_sem) = paste(CC_doseresponse_IVSA_sem$DE_Strain,
+                                                   CC_doseresponse_IVSA_sem$Dose,
+                                                   sep = "-")
+
+CC_doseresponse_IVSA_mean$SEM = CC_doseresponse_IVSA_sem[row.names(CC_doseresponse_IVSA_mean),"SEM"]
+CC_doseresponse_IVSA_mean$ul = CC_doseresponse_IVSA_mean$Mean + CC_doseresponse_IVSA_mean$SEM
+CC_doseresponse_IVSA_mean$ll = CC_doseresponse_IVSA_mean$Mean - CC_doseresponse_IVSA_mean$SEM
+CC_doseresponse_IVSA_mean$dose_mg_per_kg = factor(gsub("^DR_(\\d{1})p(\\d+)_mgkg_Inf$","\\1.\\2",CC_doseresponse_IVSA_mean$Dose),
+                                                        levels = c("0.032","0.1","0.32","1.0"),
+                                                        ordered = TRUE)
+CC_doseresponse_IVSA_mean$DE_Strain = factor(CC_doseresponse_IVSA_mean$DE_Strain,
+                                             levels = c(founders_key[which(founders_key$strain %in% CC_doseresponse_IVSA_mean$DE_Strain),"strain"], CC_key_abv[which(CC_key_abv %in% CC_doseresponse_IVSA_mean$DE_Strain)]),
+                                             ordered = TRUE)
+
+CC_doseresponse_IVSA_mean$straintype = rep("Founders", times = nrow(CC_doseresponse_IVSA_mean))
+CC_doseresponse_IVSA_mean[grep("^CC",as.character(CC_doseresponse_IVSA_mean$DE_Strain)),"straintype"] = "Collaborative Cross"
+founder_rows = which(CC_doseresponse_IVSA_mean$straintype == "Founders")
+# Changing colors to highlight important strains
+CC_doseresponse_IVSA_mean$color = rep("#AAAAAA", times = nrow(CC_doseresponse_IVSA_mean))
+CC_doseresponse_IVSA_mean[founder_rows,"color"] = founders_key[as.character(CC_doseresponse_IVSA_mean[founder_rows,"DE_Strain"]),"collaborative_cross_color_broman"]
+CC_doseresponse_IVSA_mean = CC_doseresponse_IVSA_mean[order(CC_doseresponse_IVSA_mean$DE_Strain),]
+# Highlighting CC002 in black as a high cocaine-taking strain at low doses (identified by Trowy Wilcox)
+CC_doseresponse_IVSA_mean[which(as.character(CC_doseresponse_IVSA_mean$DE_Strain) == "CC002/UncJ"),"color"] = "#000000"
+# Highlighting CC003 in dark red as a very low cocaine-taking  strain that does acquire.
+CC_doseresponse_IVSA_mean[which(as.character(CC_doseresponse_IVSA_mean$DE_Strain) == "CC003/UncJ"),"color"] = "#990000"
+# Highlighting CC004 in dark blue as our ideal high cocaine-taking strain.
+CC_doseresponse_IVSA_mean[which(as.character(CC_doseresponse_IVSA_mean$DE_Strain) == "CC004/TauUncJ"),"color"] = "#000099"
+
+CC_doseresponse_infusions_plot = ggplot(data = CC_doseresponse_IVSA_mean, aes(x = dose_mg_per_kg, y = Mean, color = DE_Strain, group = DE_Strain)) + 
+  geom_point() +
+  geom_line(size = 1) +
+  geom_errorbar(aes(ymin = ll, ymax = ul), width = 0.1, size = 1) +
+  scale_color_manual(values = CC_doseresponse_IVSA_mean[which(CC_doseresponse_IVSA_mean$Dose == "DR_0p032_mgkg_Inf"),"color"]) +
+  facet_grid(. ~ straintype) + 
+  ylab("Total n Infusions") +
+  xlab("Dose (mg/kg per infusion)") +
+  theme_bw() +
+  theme(panel.grid = element_blank())
+CC_doseresponse_infusions_plot
+```
+```{r dose_response, warning=FALSE}
+CC_doseresponse_vars = c("DR_Inf_Total_0p032mgkg",
+                               "DR_Inf_Total_0p1mgkg",
+                               "DR_Inf_Total_0p32mgkg",
+                               "DR_Inf_Total_1p0mgkg")
+IVSA_Descriptive_vars = IVSA_metadata[which(IVSA_metadata$vartype == "Descriptive"),"variable"]
+CC_doseresponse_IVSA_raw = CC_founders_IVSA[which((rowSums(is.na(CC_founders_IVSA[,CC_doseresponse_vars])) == 0)),c(IVSA_Descriptive_vars,CC_doseresponse_vars)]
+
+# Making long table
+CC_doseresponse_IVSA_raw_long = CC_doseresponse_IVSA_raw %>% 
+  gather(key = Dose_Active, value = Lever_Presses, -DE_Subject, -DE_Experiment, -DE_Active_Lever, -DE_Sex, -DE_Control_Unit, -DE_Group, -DE_Strain, -DE_Box)
+CC_doseresponse_IVSA_raw_long = CC_doseresponse_IVSA_raw_long[grep("^DR_Inf_Total_\\d{1}p\\d{1,2}mgkg$",CC_doseresponse_IVSA_raw_long$Dose_Active),]
+CC_doseresponse_IVSA_raw_long$Dose = as.numeric(gsub(".*_(\\d{1})p(\\d+)mgkg$", "\\1.\\2", CC_doseresponse_IVSA_raw_long$Dose_Active))
+
+CC_doseresponse_IVSA_mean = CC_doseresponse_IVSA_raw %>%
+  filter(DE_Strain %in% CC_key_abv) %>%
+  group_by(DE_Strain) %>%
+  summarize(DR_0p032_mgkg_Inf = mean(DR_Inf_Total_0p032mgkg, na.rm = TRUE),
+            DR_0p1_mgkg_Inf = mean(DR_Inf_Total_0p1mgkg, na.rm = TRUE),
+            DR_0p32_mgkg_Inf = mean(DR_Inf_Total_0p32mgkg, na.rm = TRUE),
+            DR_1p0_mgkg_Inf = mean(DR_Inf_Total_1p0mgkg, na.rm = TRUE)) %>%
+  gather(key = Dose, value = Mean, -DE_Strain)
+
+CC_doseresponse_IVSA_sem = CC_doseresponse_IVSA_raw %>%
+  filter(DE_Strain %in% CC_key_abv) %>%
+  group_by(DE_Strain) %>%
+  summarize(DR_0p032_mgkg_Inf = sd(DR_Inf_Total_0p032mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p032mgkg)))),
+            DR_0p1_mgkg_Inf = sd(DR_Inf_Total_0p1mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p1mgkg)))),
+            DR_0p32_mgkg_Inf = sd(DR_Inf_Total_0p32mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p32mgkg)))),
+            DR_1p0_mgkg_Inf = sd(DR_Inf_Total_1p0mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_1p0mgkg))))) %>%
+  gather(key = Dose, value = SEM, -DE_Strain)
+
+
+CC_doseresponse_IVSA_mean = as.data.frame(CC_doseresponse_IVSA_mean)
+row.names(CC_doseresponse_IVSA_mean) = paste(CC_doseresponse_IVSA_mean$DE_Strain,
+                                                   CC_doseresponse_IVSA_mean$Dose,
+                                                   sep = "-")
+
+CC_doseresponse_IVSA_sem = as.data.frame(CC_doseresponse_IVSA_sem)
+row.names(CC_doseresponse_IVSA_sem) = paste(CC_doseresponse_IVSA_sem$DE_Strain,
+                                                   CC_doseresponse_IVSA_sem$Dose,
+                                                   sep = "-")
+
+CC_doseresponse_IVSA_mean$SEM = CC_doseresponse_IVSA_sem[row.names(CC_doseresponse_IVSA_mean),"SEM"]
+CC_doseresponse_IVSA_mean$ul = CC_doseresponse_IVSA_mean$Mean + CC_doseresponse_IVSA_mean$SEM
+CC_doseresponse_IVSA_mean$ll = CC_doseresponse_IVSA_mean$Mean - CC_doseresponse_IVSA_mean$SEM
+CC_doseresponse_IVSA_mean$dose_mg_per_kg = factor(gsub("^DR_(\\d{1})p(\\d+)_mgkg_Inf$","\\1.\\2",CC_doseresponse_IVSA_mean$Dose),
+                                                        levels = c("0.032","0.1","0.32","1.0"),
+                                                        ordered = TRUE)
+CC_doseresponse_IVSA_mean$DE_Strain = factor(CC_doseresponse_IVSA_mean$DE_Strain,
+                                             levels = c(founders_key[which(founders_key$strain %in% CC_doseresponse_IVSA_mean$DE_Strain),"strain"], CC_key_abv[which(CC_key_abv %in% CC_doseresponse_IVSA_mean$DE_Strain)]),
+                                             ordered = TRUE)
+
+CC_doseresponse_IVSA_mean$straintype =
+CC_doseresponse_IVSA_mean[grep("^CC",as.character(CC_doseresponse_IVSA_mean$DE_Strain)),"straintype"] = "Collaborative Cross"
+
+# Changing colors to highlight important strains
+CC_doseresponse_IVSA_mean$color = rep("#AAAAAA", times = nrow(CC_doseresponse_IVSA_mean))
+
+CC_doseresponse_IVSA_mean = CC_doseresponse_IVSA_mean[order(CC_doseresponse_IVSA_mean$DE_Strain),]
+# Highlighting CC002 in black as a high cocaine-taking strain at low doses (identified by Trowy Wilcox)
+CC_doseresponse_IVSA_mean[which(as.character(CC_doseresponse_IVSA_mean$DE_Strain) == "CC002/UncJ"),"color"] = "#000000"
+# Highlighting CC003 in dark red as a very low cocaine-taking  strain that does acquire.
+CC_doseresponse_IVSA_mean[which(as.character(CC_doseresponse_IVSA_mean$DE_Strain) == "CC003/UncJ"),"color"] = "#990000"
+# Highlighting CC004 in dark blue as our ideal high cocaine-taking strain.
+CC_doseresponse_IVSA_mean[which(as.character(CC_doseresponse_IVSA_mean$DE_Strain) == "CC004/TauUncJ"),"color"] = "#000099"
+
+
+CC_doseresponse_infusions_plot = ggplot(data = CC_doseresponse_IVSA_mean, aes(x = dose_mg_per_kg, y = Mean, color = DE_Strain, group = DE_Strain)) + 
+  geom_point() +
+  geom_line(size = 1) +
+  geom_errorbar(aes(ymin = ll, ymax = ul), width = 0.1, size = 1) +
+  scale_color_manual(values = CC_doseresponse_IVSA_mean[which(CC_doseresponse_IVSA_mean$Dose == "DR_0p032_mgkg_Inf"),"color"])  + 
+  ylab("Total n Infusions") +
+  xlab("Dose (mg/kg per infusion)") +
+  theme_bw() +
+  theme(panel.grid = element_blank())+ theme(legend.position = "none") + theme(aspect.ratio = 1)
+CC_doseresponse_infusions_plot
+
+```
+```{r dose_response, warning=FALSE}
+library("directlabels")
+CC_doseresponse_vars = c("DR_Inf_Total_0p032mgkg",
+                               "DR_Inf_Total_0p1mgkg",
+                               "DR_Inf_Total_0p32mgkg",
+                               "DR_Inf_Total_1p0mgkg")
+IVSA_Descriptive_vars = IVSA_metadata[which(IVSA_metadata$vartype == "Descriptive"),"variable"]
+CC_doseresponse_IVSA_raw = CC_founders_IVSA[which((rowSums(is.na(CC_founders_IVSA[,CC_doseresponse_vars])) == 0)),c(IVSA_Descriptive_vars,CC_doseresponse_vars)]
+
+
+CC_doseresponse_IVSA_mean = CC_doseresponse_IVSA_raw %>%
+  filter(DE_Strain %in% CC_key_abv) %>%
+  group_by(DE_Strain) %>%
+  summarize(DR_0p032_mgkg_Inf = mean(DR_Inf_Total_0p032mgkg, na.rm = TRUE),
+            DR_0p1_mgkg_Inf = mean(DR_Inf_Total_0p1mgkg, na.rm = TRUE),
+            DR_0p32_mgkg_Inf = mean(DR_Inf_Total_0p32mgkg, na.rm = TRUE),
+            DR_1p0_mgkg_Inf = mean(DR_Inf_Total_1p0mgkg, na.rm = TRUE)) %>%
+  gather(key = Dose, value = Mean, -DE_Strain)
+
+CC_doseresponse_IVSA_sem = CC_doseresponse_IVSA_raw %>%
+  filter(DE_Strain %in% CC_key_abv) %>%
+  group_by(DE_Strain) %>%
+  summarize(DR_0p032_mgkg_Inf = sd(DR_Inf_Total_0p032mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p032mgkg)))),
+            DR_0p1_mgkg_Inf = sd(DR_Inf_Total_0p1mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p1mgkg)))),
+            DR_0p32_mgkg_Inf = sd(DR_Inf_Total_0p32mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p32mgkg)))),
+            DR_1p0_mgkg_Inf = sd(DR_Inf_Total_1p0mgkg, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_1p0mgkg))))) %>%
+  gather(key = Dose, value = SEM, -DE_Strain)
+
+
+CC_doseresponse_IVSA_mean = as.data.frame(CC_doseresponse_IVSA_mean)
+row.names(CC_doseresponse_IVSA_mean) = paste(CC_doseresponse_IVSA_mean$DE_Strain,
+                                                   CC_doseresponse_IVSA_mean$Dose,
+                                                   sep = "-")
+
+CC_doseresponse_IVSA_sem = as.data.frame(CC_doseresponse_IVSA_sem)
+row.names(CC_doseresponse_IVSA_sem) = paste(CC_doseresponse_IVSA_sem$DE_Strain,
+                                                   CC_doseresponse_IVSA_sem$Dose,
+                                                   sep = "-")
+
+CC_doseresponse_IVSA_mean$SEM = CC_doseresponse_IVSA_sem[row.names(CC_doseresponse_IVSA_mean),"SEM"]
+CC_doseresponse_IVSA_mean$ul = CC_doseresponse_IVSA_mean$Mean + CC_doseresponse_IVSA_mean$SEM
+CC_doseresponse_IVSA_mean$ll = CC_doseresponse_IVSA_mean$Mean - CC_doseresponse_IVSA_mean$SEM
+CC_doseresponse_IVSA_mean$dose_mg_per_kg = factor(gsub("^DR_(\\d{1})p(\\d+)_mgkg_Inf$","\\1.\\2",CC_doseresponse_IVSA_mean$Dose),
+                                                        levels = c("0.032","0.1","0.32","1.0"),
+                                                        ordered = TRUE)
+CC_doseresponse_IVSA_mean$DE_Strain = factor(CC_doseresponse_IVSA_mean$DE_Strain,
+                                             levels = c(founders_key[which(founders_key$strain %in% CC_doseresponse_IVSA_mean$DE_Strain),"strain"], CC_key_abv[which(CC_key_abv %in% CC_doseresponse_IVSA_mean$DE_Strain)]),
+                                             ordered = TRUE)
+
+CC_doseresponse_IVSA_mean$straintype =
+CC_doseresponse_IVSA_mean[grep("^CC",as.character(CC_doseresponse_IVSA_mean$DE_Strain)),"straintype"] = "Collaborative Cross"
+
+# Changing colors to highlight important strains
+CC_doseresponse_IVSA_mean$color = rep("#AAAAAA", times = nrow(CC_doseresponse_IVSA_mean))
+
+CC_doseresponse_IVSA_mean = CC_doseresponse_IVSA_mean[order(CC_doseresponse_IVSA_mean$DE_Strain),]
+# Highlighting CC002 in black as a high cocaine-taking strain at low doses (identified by Trowy Wilcox)
+CC_doseresponse_IVSA_mean[which(as.character(CC_doseresponse_IVSA_mean$DE_Strain) == "CC002"),"color"] = "#990000"
+# Highlighting CC003 in dark red as a very low cocaine-taking  strain that does acquire.
+CC_doseresponse_IVSA_mean[which(as.character(CC_doseresponse_IVSA_mean$DE_Strain) == "CC003"),"color"] = "#000000"
+# Highlighting CC004 in dark blue as our ideal high cocaine-taking strain.
+#CC_doseresponse_IVSA_mean[which(as.character(CC_doseresponse_IVSA_mean$DE_Strain) == "CC041"),"color"] = "#000099" 
+
+CC_doseresponse_infusions_plot = ggplot(data = CC_doseresponse_IVSA_mean, aes(x = dose_mg_per_kg, y = Mean, color = DE_Strain, group = DE_Strain)) + 
+  geom_point() +
+  geom_line(size = 1) +
+  geom_errorbar(aes(ymin = ll, ymax = ul), width = 0.1, size = 1) +
+  scale_color_manual(values = CC_doseresponse_IVSA_mean[which(CC_doseresponse_IVSA_mean$Dose == "DR_0p032_mgkg_Inf"),"color"])  + 
+  ylab("Total Infusions") +
+  xlab("Dose (mg/kg per infusion)") +
+  theme_bw() +
+  theme(panel.grid = element_blank())+ theme(legend.position = "none") + theme(aspect.ratio = 1)
+# + geom_dl(aes(label = DE_Strain), method = list(dl.combine("first.points", "last.points")), cex = 0.8) 
+CC_doseresponse_infusions_plot
+ggsave("CC_doseresponse_infusions_plot.pdf")
+```
+
+
+Selecting the relevant columns for repeated measures anova for our extended dose response calculations for founders. DO excluded. Choosing the following variables:
+
+```{r dose_response, warning=FALSE}
+founders_doseresponse_vars = c("DR_Inf_Total_0p032mgkg",
+                               "DR_Inf_Total_0p056mgkg",
+                               "DR_Inf_Total_0p1mgkg",
+                               "DR_Inf_Total_0p18mgkg",
+                               "DR_Inf_Total_0p32mgkg",
+                               "DR_Inf_Total_0p56mgkg",
+                               "DR_Inf_Total_1p0mgkg",
+                               "DR_Inf_Total_1p8mgkg")
+IVSA_Descriptive_vars = IVSA_metadata[which(IVSA_metadata$vartype == "Descriptive"),"variable"]
+founders_doseresponse_IVSA_raw = founders_IVSA[which((rowSums(is.na(founders_IVSA[,founders_doseresponse_vars])) == 0)),c(IVSA_Descriptive_vars,founders_doseresponse_vars)]
+
+
+founders_doseresponse_IVSA_raw_long = founders_doseresponse_IVSA_raw %>% 
+  gather(key = Dose_Active, value = Lever_Presses, -DE_Subject, -DE_Experiment, -DE_Active_Lever, -DE_Sex, -DE_Control_Unit, -DE_Group, -DE_Strain, -DE_Box, -DE_Stock_ID, -DE_Breeding, -DE_Protocol, -DE_Study, -DE_birth_date_year,-DE_birth_date_month,-DE_birth_date_day,-DE_arrival_date_year,-DE_arrival_date_month,-DE_arrival_date_day,-DE_exit_date_year,-DE_exit_date_month,-DE_exit_date_day,-DE_Exit_Reason,-DE_DO_Center_Status)
+
+
+head(founders_doseresponse_IVSA_raw_long)
+
+founders_doseresponse_IVSA_raw_long$Dose_Active <- as.factor(founders_doseresponse_IVSA_raw_long$Dose_Active)   
+
+founders_doseresponse_IVSA_raw_long <- founders_doseresponse_IVSA_raw_long [ which(founders_doseresponse_IVSA_raw_long$DE_Strain !='J:DO'),]
+
+model3 =ezANOVA(
+  data = founders_doseresponse_IVSA_raw_long,
+  dv = Lever_Presses,
+  wid = DE_Subject,
+  within = .(Dose_Active),
+  between = .(DE_Strain),
+  #between = .(DE_Strain, DE_Sex),
+  detailed = TRUE,
+  type = 3
+)
+print(model3)
+
+unique(founders_doseresponse_IVSA_raw_long$Dose_Active)
+
+founders_doseresponse_summary = founders_doseresponse_IVSA_raw_long %>%
+  group_by(DE_Strain, Dose_Active) %>%
+  summarize(mean = mean(Lever_Presses, na.rm = TRUE),
+            n = length(which(!is.na(Lever_Presses))),
+            sem = sd(Lever_Presses, na.rm = TRUE) / sqrt(length(which(!is.na(Lever_Presses))))) %>%
+  mutate(ul = mean + sem, ll = mean - sem)
+founders_doseresponse_summary 
+```
+```{r dose_response, warning=FALSE}
+CC_doseresponse_vars = c("DR_Inf_Total_0p032mgkg",
+                               "DR_Inf_Total_0p1mgkg",
+                               "DR_Inf_Total_0p32mgkg",
+                               "DR_Inf_Total_1p0mgkg")
+IVSA_Descriptive_vars = IVSA_metadata[which(IVSA_metadata$vartype == "Descriptive"),"variable"]
+CC_doseresponse_IVSA_raw = CC_founders_IVSA[which((rowSums(is.na(CC_founders_IVSA[,CC_doseresponse_vars])) == 0)),c(IVSA_Descriptive_vars,CC_doseresponse_vars)]
+
+# Making long table
+CC_doseresponse_IVSA_raw <- CC_doseresponse_IVSA_raw %>% filter(DE_Strain %in% CC_key_abv)
+CC_doseresponse_IVSA_raw_long = CC_doseresponse_IVSA_raw %>%
+  gather(key = Dose_Active, value = Lever_Presses, -DE_Subject, -DE_Experiment, -DE_Active_Lever, -DE_Sex, -DE_Control_Unit, -DE_Group, -DE_Strain, -DE_Box, -DE_Stock_ID, -DE_Breeding, -DE_Protocol, -DE_Study, -DE_birth_date_year,-DE_birth_date_month,-DE_birth_date_day,-DE_arrival_date_year,-DE_arrival_date_month,-DE_arrival_date_day,-DE_exit_date_year,-DE_exit_date_month,-DE_exit_date_day,-DE_Exit_Reason,-DE_DO_Center_Status)
+
+head(CC_doseresponse_IVSA_raw_long)
+
+CC_doseresponse_IVSA_raw_long$Dose_Active <- as.factor(CC_doseresponse_IVSA_raw_long$Dose_Active)   
+
+model3 =ezANOVA(
+  data = CC_doseresponse_IVSA_raw_long,
+  dv = Lever_Presses,
+  wid = DE_Subject,
+  within = .(Dose_Active),
+  between = .(DE_Strain),
+  #between = .(DE_Strain, DE_Sex),
+  detailed = TRUE,
+  type = 3
+)
+print(model3)
+
+unique(CC_doseresponse_IVSA_raw_long$Dose_Active)
+
+CC_doseresponse_summary = CC_doseresponse_IVSA_raw_long %>%
+  group_by(DE_Strain, Dose_Active) %>%
+  summarize(mean = mean(Lever_Presses, na.rm = TRUE),
+            n = length(which(!is.na(Lever_Presses))),
+            sem = sd(Lever_Presses, na.rm = TRUE) / sqrt(length(which(!is.na(Lever_Presses))))) %>%
+  mutate(ul = mean + sem, ll = mean - sem)
+CC_doseresponse_summary 
+```
+
+```{r}
+library(lsmeans)
+CC_doseresponse_IVSA_raw_long %$% 
+  aov(Lever_Presses ~ as.factor(DE_Strain)) %>% 
+  lsmeans(~DE_Strain) %>% 
+  pairs
+```
+
+```{r}
+library(multcomp)
+library(nlme)
+lme_Lever_Presses = lme(Lever_Presses ~ DE_Strain, data=CC_doseresponse_IVSA_raw_long, random = ~1|DE_Subject)
+anova(lme_Lever_Presses)
+
+
+summary(glht(lme_Lever_Presses, linfct=mcp(DE_Strain = "Tukey")), test = adjusted(type = "bonferroni"))
+```
+
+```{r}
+library("emmeans")
+# set orthogonal contrasts
+options(contrasts = c("contr.sum", "contr.poly"))
+
+aov_Lever_Presses <- aov(Lever_Presses ~ DE_Strain + Error(DE_Subject / DE_Strain), data = CC_doseresponse_IVSA_raw_long)
+
+emm <- emmeans(aov_Lever_Presses, ~ DE_Strain)
+pairs(emm)
+```
+
+
+###Fig: Plotting founder AUC for infusions
+
+```{r}
+founders_AUC_vars = "DR_Inf_Total_AUC"
+
+founders_AUC_IVSA_raw = founders_IVSA[,c(IVSA_Descriptive_vars,founders_AUC_vars)]
+founders_AUC_IVSA_raw.FP  = founders_AUC_IVSA_raw %>% filter(DE_Exit_Reason == "Finished Pipeline")
+founders_AUC_IVSA_raw.FP.mean = founders_AUC_IVSA_raw.FP %>% 
+                                group_by(DE_Strain, DE_Sex) %>%
+                                summarize(mean_DR_AUC = mean(DR_Inf_Total_AUC, na.rm = TRUE),
+                                          std_DR_AUC = sd(DR_Inf_Total_AUC, na.rm = TRUE),
+                                          sem_DR_AUC = sd(DR_Inf_Total_AUC, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_AUC)))))
+
+founders_AUC_IVSA_raw.FP.mean$DE_Strain = factor(founders_AUC_IVSA_raw.FP.mean$DE_Strain, 
+                                                   levels = founders_key$strain,
+                                                   ordered = TRUE)
+
+
+founders_AUC = ggplot(data=founders_AUC_IVSA_raw.FP.mean, aes(x=DE_Strain,y=mean_DR_AUC, color=DE_Strain)) + 
+  theme_cowplot() + 
+  geom_col(fill="white") + 
+  ylab("Mean AUC Total Infusions") +
+  geom_errorbar(aes(ymin = mean_DR_AUC-sem_DR_AUC, ymax = mean_DR_AUC+sem_DR_AUC), width = .25) +
+  scale_color_manual(values = founders_key[c("A/J","C57BL/6J","NOD/ShiLtJ","NZO/HlLtJ","CAST/EiJ","PWK/PhJ","WSB/EiJ", "J:DO"),"collaborative_cross_color_official"]) +
+  facet_grid(DE_Sex~.) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), legend.position="none")
+
+ggsave("founders_AUC.pdf")
+founders_AUC
+```
+
+
+###Fig: Plotting founder, DO, CC AUC for infusions
+
+```{r}
+CC_founders_IVSA_AUC_vars = "DR_Inf_Total_AUC"
+
+CC_founders_AUC_IVSA_raw = CC_founders_IVSA[,c(IVSA_Descriptive_vars,CC_founders_IVSA_AUC_vars)]
+CC_founders_AUC_IVSA_raw.FP  = CC_founders_AUC_IVSA_raw %>% filter(DE_Exit_Reason == "Finished Pipeline")
+```
+
+Calculating population grand mean for overlaying on AUC bar plot
+```{r}
+CC_founders_AUC_GrandMean = mean(CC_founders_AUC_IVSA_raw$DR_Inf_Total_AUC, na.rm = TRUE)
+CC_founders_AUC_GrandMean
+```
+Plotting AUC for founders and DO.
+
+```{r}
+CC_founders_AUC_summary = CC_founders_AUC_IVSA_raw.FP %>%
+  filter(DE_Strain %in% founders_key$strain)%>%
+  group_by(DE_Strain) %>%
+  summarize(AUC_mean = mean(DR_Inf_Total_AUC, na.rm = TRUE),
+            AUC_sem = sd(DR_Inf_Total_AUC, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_AUC)))),
+            AUC_n = length(which(!is.na(DR_Inf_Total_AUC)))) %>%
+  mutate(AUC_ul = AUC_mean + AUC_sem,
+         AUC_ll = AUC_mean - AUC_sem)
+
+CC_founders_AUC_summary = as.data.frame(CC_founders_AUC_summary)
+
+CC_founders_AUC_summary$DE_Strain = factor(CC_founders_AUC_summary$DE_Strain,
+                                  levels = founders_key$strain,
+                                                   ordered = TRUE)
+CC_founders_AUC_summary$xlabel = paste(as.character(CC_founders_AUC_summary$DE_Strain), sep = "")
+
+CC_founders_AUC_plot = ggplot(data = CC_founders_AUC_summary, aes(x = DE_Strain, y = AUC_mean, fill=DE_Strain, alpha=0.9, width = 0.75)) +
+  geom_col(color = founders_key[c("A/J","C57BL/6J","NOD/ShiLtJ","NZO/HlLtJ","CAST/EiJ","PWK/PhJ","WSB/EiJ", "J:DO"),"collaborative_cross_color_official"], width = .5)  +
+  geom_errorbar(aes(ymin = AUC_ll, ymax = AUC_ul), width = 0.25, alpha=1.0) +
+  theme(axis.text.x = element_text(size = 10, angle = 90, hjust = 1, vjust=0.5), legend.position="none") +
+  scale_fill_manual(values = founders_key[c("A/J","C57BL/6J","NOD/ShiLtJ","NZO/HlLtJ","CAST/EiJ","PWK/PhJ","WSB/EiJ", "J:DO"),"collaborative_cross_color_official"]) +
+  xlab(NULL) +
+  ylab("Mean AUC Total Infusions")+ geom_text(aes(
+    label= paste(as.character(),CC_founders_AUC_summary$AUC_n, sep = ""),
+    y=50), size = 2.75, hjust = 0.3, vjust = 0.4, angle = 90) 
+
+CC_founders_AUC_plot <- CC_founders_AUC_plot + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))
+# + geom_hline(yintercept=CC_founders_AUC_GrandMean, linetype="dashed", color = "red")
+ CC_founders_AUC_plot
+ggsave("founders_AUC_plot.pdf")
+```
+```{r}
+DO_founders_AUC_histogram <- CC_founders_AUC_IVSA_raw.FP %>%
+  filter(DE_Strain %in% founders_key$strain)  
+
+
+
+DO_founders_AUC_histogram %>%  ggplot(aes(x = DR_Inf_Total_AUC, y = DE_Strain, height = stat(density), fill = DE_Strain)) + 
+  geom_density_ridges(
+    stat = "binline", bins = 30, scale = 0.95,
+    draw_baseline = FALSE) + 
+  scale_fill_manual(values = founders_key[which(founders_key$strain %in% DO_founders_AUC_histogram$DE_Strain),"collaborative_cross_color_broman"]) + 
+  theme_bw() +
+  theme(panel.grid = element_blank())+ theme(legend.position = "none")+   theme(aspect.ratio = 1)
+
+```
+
+Plotting AUC for founders and DO.
+
+```{r}
+CC_founders_AUC_summary = CC_founders_AUC_IVSA_raw.FP%>%
+  group_by(DE_Strain) %>%
+  summarize(AUC_mean = mean(DR_Inf_Total_AUC, na.rm = TRUE),
+            AUC_sem = sd(DR_Inf_Total_AUC, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_AUC)))),
+            AUC_n = length(which(!is.na(DR_Inf_Total_AUC)))) %>%
+  mutate(AUC_ul = AUC_mean + AUC_sem,
+         AUC_ll = AUC_mean - AUC_sem)
+
+CC_founders_AUC_summary = as.data.frame(CC_founders_AUC_summary)
+CC_founders_AUC_summary$Colors = rep("#CCCCCC", times = nrow(CC_founders_AUC_summary))
+CC_founders_AUC_summary[which(CC_founders_AUC_summary$DE_Strain %in% founders_key$strain),"Colors"] = founders_key[CC_founders_AUC_summary[which(CC_founders_AUC_summary$DE_Strain %in% founders_key$strain),"DE_Strain"],"collaborative_cross_color_broman"]
+CC_founders_AUC_summary$DE_Strain = factor(CC_founders_AUC_summary$DE_Strain,
+                                  levels = CC_founders_AUC_summary[order(CC_founders_AUC_summary$AUC_mean, decreasing = FALSE),"DE_Strain"],
+                                  ordered = TRUE)
+  CC_founders_AUC_summary$xlabel = paste(as.character(CC_founders_AUC_summary$DE_Strain), sep = "")
+CC_founders_AUC_plot = ggplot(data = CC_founders_AUC_summary, aes(x = DE_Strain, y = AUC_mean, fill = DE_Strain)) +
+  geom_col(color = "#000000") +
+  geom_errorbar(aes(ymin = AUC_ll, ymax = AUC_ul), width = 0.5) +
+  theme(axis.text.x = element_text(size = 10, angle = 90, hjust = 1, vjust=0.5), legend.position="none") +
+  scale_fill_manual(values = CC_founders_AUC_summary[order(CC_founders_AUC_summary$DE_Strain),"Colors"]) +
+  xlab(NULL) +
+  ylab("Mean AUC Total Infusions")+ geom_text(aes(
+    label= paste(as.character(),CC_founders_AUC_summary$AUC_n, sep = ""),
+    y=50), size = 2.75, hjust = 0.3, vjust = 0.4, angle = 90) 
+
+CC_founders_AUC_plot <- CC_founders_AUC_plot + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))
+# + geom_hline(yintercept=CC_founders_AUC_GrandMean, linetype="dashed", color = "red")
+ 
+CC_founders_AUC_plot
+ggsave("CC_founders_AUC_plot.pdf")
+```
+
+
+Plotting AUC, for only the CC strains.
+
+```{r}
+CC_founders_AUC_summary = CC_founders_AUC_IVSA_raw.FP %>%
+  filter(DE_Strain %in% CC_key_abv) %>%
+  group_by(DE_Strain) %>%
+  summarize(AUC_mean = mean(DR_Inf_Total_AUC, na.rm = TRUE),
+            AUC_sem = sd(DR_Inf_Total_AUC, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_AUC)))),
+            AUC_n = length(which(!is.na(DR_Inf_Total_AUC)))) %>%
+  mutate(AUC_ul = AUC_mean + AUC_sem,
+         AUC_ll = AUC_mean - AUC_sem)
+
+CC_founders_AUC_summary <- CC_founders_AUC_summary [ which(CC_founders_AUC_summary$DE_Strain !='J:DO'),]
+
+CC_founders_AUC_summary = as.data.frame(CC_founders_AUC_summary)
+CC_founders_AUC_summary$Colors = rep("#CCCCCC", times = nrow(CC_founders_AUC_summary))
+CC_founders_AUC_summary[which(CC_founders_AUC_summary$DE_Strain %in% founders_key$strain),"Colors"] = founders_key[CC_founders_AUC_summary[which(CC_founders_AUC_summary$DE_Strain %in% founders_key$strain),"DE_Strain"],"collaborative_cross_color_broman"]
+CC_founders_AUC_summary$DE_Strain = factor(CC_founders_AUC_summary$DE_Strain,
+                                  levels = CC_founders_AUC_summary[order(CC_founders_AUC_summary$AUC_mean, decreasing = FALSE),"DE_Strain"],
+                                  ordered = TRUE)
+  CC_founders_AUC_summary$xlabel = paste(as.character(CC_founders_AUC_summary$DE_Strain), sep = "")
+CC_founders_AUC_plot = ggplot(data = CC_founders_AUC_summary, aes(x = DE_Strain, y = AUC_mean, fill = DE_Strain)) +
+  geom_col(color = "#000000") +
+  geom_errorbar(aes(ymin = AUC_ll, ymax = AUC_ul), width = 0.5) +
+  theme(axis.text.x = element_text(size = 10, angle = 90, hjust = 1, vjust=0.5), legend.position="none") +
+  scale_fill_manual(values = CC_founders_AUC_summary[order(CC_founders_AUC_summary$DE_Strain),"Colors"]) +
+  xlab(NULL) +
+  ylab("Mean AUC Total Infusions")+ geom_text(aes(
+    label= paste(as.character(),CC_founders_AUC_summary$AUC_n, sep = ""),
+    y=50), size = 2.75, hjust = 0.3, vjust = 0.3, angle = 90) 
+
+CC_AUC_plot <- CC_founders_AUC_plot + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))
+#+ geom_hline(yintercept=CC_founders_AUC_GrandMean, linetype="dashed", color = "red")
+ 
+CC_AUC_plot
+ggsave("CC_AUC_plot.pdf")
+```
+
+ANOVA for AUC in founders. DO excluded. First, with strain and then again, with strain and sex.
+
+```{r}
+ANOVA_AUC_founders_IVSA <- CC_founders_AUC_IVSA_raw%>%
+  filter(DE_Strain %in% founders_key$strain)
+
+ANOVA_AUC_founders_IVSA <- ANOVA_AUC_founders_IVSA [ which(ANOVA_AUC_founders_IVSA$DE_Strain !='J:DO'),]
+
+anova(lm(DR_Inf_Total_AUC ~ DE_Strain, data = ANOVA_AUC_founders_IVSA))
+anova(lm(DR_Inf_Total_AUC ~ DE_Strain*DE_Sex, data = ANOVA_AUC_founders_IVSA))
+```
+
+ANOVA for AUC in CC. First, with strain and then again, with strain and sex.
+
+```{r}
+ANOVA_AUC_CC_IVSA <- CC_founders_AUC_IVSA_raw %>%
+  filter(DE_Strain %in% c(CC_key_abv))
+anova(lm(DR_Inf_Total_AUC ~ DE_Strain, data = ANOVA_AUC_CC_IVSA))
+anova(lm(DR_Inf_Total_AUC ~ DE_Strain*DE_Sex, data = ANOVA_AUC_CC_IVSA))
+```
+
+```{r}
+DR_Inf_Total_AUC_model <- lm(DR_Inf_Total_AUC ~ DE_Strain, data = ANOVA_AUC_CC_IVSA)
+DR_Inf_Total_AUC_strains <- glht(DR_Inf_Total_AUC_model,mcp(DE_Strain="GrandMean"), alternative= c("two.sided"), rhs= 0)
+ANOM(DR_Inf_Total_AUC_strains)
+summary(DR_Inf_Total_AUC_strains)
+```
+
+ANOVA for AUC in founders and CC. DO excluded. First, with strain and then again, with strain and sex.
+
+```{r}
+ANOVA_AUC_founders_CC_IVSA <- CC_founders_AUC_IVSA_raw %>% dplyr::filter((DE_Strain != "J:DO"))
+
+anova(lm(DR_Inf_Total_AUC ~ DE_Strain, data = ANOVA_AUC_founders_CC_IVSA))
+anova(lm(DR_Inf_Total_AUC ~ DE_Strain*DE_Sex, data = ANOVA_AUC_founders_CC_IVSA))
+```
+
+```{r}
+founders_doseresponse_vars1 = c("DR_Inf_Total_0p032mgkg",
+                               "DR_Inf_Total_0p056mgkg",
+                               "DR_Inf_Total_0p1mgkg",
+                               "DR_Inf_Total_0p18mgkg",
+                               "DR_Inf_Total_0p32mgkg",
+                               "DR_Inf_Total_0p56mgkg",
+                               "DR_Inf_Total_1p0mgkg",
+                               "DR_Inf_Total_1p8mgkg")
+IVSA_Descriptive_vars = IVSA_metadata[which(IVSA_metadata$vartype == "Descriptive"),"variable"]
+
+founders_doseresponse_IVSA_raw = founders_IVSA[which((rowSums(is.na(founders_IVSA[,founders_doseresponse_vars])) == 0)),c(IVSA_Descriptive_vars,founders_doseresponse_vars)]
+
+
+founders_doseresponse_IVSA_raw_long = founders_doseresponse_IVSA_raw %>% 
+  gather(key = Dose_Active, value = Lever_Presses, -DE_Subject, -DE_Experiment, -DE_Active_Lever, -DE_Sex, -DE_Control_Unit, -DE_Group, -DE_Strain, -DE_Box, -DE_Stock_ID, -DE_Breeding, -DE_Protocol, -DE_Study, -DE_birth_date_year,-DE_birth_date_month,-DE_birth_date_day,-DE_arrival_date_year,-DE_arrival_date_month,-DE_arrival_date_day,-DE_exit_date_year,-DE_exit_date_month,-DE_exit_date_day,-DE_Exit_Reason,-DE_DO_Center_Status)
+
+founders_doseresponse_IVSA_raw_long = founders_doseresponse_IVSA_raw_long[grep("^DR_Inf_Total_\\d{1}p\\d{1,2}mgkg$",founders_doseresponse_IVSA_raw_long$Dose_Active),]
+founders_doseresponse_IVSA_raw_long$Dose = as.numeric(gsub(".*_(\\d{1})p(\\d+)mgkg$", "\\1.\\2", founders_doseresponse_IVSA_raw_long$Dose_Active))
+
+founders_doseresponse_vars2 = c("DR_ALP_TfASoTD_0p032mgkg",
+                               "DR_ALP_TfASoTD_0p056mgkg",
+                               "DR_ALP_TfASoTD_0p1mgkg",
+                               "DR_ALP_TfASoTD_0p32mgkg",
+                               "DR_ALP_TfASoTD_0p56mgkg",
+                               "DR_ALP_TfASoTD_1p0mgkg",
+                               "DR_ALP_TfASoTD_1p8mgkg")
+founders_doseresponse_TCI= founders_doseresponse_IVSA_raw %>%
+  group_by(DE_Strain)
+
+```
+founders_doseresponse_TCI$DR_0p032_mgkg_Inf = (DR_Inf_Total_0p032mgkg * 0.032)
+
+            DR_0p056_mgkg_Inf = (DR_Inf_Total_0p056mgkg * 0.056, na.rm = TRUE),
+            DR_0p1_mgkg_Inf = (DR_Inf_Total_0p1mgkg * 0.1, na.rm = TRUE),
+            DR_0p18_mgkg_Inf = (DR_Inf_Total_0p18mgkg * 0.18, na.rm = TRUE),
+            DR_0p32_mgkg_Inf = (DR_Inf_Total_0p32mgkg * 0.32, na.rm = TRUE),
+            DR_0p56_mgkg_Inf = (DR_Inf_Total_0p56mgkg * 0.56, na.rm = TRUE),
+            DR_1p0_mgkg_Inf = (DR_Inf_Total_1p0mgkg * 1.0, na.rm = TRUE),
+            DR_1p8_mgkg_Inf = (DR_Inf_Total_1p8mgkg * 1.8, na.rm = TRUE) %>%
+  gather(key = Dose, value = Mean, -DE_Strain)
+```
+
+
+founders_doseresponse_TCI_sem = founders_doseresponse_IVSA_raw %>%
+  group_by(DE_Strain) %>%
+  summarize(DR_0p032_mgkg_Inf = sd(DR_Inf_Total_0p032mgkg * 0.032, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p032mgkg)))),
+            DR_0p056_mgkg_Inf = sd(DR_Inf_Total_0p056mgkg * 0.056, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p056mgkg)))),
+            DR_0p1_mgkg_Inf = sd(DR_Inf_Total_0p1mgkg * 0.1, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p1mgkg)))),
+            DR_0p18_mgkg_Inf = sd(DR_Inf_Total_0p18mgkg * 0.18, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p18mgkg)))),
+            DR_0p32_mgkg_Inf = sd(DR_Inf_Total_0p32mgkg * 0.32, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p32mgkg)))),
+            DR_0p56_mgkg_Inf = sd(DR_Inf_Total_0p56mgkg * 0.56, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p56mgkg)))),
+            DR_1p0_mgkg_Inf = sd(DR_Inf_Total_1p0mgkg * 1.0, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_1p0mgkg)))),
+            DR_1p8_mgkg_Inf = sd(DR_Inf_Total_1p8mgkg * 1.8, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_1p8mgkg))))) %>%
+  gather(key = Dose, value = SEM, -DE_Strain)
+
+founders_doseresponse_TCI_mean = as.data.frame(founders_doseresponse_TCI_mean)
+row.names(founders_doseresponse_TCI_mean) = paste(founders_doseresponse_TCI_mean$DE_Strain,
+                                                  founders_doseresponse_TCI_mean$DE_Sex,
+                                                   founders_doseresponse_TCI_mean$Dose,
+                                                   sep = "-")
+
+founders_doseresponse_TCI_sem = as.data.frame(founders_doseresponse_TCI_sem)
+row.names(founders_doseresponse_TCI_sem) = paste(founders_doseresponse_TCI_sem$DE_Strain,
+                                                 founders_doseresponse_TCI_sem$DE_Sex,
+                                                   founders_doseresponse_TCI_sem$Dose,
+                                                   sep = "-")
+
+founders_doseresponse_TCI_mean$SEM = founders_doseresponse_TCI_sem[row.names(founders_doseresponse_TCI_mean),"SEM"]
+founders_doseresponse_TCI_mean$ul = founders_doseresponse_TCI_mean$Mean + founders_doseresponse_TCI_mean$SEM
+founders_doseresponse_TCI_mean$ll = founders_doseresponse_TCI_mean$Mean - founders_doseresponse_TCI_mean$SEM
+founders_doseresponse_TCI_mean$dose_mg_per_kg = factor(gsub("^DR_(\\d{1})p(\\d+)_mgkg_Inf$","\\1.\\2",founders_doseresponse_TCI_mean$Dose),
+                                                        levels = c("0.032","0.056","0.1","0.18","0.32","0.56","1.0","1.8"),
+                                                        ordered = TRUE)
+founders_doseresponse_TCI_mean$DE_Strain = factor(founders_doseresponse_TCI_mean$DE_Strain, 
+                                                   levels = founders_key$strain,
+                                                   ordered = TRUE)
+
+founders_doseresponse_TCI_plot = ggplot(data = founders_doseresponse_TCI_mean, aes(x = dose_mg_per_kg, y = Mean, color = DE_Strain, group = DE_Strain)) + 
+  geom_point() +
+  theme_cowplot() +
+  geom_line(size = 1) +
+  geom_errorbar(aes(ymin = ll, ymax = ul), width = 0.1, size = 1) +
+  scale_color_manual(values = founders_key[which(founders_key$strain %in% founders_doseresponse_TCI_mean$DE_Strain),"collaborative_cross_color_broman"]) +
+  ylab("Total Cocaine Intake (mg/kg)") +
+  xlab("Dose (mg/kg per infusion)")
+
+founders_doseresponse_TCI_plot
+
+ggsave(founders_doseresponse_TCI_plot.pdf)
+```
+  
+```{r cumulative_cocaine, warning = FALSE}
+founders_doseresponse_TCI_mean = founders_doseresponse_IVSA_raw %>%
+  group_by(DE_Strain, DE_Sex) %>%
+  summarize(DR_0p032_mgkg_Inf = mean(DR_Inf_Total_0p032mgkg * 0.032, na.rm = TRUE),
+            DR_0p056_mgkg_Inf = mean(DR_Inf_Total_0p056mgkg * 0.056, na.rm = TRUE),
+            DR_0p1_mgkg_Inf = mean(DR_Inf_Total_0p1mgkg * 0.1, na.rm = TRUE),
+            DR_0p18_mgkg_Inf = mean(DR_Inf_Total_0p18mgkg * 0.18, na.rm = TRUE),
+            DR_0p32_mgkg_Inf = mean(DR_Inf_Total_0p32mgkg * 0.32, na.rm = TRUE),
+            DR_0p56_mgkg_Inf = mean(DR_Inf_Total_0p56mgkg * 0.56, na.rm = TRUE),
+            DR_1p0_mgkg_Inf = mean(DR_Inf_Total_1p0mgkg * 1.0, na.rm = TRUE),
+            DR_1p8_mgkg_Inf = mean(DR_Inf_Total_1p8mgkg * 1.8, na.rm = TRUE)) %>%
+  gather(key = Dose, value = Mean, -DE_Strain, -DE_Sex)
+
+founders_doseresponse_TCI_sem = founders_doseresponse_IVSA_raw %>%
+  group_by(DE_Strain, DE_Sex) %>%
+  summarize(DR_0p032_mgkg_Inf = sd(DR_Inf_Total_0p032mgkg * 0.032, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p032mgkg)))),
+            DR_0p056_mgkg_Inf = sd(DR_Inf_Total_0p056mgkg * 0.056, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p056mgkg)))),
+            DR_0p1_mgkg_Inf = sd(DR_Inf_Total_0p1mgkg * 0.1, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p1mgkg)))),
+            DR_0p18_mgkg_Inf = sd(DR_Inf_Total_0p18mgkg * 0.18, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p18mgkg)))),
+            DR_0p32_mgkg_Inf = sd(DR_Inf_Total_0p32mgkg * 0.32, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p32mgkg)))),
+            DR_0p56_mgkg_Inf = sd(DR_Inf_Total_0p56mgkg * 0.56, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_0p56mgkg)))),
+            DR_1p0_mgkg_Inf = sd(DR_Inf_Total_1p0mgkg * 1.0, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_1p0mgkg)))),
+            DR_1p8_mgkg_Inf = sd(DR_Inf_Total_1p8mgkg * 1.8, na.rm = TRUE) / sqrt(length(which(!is.na(DR_Inf_Total_1p8mgkg))))) %>%
+  gather(key = Dose, value = SEM, -DE_Strain, -DE_Sex)
+
+founders_doseresponse_TCI_mean = as.data.frame(founders_doseresponse_TCI_mean)
+row.names(founders_doseresponse_TCI_mean) = paste(founders_doseresponse_TCI_mean$DE_Strain,
+                                                  founders_doseresponse_TCI_mean$DE_Sex,
+                                                   founders_doseresponse_TCI_mean$Dose,
+                                                   sep = "-")
+
+founders_doseresponse_TCI_sem = as.data.frame(founders_doseresponse_TCI_sem)
+row.names(founders_doseresponse_TCI_sem) = paste(founders_doseresponse_TCI_sem$DE_Strain,
+                                                 founders_doseresponse_TCI_sem$DE_Sex,
+                                                   founders_doseresponse_TCI_sem$Dose,
+                                                   sep = "-")
+
+founders_doseresponse_TCI_mean$SEM = founders_doseresponse_TCI_sem[row.names(founders_doseresponse_TCI_mean),"SEM"]
+founders_doseresponse_TCI_mean$ul = founders_doseresponse_TCI_mean$Mean + founders_doseresponse_TCI_mean$SEM
+founders_doseresponse_TCI_mean$ll = founders_doseresponse_TCI_mean$Mean - founders_doseresponse_TCI_mean$SEM
+founders_doseresponse_TCI_mean$dose_mg_per_kg = factor(gsub("^DR_(\\d{1})p(\\d+)_mgkg_Inf$","\\1.\\2",founders_doseresponse_TCI_mean$Dose),
+                                                        levels = c("0.032","0.056","0.1","0.18","0.32","0.56","1.0","1.8"),
+                                                        ordered = TRUE)
+founders_doseresponse_TCI_mean$DE_Strain = factor(founders_doseresponse_TCI_mean$DE_Strain, 
+                                                   levels = founders_key$strain,
+                                                   ordered = TRUE)
+
+founders_doseresponse_TCI_plot = ggplot(data = founders_doseresponse_TCI_mean, aes(x = dose_mg_per_kg, y = Mean, color = DE_Strain, group = DE_Strain)) + 
+  geom_point() +
+  facet_grid(DE_Sex~.) + 
+  theme_cowplot() +
+  geom_line(size = 1) +
+  geom_errorbar(aes(ymin = ll, ymax = ul), width = 0.1, size = 1) +
+  scale_color_manual(values = founders_key[which(founders_key$strain %in% founders_doseresponse_TCI_mean$DE_Strain),"collaborative_cross_color_broman"]) +
+  ylab("Total Cocaine Intake (mg/kg)") +
+  xlab("Dose (mg/kg per infusion)")
+
+founders_doseresponse_TCI_plot
+
+ggsave(founders_doseresponse_TCI_plot.pdf)
+```

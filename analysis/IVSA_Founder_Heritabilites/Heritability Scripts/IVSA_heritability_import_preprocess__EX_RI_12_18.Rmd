@@ -1,0 +1,382 @@
+---
+title: "IVSA Data: Preprocessing"
+author: "Michael C. Saul (michael.saul [at] jax.org)"
+adapted by: "Udita Datta (udita.datta [at] jax.org)"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    number_sections: true
+    fig_retina: true
+    self_contained: true
+    code_folding: show
+    theme: flatly
+    highlight: default
+    df_print: paged
+---
+
+# Background
+
+## Motivation
+
+### Purpose of analysis
+
+This analysis is performed to preprocess the intravenous self-administration data to:
+
+1) Make sure all data are clean and deduplicated.
+2) Make short and simple column names.
+3) Clean up duplicate IDs in novelty data in a rational way.
+4) Prepare data for cross-platform compatibility in both Python and R.
+
+**These data were collected by RAs from the CSNA's behavioral core. Intellectual contributions will be assessed in discussions with Leona Gagnon.**
+
+# Analysis
+
+## Setup
+
+### Working directory
+
+All chunks will run in the working folder for this experiment.
+
+```{r setup}
+script_root_dir = "C:/Users/dattau/Documents/IVSA_Proj_org/IVSA/IVSA"
+knitr::opts_knit$set(root.dir = script_root_dir)
+```
+
+Getting current date
+
+```{r}
+current_date = format(Sys.time(),"%Y-%m-%d")
+```
+
+### R libraries
+
+Calling R libraries necessary for this analysis.
+
+```{r}
+library("dplyr")
+library("tidyverse")
+library("lubridate")
+library("readxl")
+library("nlme")
+library("ez")
+```
+
+## Importing data
+
+## Importing IVSA and LIMS data
+
+Getting data from the following path:
+
+* `~/Box Sync/IVSA/preprocessed_IVSA_data/`
+I have changed this to define the file path for navigating the most recent datafile on my local data folder.
+
+```{r import_data, warning=FALSE}
+# Taking the most recent datasets
+data_path = paste(script_root_dir,"/preprocessed_IVSA_data/", sep = "")
+IVSA_datasets = data.frame(files = list.files(path = data_path, pattern = "\\d{4}-\\d{2}-\\d{2}\\.RDS$"),
+                                        date = ymd(gsub("^.*_(\\d{4}-\\d{2}-\\d{2})\\.RDS$","\\1", 
+                                                        list.files(path = data_path, 
+                                                                   pattern = "\\d{4}-\\d{2}-\\d{2}\\.RDS$")), 
+                                                   tz = "America/New_York"),
+                                        stringsAsFactors = FALSE)
+most_recent_datasets = paste(data_path, IVSA_datasets[which(IVSA_datasets$date == max(IVSA_datasets$date)),"files"], sep = "")
+
+# IVSA
+IVSA_raw_file = most_recent_datasets[grep("IVSA_raw", most_recent_datasets)]
+IVSA_metadata_file = most_recent_datasets[grep("IVSA_metadata", most_recent_datasets)]
+IVSA_raw = readRDS(IVSA_raw_file)
+row.names(IVSA_raw) = IVSA_raw$DE_Subject
+IVSA_metadata = readRDS(IVSA_metadata_file)
+head(IVSA_raw)
+```
+
+Getting founders strain key
+
+```{r}
+# Founders Key
+founders_key = readRDS("C:/Users/dattau/Documents/IVSA_Proj_org/IVSA/IVSA/csna_project_4_behavior/data/cc_do_founders_key.RDS")
+row.names(founders_key) = founders_key$strain
+founders_key[9,1] = "J:DO"
+founders_key[9,2] = "DO"
+founders_key[9,5] = "#000000"
+founders_key[9,6] = "#000000"
+row.names(founders_key) = founders_key$strain
+head(IVSA_raw)
+```
+```{r filter_for_founders, warning=FALSE}
+founders_IVSA = IVSA_raw %>%
+  filter(DE_Strain %in% founders_key$strain)
+#rm(list = c("IVSA_raw"))
+founders_IVSA = as.data.frame(founders_IVSA)
+
+founders_IVSA$DE_Strain = factor(founders_IVSA$DE_Strain,
+                                 levels = founders_key$strain,
+                                 ordered = TRUE)
+
+
+Old_DO <- founders_IVSA %>% 
+  filter(DE_birth_date_year == 2016,
+         DE_Strain == "J:DO")
+
+
+New_DO <- founders_IVSA %>% 
+  filter(DE_birth_date_year != 2016,
+         DE_Strain == "J:DO")
+
+No_DO <- founders_IVSA %>% 
+  filter(DE_Strain != "J:DO")
+
+founders_IVSA <- merge(Old_DO,No_DO, all = TRUE)
+
+ids <- c("A2063", "A2810", "A2418", "A3262", "A3261", "A3052", "A3257", "A3256", "A3051", "A2986")
+rm.ids <- which(founders_IVSA$DE_Subject %in% ids)
+founders_IVSA.p1  <- founders_IVSA[-rm.ids,]
+
+founders_IVSA = founders_IVSA.p1
+
+```
+Getting CC key.
+
+```{r}
+CC_key = unique(IVSA_raw$DE_Strain)
+CC_key = CC_key[grep("^CC\\d{3}/",CC_key)]
+#CC_key = stringr::str_extract(CC_key, "^.{5}")
+CC_key
+CC_founders_IVSA_CC = IVSA_raw %>%
+  filter(DE_Strain %in% c(CC_key))
+
+CC_founders_IVSA_CC$DE_Strain = stringr::str_extract(CC_founders_IVSA_CC$DE_Strain, "^.{5}")
+head(CC_founders_IVSA_CC)
+```
+
+Merging old DO, founders and CC
+```{r}
+CC_founders_IVSA <- rbind(founders_IVSA, CC_founders_IVSA_CC)
+```
+
+
+### Cleaning up IVSA data
+
+Cleaning up IVSA data. First, selecting only founders from the LIMS file and filtering the IVSA data for these data.
+
+## Acquisition
+
+Excluding animals who were found dead who didn't acquire and changing the failed acquisition animals to 28 sessions.
+
+
+```{r}
+CC_founders_IVSA_filtered = CC_founders_IVSA %>%
+  dplyr::filter(!(DE_Exit_Reason == "FD" & is.na(AQ_SessionsToAcquisition)))
+
+CC_founders_IVSA_filtered[which(CC_founders_IVSA_filtered$DE_Exit_Reason == "IVSA Acquisition Only"),"AQ_SessionsToAcquisition"] = 28
+CC_founders_IVSA_filtered
+```
+Looking at the rest of the data.
+
+```{r}
+CC_founders_IVSA_filtered[which(is.na(CC_founders_IVSA_filtered$AQ_SessionsToAcquisition)),]
+
+subset(CC_founders_IVSA_filtered,is.na(CC_founders_IVSA_filtered$AQ_SessionsToAcquisition) & CC_founders_IVSA_filtered$DE_Exit_Reason == "Finished Pipeline")
+
+```
+
+
+7 individuals  appears to have finished the pipeline, but the script could not calculate a sessions to acquisition criterion for it. Excluding these data.
+
+```{r}
+CC_founders_IVSA_filtered %>%
+  filter(!is.na(AQ_SessionsToAcquisition))
+
+CC_founders_IVSA_filtered
+```
+Selecting the relevant columns for Extinction relevant trait calculations. Choosing the following variables:
+'EX_ALP_Total_s01'to 'EX_ALP_Total_s10': Active lever press for extinction sessions
+'EX_ILP_Total_s01'to 'EX_ILP_Total_s10': Inactive lever press for extinction sessions
+Changing the format from wide to long format.
+```{r extinction_plot, warning=FALSE}
+CC_founders_extinction_df = CC_founders_IVSA %>%
+  select(DE_Subject,
+         DE_Strain,
+         DE_Sex,
+         EX_ALP_Total_s01,
+         EX_ALP_Total_s02,
+         EX_ALP_Total_s03,
+         EX_ALP_Total_s04,
+         EX_ALP_Total_s05,
+         EX_ALP_Total_s06,
+         EX_ALP_Total_s07,
+         EX_ALP_Total_s08,
+         EX_ALP_Total_s09,
+         EX_ALP_Total_s10,
+         EX_ILP_Total_s01,
+         EX_ILP_Total_s02,
+         EX_ILP_Total_s03,
+         EX_ILP_Total_s04,
+         EX_ILP_Total_s05,
+         EX_ILP_Total_s06,
+         EX_ILP_Total_s07,
+         EX_ILP_Total_s08,
+         EX_ILP_Total_s09,
+         EX_ILP_Total_s10)
+
+
+  CC_founders_extinction_df <- CC_founders_extinction_df        %>%
+  gather(key = Lever_Session, value = lever_presses, -DE_Subject, -DE_Strain, -DE_Sex) %>%
+  mutate(Lever = gsub("^EX_([AI])LP_Total_s(\\d{2})$","\\1",Lever_Session),
+         Session = as.numeric(gsub("^EX_([AI])LP_Total_s(\\d{2})$","\\2",Lever_Session))) %>%
+  filter(!is.na(lever_presses), Session <= 8)
+CC_founders_extinction_summary = CC_founders_extinction_df %>%
+  group_by(DE_Strain, DE_Sex, Lever, Session) %>%
+  summarize(mean = mean(lever_presses, na.rm = TRUE),
+            n = length(which(!is.na(lever_presses))),
+            sem = sd(lever_presses, na.rm = TRUE) / sqrt(length(which(!is.na(lever_presses))))) %>%
+  mutate(ul = mean + sem, ll = mean - sem)
+
+CC_founders_extinction_df
+```
+
+```{r}
+CC_founders_extinction_slope = CC_founders_extinction_df %>%
+  group_by(DE_Subject, Lever) %>%
+  do(Sessions_lm = (lm(lever_presses ~ Session, data = .))) %>%
+  broom::tidy(Sessions_lm) %>%
+  filter(term == "Session") %>%
+  select(DE_Subject, Lever, estimate) %>%
+  mutate(Subject_Lever = paste(DE_Subject, Lever, sep = "_"))
+CC_founders_extinction_slope = as.data.frame(CC_founders_extinction_slope)
+row.names(CC_founders_extinction_slope) = CC_founders_extinction_slope$Subject_Lever
+
+CC_founders_extinction_demodata = CC_founders_extinction_df%>%
+  group_by(DE_Subject, Lever) %>%
+  summarize(DE_Strain = unique(DE_Strain),
+            DE_Sex = unique(DE_Sex)) %>%
+  mutate(Subject_Lever = paste(DE_Subject, Lever, sep = "_"))
+CC_founders_extinction_demodata = as.data.frame(CC_founders_extinction_demodata)
+row.names(CC_founders_extinction_demodata) = CC_founders_extinction_demodata$Subject_Lever
+CC_founders_extinction_demodata = CC_founders_extinction_demodata[,(-1 * which(colnames(CC_founders_extinction_demodata) == "Subject_Lever"))]
+CC_founders_extinction_demodata$Slope = CC_founders_extinction_slope[row.names(CC_founders_extinction_demodata),"estimate"]
+CC_founders_extinction_slope = CC_founders_extinction_demodata; rm(list = c("CC_founders_extinction_demodata"))
+```
+
+```{r}
+CC_founders_extinction_slope_wide <- spread(CC_founders_extinction_slope, Lever, Slope)
+CC_founders_extinction_slope_wide
+```
+ANOVA on slope of active lever presses during extinction session
+```{r}
+CC_founders_extinction_slope_wide %>%
+  filter(!is.na(A)) %>%
+  group_by(DE_Strain) %>%
+  summarize(n = length(A))
+anova(lm(A ~ DE_Strain, data = CC_founders_extinction_slope_wide))
+```
+Selecting the relevant columns for Reinstatement relevant trait calculations. Choosing the following variables:
+'EX_ALP_Total_*last session': Active lever press for the final extinction session
+'RI_Inf_Total_*s01_03'three extinction sessions.
+Calculating %inc. in active lever press in reinstatement sessions relative to last extinction session.
+Changing the format from wide to long format.
+
+```{r}
+CC_founders_RI_df = CC_founders_IVSA %>%
+  select(DE_Subject,
+         DE_Strain,
+         DE_Sex,
+         RI_Inf_Total_s01,
+         RI_Inf_Total_s02,
+         RI_Inf_Total_s03) %>%
+  gather(key = Session, value = Infusions, -DE_Subject, -DE_Strain, -DE_Sex) %>%
+  mutate(Session = as.numeric(gsub("^RI_Inf_Total_s(\\d{2})$","\\1",Session))) %>%
+  filter(!is.na(Infusions))
+
+CC_founders_RI_ALP_df = CC_founders_IVSA %>%
+  select(DE_Subject,
+         DE_Strain,
+         DE_Sex,
+         RI_ALP_Total_s01,
+         RI_ALP_Total_s02,
+         RI_ALP_Total_s03) %>%
+  gather(key = Session, value = ALP, -DE_Subject, -DE_Strain, -DE_Sex) %>%
+  mutate(Session = as.numeric(gsub("^RI_ALP_Total_s(\\d{2})$","\\1",Session))) %>%
+  filter(!is.na(ALP))
+CC_founders_RI_ALP_df = as.data.frame(CC_founders_RI_ALP_df)
+CC_founders_RI_ALP_df
+CC_founders_final_day_EX_ALP = CC_founders_extinction_df %>%
+  group_by(DE_Subject) %>%
+  filter(!is.na(lever_presses) & Lever == "A") %>%
+  summarize(ALP = lever_presses[which(Session == max(Session))])
+CC_founders_final_day_EX_ALP = as.data.frame(CC_founders_final_day_EX_ALP)
+row.names(CC_founders_final_day_EX_ALP) = CC_founders_final_day_EX_ALP$DE_Subject 
+CC_founders_final_day_EX_ALP 
+CC_founders_RI_ALP_df
+CC_founders_RI_ALP_df$final_EX_ALP = CC_founders_final_day_EX_ALP[CC_founders_RI_ALP_df$DE_Subject,"ALP"]
+CC_founders_RI_ALP_df
+CC_founders_RI_ALP_df = CC_founders_RI_ALP_df[which(CC_founders_RI_ALP_df$Session == 1),]
+CC_founders_RI_ALP_df$percent_inc_final_EX = ((CC_founders_RI_ALP_df$ALP - CC_founders_RI_ALP_df$final_EX_ALP + 1) / (CC_founders_RI_ALP_df$final_EX_ALP + 1)) * 100
+CC_founders_RI_ALP_df$ratio_final_EX = (CC_founders_RI_ALP_df$ALP + 1) / (CC_founders_RI_ALP_df$final_EX_ALP + 1)
+CC_founders_RI_ALP_df
+```
+
+```{r}
+anova(lm(percent_inc_final_EX ~ DE_Strain * DE_Sex, data = CC_founders_RI_ALP_df))
+
+anova(lm(percent_inc_final_EX ~ DE_Strain, data = CC_founders_RI_ALP_df))
+```
+
+
+```{r}
+total1 <- merge.data.frame(CC_founders_IVSA_filtered,CC_founders_extinction_slope_wide, by.x="DE_Subject", by.y="DE_Subject", all.x=TRUE)
+total1
+total <- merge.data.frame(total1,CC_founders_RI_ALP_df, by.x="DE_Subject", by.y="DE_Subject", all.x=TRUE)
+
+total
+names(total)[names(total) == 'A'] <- 'Slope_Extinction_Active_Lever'
+names(total)[names(total) == 'percent_inc_final_EX'] <- 'RI_percent_final_EX'
+total <- total [ , -which(names(total) %in% c("DE_Strain.y","DE_Sex.y","DE_Strain","DE_Sex"))]
+names(total)[names(total) == 'DE_Strain.x'] <- 'DE_Strain'
+names(total)[names(total) == 'DE_Sex.x'] <- 'DE_Sex'
+CC_founders_IVSA_filtered <- total
+```
+
+Counting each cell to see if there's sufficient data to estimate heritability. 
+This looks ready for downstream heritability analysis.
+
+Saving these IVSA data for downstream use in the paper and in sharing on MPD.
+```{r}
+CC_founders_IVSA_filtered %>%
+  filter(!is.na(Slope_Extinction_Active_Lever)) %>%
+  group_by(DE_Strain) %>%
+  summarize(n = length(Slope_Extinction_Active_Lever))
+```
+
+```{r}
+CC_founders_IVSA_filtered %>%
+  filter(!is.na(RI_percent_final_EX)) %>%
+  group_by(DE_Strain) %>%
+  summarize(n = length(RI_percent_final_EX))
+```
+
+```{r}
+saveRDS(CC_founders_IVSA_filtered, paste("C:/Users/dattau/Documents/IVSA_Proj_org/IVSA/IVSA/csna_project_4_behavior/data/IVSA_data_preprocessed_EX_RE_",current_date,".RDS",sep=""))
+write.table(CC_founders_IVSA_filtered, paste("C:/Users/dattau/Documents/IVSA_Proj_org/IVSA/IVSA/csna_project_4_behavior/data/IVSA_data_preprocessed_EX_RE_",current_date,".tsv",sep=""),
+            sep = "\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
+```
+
+# Reproducibility Information
+
+## Software Used
+
+### R session and OS information
+
+```{r sessionInfo}
+IVSA_data_prep_sessionInfo = sessionInfo()
+IVSA_data_prep_sessionInfo
+saveRDS(IVSA_data_prep_sessionInfo, paste("C:/Users/dattau/Documents/IVSA_Proj_org/IVSA/IVSA/csna_project_4_behavior/output/IVSA_data_prep_sessionInfo_",current_date,".RDS", sep = ""), compress="xz")
+```
+
+## Document Control
+
+This document was prepared using RMarkdown in RStudio.

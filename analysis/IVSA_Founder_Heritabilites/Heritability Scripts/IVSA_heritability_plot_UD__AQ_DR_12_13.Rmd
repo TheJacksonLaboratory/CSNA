@@ -1,0 +1,620 @@
+---
+title: "Founders and CC Intravenous Self-Administration Data: Heritability and Plotting"
+author: "Michael C. Saul (michael.saul [at] jax.org)"
+modified by: "Udita Datta (udita.datta [at] jax.org)"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    number_sections: true
+    fig_retina: true
+    self_contained: true
+    code_folding: show
+    theme: flatly
+    highlight: default
+    df_print: paged
+---
+
+# Background
+
+## Motivation
+
+### Purpose of analysis
+
+This analysis is performed to process the intravenous self-administration data and calculate:
+
+1) Heritability
+2) Strain-by-sex means and standard errors for plotting
+
+**These data were collected by the CSNA research assistants. Ultimate authorship of the resultant publications will be determined in discussion with Leona Gagnon.** The preprocessing script `IVSA_import_preprocess.Rmd` was used to filter the data to only those data requiring reporting.
+
+### Note about this analysis
+
+The data have a floor effect (animals that took no cocaine) for infusions and a ceiling effect (animals that did not acquire self-administration) for sessions to acquisition. The appropriateness of a conventional linear model should be discussed with Vivek Philip. It's possible that we should fit a Tobit regression.
+
+# Analysis
+
+## Setup
+
+### Working directory
+
+All chunks will run in the working folder for this experiment.
+
+```{r setup}
+script_root_dir = "C:/Users/dattau/Documents/IVSA_Proj_org/IVSA/IVSA"
+knitr::opts_knit$set(root.dir = script_root_dir)
+```
+
+Getting current date
+
+```{r}
+current_date = format(Sys.time(),"%Y-%m-%d")
+```
+
+### R libraries
+
+Calling R libraries necessary for this analysis.
+
+```{r}
+library("tidyverse")
+library("lubridate")
+library("cowplot")
+library("MASS")
+library("ggbeeswarm")
+```
+
+## Importing data
+
+## Importing and displaying raw intravenous self-administration data
+
+Getting data from the filtering script and taking out the `DE_` part of the header
+
+```{r}
+IVSA_data = readRDS(paste("C:/Users/dattau/Documents/IVSA_Proj_org/IVSA/IVSA/csna_project_4_behavior/data/IVSA_data_preprocessed_AQ_DR_2020-12-17.RDS", sep = ""))
+colnames(IVSA_data) = gsub("^DE_","",colnames(IVSA_data))
+row.names(IVSA_data) = as.character(IVSA_data$Subject)
+IVSA_data
+```
+
+Displaying raw data.
+
+```{r}
+IVSA_data$failed_aq = ifelse(IVSA_data$Exit_Reason == "IVSA Acquisition Only", 2, 1)
+View(IVSA_data)
+```
+
+Getting founders strain key. Getting the founders only (no CC or DO) for heritabiliy calculations. 
+```{r founders_key_import, warning=FALSE}
+founders_key = readRDS("C:/Users/dattau/Documents/IVSA_Proj_org/IVSA/IVSA/csna_project_4_behavior/data/cc_do_founders_key.RDS")
+row.names(founders_key) = founders_key$strain
+IVSA_data = IVSA_data %>%
+  filter(Strain %in% founders_key$strain)
+#rm(list = c("IVSA_raw"))
+IVSA_data = as.data.frame(IVSA_data)
+```
+
+
+### Fitting ANOVA model for intravenous self-administration dose-response 1.0 mg/kg data
+
+Fitting the model with genetic background (strain), sex, and strain x sex interactions.
+
+```{r}
+anova(lm(AQ_SessionsToAcquisition ~ Strain * Sex, data = IVSA_data))
+anova(lm(DR_Inf_Total_1p0mgkg ~ Strain * Sex, data = IVSA_data))
+anova(lm(DR_Inf_Total_AUC ~ Strain * Sex, data = IVSA_data))
+```
+
+
+Strain is the only significant factor here. Looking at the residuals of the simplest model with just this in it first.
+
+```{r}
+anova(lm(AQ_SessionsToAcquisition ~ Strain, data = IVSA_data))
+anova(lm(DR_Inf_Total_1p0mgkg ~ Strain, data = IVSA_data))
+anova(lm(DR_Inf_Total_AUC ~ Strain, data = IVSA_data))
+```
+Plotting residuals with only strain in the model.
+```{r}
+IVSA_resid = IVSA_data[!sapply(IVSA_data, function(x) any(is.na(x)))]
+IVSA_resid
+IVSA_resid$DR_Inf_Total_1p0mgkg_Resid = resid(lm(DR_Inf_Total_1p0mgkg ~ Strain, data = IVSA_resid))
+IVSA_resid$Strain = factor(IVSA_resid$Strain,
+                                           levels = founders_key$strain,
+                                           ordered = TRUE)
+
+ggplot(data = IVSA_resid, aes(x = Strain, y = DR_Inf_Total_1p0mgkg_Resid, color = Strain, shape = Sex)) +
+  geom_hline(yintercept = 0, col = "#999999") +
+  geom_beeswarm(size = 2) + 
+  scale_color_manual(values = founders_key$collaborative_cross_color_broman) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_shape_manual(values = c(16,23))
+```
+
+```{r}
+qqnorm(IVSA_data$DR_Inf_Total_1p0mgkg, pch = 1, frame = FALSE)
+qqline(IVSA_data$DR_Inf_Total_1p0mgkg, col = "steelblue", lwd = 2)
+```
+
+The residuals indicate heteroscedasticity. 129 doesn't respond, so not worrying about those points. *NOTE: Heritability should be calculated both with 129 and without to prevent upward bias.* However, the PWK residuals appear to be at least 2.5-fold greater in magnitude than the WSB residuals. Doing a Box-Cox to see if a response variable transformation is merited.
+
+```{r}
+boxcox(lm((DR_Inf_Total_1p0mgkg + 1) ~ Strain, data = IVSA_resid))
+```
+
+The Box-Cox log-likelihood is highest at about 1/3, which implies that a cube root transform will be advantageous.
+
+```{r}
+boxcox(lm(1 + (DR_Inf_Total_1p0mgkg ^ (1/3)) ~ Strain, data = IVSA_resid))
+```
+
+The Box-Cox log-likelihood is centered closer to 1. Plotting residuals.
+
+```{r}
+IVSA_resid$DR_Inf_Total_1p0mgkg_Resid_cuberoot = resid(lm((DR_Inf_Total_1p0mgkg ^ (1/3)) ~ Strain, data = IVSA_resid))
+
+ggplot(data = IVSA_resid, aes(x = Strain, y = DR_Inf_Total_1p0mgkg_Resid_cuberoot, color = Strain, shape = Sex)) +
+  geom_hline(yintercept = 0, col = "#999999") +
+  geom_beeswarm(size = 2) + 
+  scale_color_manual(values = founders_key$collaborative_cross_color_broman) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_shape_manual(values = c(16,23))
+```
+
+These residuals are better. Doing model selection based upon this transform.
+
+```{r}
+AICs = c()
+AICs["AIC_inter"] = AIC(lm((DR_Inf_Total_1p0mgkg ^ (1/3))  ~ Strain + Sex + Strain:Sex, data = IVSA_data))
+AICs["AIC_nointer"] = AIC(lm((DR_Inf_Total_1p0mgkg ^ (1/3))  ~ Strain + Sex, data = IVSA_data))
+AICs["AIC_nosex"] = AIC(lm((DR_Inf_Total_1p0mgkg ^ (1/3))  ~ Strain, data = IVSA_data))
+AICs["AIC_nostrain"] = AIC(lm((DR_Inf_Total_1p0mgkg ^ (1/3))  ~ 1, data = IVSA_data))
+
+AICs
+
+BICs = c()
+BICs["BIC_inter"] = BIC(lm((DR_Inf_Total_1p0mgkg ^ (1/3))  ~ Strain + Sex + Strain:Sex, data = IVSA_data))
+BICs["BIC_nointer"] = BIC(lm((DR_Inf_Total_1p0mgkg ^ (1/3))  ~ Strain + Sex, data = IVSA_data))
+BICs["BIC_nosex"] = BIC(lm((DR_Inf_Total_1p0mgkg ^ (1/3))  ~ Strain, data = IVSA_data))
+BICs["BIC_nostrain"] = BIC(lm((DR_Inf_Total_1p0mgkg ^ (1/3))  ~ 1, data = IVSA_data))
+
+BICs
+```
+
+The best model for heritability according to both AIC and BIC contain only strain with no sex and strain:sex interaction factors. The residuals for this model have been plotted above. Showing the ANOVA table for this model.
+
+```{r}
+anova(lm((DR_Inf_Total_1p0mgkg ^ (1/3))  ~ Strain, data = IVSA_data))
+anova(lm((DR_Inf_Total_1p0mgkg ^ (1/3))  ~ Strain, data = IVSA_data))$`Pr(>F)`[1]
+```
+
+This ANOVA model will be used for downstream heritability calculations.
+
+### Calculating heritability for dose-response 1.0 mg/kg data
+
+Calculating heritability using the ANOVA table from the best fitting model. Using the following equation:
+
+$h^2=\displaystyle{{MS_{strain}}\over{MS_{strain} + (n_{mean} - 1) * MS_{resid}}}$
+
+where $MS_{strain}$ is the mean square of the strain differences, $MS_{resid}$ is the mean square of the residuals, and $n_{mean}$ is the mean sample size of a strain. Starting with the IVSA data that include 129.
+
+```{r}
+mean_n = nrow(IVSA_data) / length(unique(IVSA_data$Strain))
+anova_DR_1p0mgkg = anova(lm((DR_Inf_Total_1p0mgkg ^ (1/3))  ~ Strain, data = IVSA_data))
+anova_DR_1p0mgkg_df = as.data.frame(anova_DR_1p0mgkg)
+h2_DR_1p0mgkg_df = anova_DR_1p0mgkg_df["Strain","Mean Sq"] / (anova_DR_1p0mgkg_df["Strain","Mean Sq"] + ((mean_n - 1) * anova_DR_1p0mgkg_df["Residuals","Mean Sq"]))
+h2_DR_1p0mgkg_df
+```
+
+This heritability of `r round(h2_DR_1p0mgkg_df,2)` is higher than previous estimates. It should be noted that this is reasonably close to the estimate of cocaine use disorder heritability that's observed in humans.
+
+Calculating the heritability without 129.
+
+```{r}
+IVSA_data_no_129 = IVSA_data[which(IVSA_data$Strain != "129S1/SvImJ"),]
+IVSA_data_no_129$Strain = as.character(IVSA_data_no_129$Strain)
+mean_n = nrow(IVSA_data_no_129) / length(unique(IVSA_data_no_129$Strain))
+anova_DR_1p0mgkg_no_129 = anova(lm((DR_Inf_Total_1p0mgkg ^ (1/3))  ~ Strain, data = IVSA_data_no_129))
+anova_DR_1p0mgkg_no_129_df = as.data.frame(anova_DR_1p0mgkg_no_129)
+h2_DR_1p0mgkg_df_no_129 = anova_DR_1p0mgkg_no_129_df["Strain","Mean Sq"] / (anova_DR_1p0mgkg_no_129_df["Strain","Mean Sq"] + ((mean_n - 1) * anova_DR_1p0mgkg_no_129_df["Residuals","Mean Sq"]))
+h2_DR_1p0mgkg_df_no_129
+```
+
+129 appreciably drives the heritability; the number of `r round(h2_DR_1p0mgkg_df_no_129,2)` is a significant drop. 
+
+### Plotting strain x sex means for total infusions at FR1 1.0 mg/kg
+
+Plotting the strain:sex information for these data. The calculations will be back-transformed.
+
+```{r}
+IVSA_DR_1p0mgkg_summary = IVSA_data %>%
+  group_by(Strain, Sex) %>%
+  summarize(Strain_Sex_mean = mean((DR_Inf_Total_1p0mgkg ^ (1/3)), na.rm = TRUE),
+            Strain_Sex_sem = sd((DR_Inf_Total_1p0mgkg ^ (1/3)), na.rm = TRUE) / length(which(!is.na((DR_Inf_Total_1p0mgkg ^ (1/3))))),
+            Strain_Sex_n = length(which(!is.na(log10(AQ_SessionsToAcquisition))))) %>%
+  mutate(Strain_Sex = paste(Strain, gsub("^([MF]).*$", "\\1", Sex), sep = " "),
+         Strain_Sex_backmean = Strain_Sex_mean ^ 3,
+         Strain_Sex_ul = (Strain_Sex_mean + Strain_Sex_sem) ^ 3, 
+         Strain_Sex_ll = (Strain_Sex_mean - Strain_Sex_sem) ^ 3)
+IVSA_DR_1p0mgkg_summary = as.data.frame(IVSA_DR_1p0mgkg_summary)
+IVSA_DR_1p0mgkg_summary$Strain_Sex = factor(IVSA_DR_1p0mgkg_summary$Strain_Sex,
+                                                levels = paste(rep(founders_key$strain, each = 2), rep(c(" F", " M"), times = 8), sep = ""),
+                                                ordered = TRUE)
+IVSA_DR_1p0mgkg_summary$Strain = factor(IVSA_DR_1p0mgkg_summary$Strain,
+                                            levels = founders_key$strain,
+                                            ordered = TRUE)
+
+founders_IVSA_DR_1p0mgkg_plot = ggplot(data = IVSA_DR_1p0mgkg_summary, aes(x = Strain_Sex, y = Strain_Sex_backmean, color = Strain, group = Strain)) +
+  geom_line(size = 1) +
+  geom_point(size = 2) +
+  geom_errorbar(aes(ymin = Strain_Sex_ll, ymax = Strain_Sex_ul), width = 0.5, size = 1) +
+  scale_color_manual(values = founders_key$collaborative_cross_color_broman) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), legend.position="none") +
+  xlab(NULL) +
+  ylab("FR1 Total Infusions at 1.0 mg/kg") +
+  ggtitle("IVSA: 1.0 mg/kg (back-transformed from cube root)")
+
+founders_IVSA_DR_1p0mgkg_plot
+```
+
+Saving plot
+
+```{r}
+saveRDS(founders_IVSA_DR_1p0mgkg_plot, "C:/Users/dattau/Documents/IVSA_Proj_org/IVSA/IVSA/csna_project_4_behavior/output/founders_IVSA_DR_1p0mgkg_plot_sex_plot.RDS")
+```
+
+### Fitting ANOVA model for intravenous sessions to acquisition for self-administraion at 1.0 mg/kg
+
+Fitting the model with genetic background (strain), sex, and strain x sex interactions.
+
+```{r}
+anova(lm(AQ_SessionsToAcquisition ~ Strain * Sex, data = IVSA_data))
+```
+
+Again, strain is the only significant factor in this dataset. Plotting residuals of model with only this factor.
+
+Strain is the only significant factor here. Looking at the residuals of the simplest model with just this in it first.
+
+```{r}
+IVSA_resid$AQ_SessionsToAcquisition_Resid = resid(lm(AQ_SessionsToAcquisition ~ Strain, data = IVSA_resid))
+
+ggplot(data = IVSA_resid, aes(x = Strain, y = AQ_SessionsToAcquisition_Resid, color = Strain, shape = Sex)) +
+  geom_hline(yintercept = 0, col = "#999999") +
+  geom_beeswarm(size = 2) + 
+  scale_color_manual(values = founders_key$collaborative_cross_color_broman) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_shape_manual(values = c(16,23))
+```
+
+This fit doesn't look good. Trying Box-Cox to see if a response variable transform may be merited.
+
+```{r}
+boxcox(lm(AQ_SessionsToAcquisition ~ Strain, data = IVSA_resid))
+```
+
+The log-likelihood centered at 0 implies that a log-transform may help with the non-normal residuals.
+
+```{r}
+IVSA_resid$AQ_SessionsToAcquisition_Resid_log10 = resid(lm(log10(AQ_SessionsToAcquisition) ~ Strain, data = IVSA_resid))
+
+ggplot(data = IVSA_resid, aes(x = Strain, y = AQ_SessionsToAcquisition_Resid_log10, color = Strain, shape = Sex)) +
+  geom_hline(yintercept = 0, col = "#999999") +
+  geom_beeswarm(size = 2) + 
+  scale_color_manual(values = founders_key$collaborative_cross_color_broman) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_shape_manual(values = c(16,23))
+```
+
+This looks a little better. Trying Box-Cox to see if the log-likelihood is centered at 1 with the transformed data.
+
+```{r}
+boxcox(lm(log10(AQ_SessionsToAcquisition) ~ Strain, data = IVSA_resid))
+```
+
+This looks acceptable, though not ideal. Proceeding with model selection using the log10 transformation.
+
+```{r}
+AICs = c()
+AICs["AIC_inter"] = AIC(lm(log10(AQ_SessionsToAcquisition) ~ Strain + Sex + Strain:Sex, data = IVSA_data))
+AICs["AIC_nointer"] = AIC(lm(log10(AQ_SessionsToAcquisition)  ~ Strain + Sex, data = IVSA_data))
+AICs["AIC_nosex"] = AIC(lm(log10(AQ_SessionsToAcquisition)  ~ Strain, data = IVSA_data))
+AICs["AIC_nostrain"] = AIC(lm(log10(AQ_SessionsToAcquisition) ~ 1, data = IVSA_data))
+
+AICs
+
+BICs = c()
+BICs["BIC_inter"] = BIC(lm(log10(AQ_SessionsToAcquisition)  ~ Strain + Sex + Strain:Sex, data = IVSA_data))
+BICs["BIC_nointer"] = BIC(lm(log10(AQ_SessionsToAcquisition)  ~ Strain + Sex, data = IVSA_data))
+BICs["BIC_nosex"] = BIC(lm(log10(AQ_SessionsToAcquisition) ~ Strain, data = IVSA_data))
+BICs["BIC_nostrain"] = BIC(lm(log10(AQ_SessionsToAcquisition) ~ 1, data = IVSA_data))
+
+BICs
+```
+
+The one-way ANOVA with just the strain factor appears to be the best model. Displaying the ANOVA table.
+
+```{r}
+anova(lm(log10(AQ_SessionsToAcquisition) ~ Strain, data = IVSA_data))
+anova(lm(log10(AQ_SessionsToAcquisition) ~ Strain, data = IVSA_data))$`Pr(>F)`[1]
+```
+
+### Calculating heritability for sessions to acquisition
+
+Calculating heritability using the ANOVA table from the best fitting model. Using the following equation:
+
+$h^2=\displaystyle{{MS_{strain}}\over{MS_{strain} + (n_{mean} - 1) * MS_{resid}}}$
+
+where $MS_{strain}$ is the mean square of the strain differences, $MS_{resid}$ is the mean square of the residuals, and $n_{mean}$ is the mean sample size of a strain.
+
+Again, 129 has a ceiling effect, which would upwardly bias heritability calculations. Doing the calculation with and without 129.
+
+```{r}
+mean_n = nrow(IVSA_data) / length(unique(IVSA_data$Strain))
+anova_AQ_SessionsToAcquisition = anova(lm(log10(AQ_SessionsToAcquisition) ~ Strain, data = IVSA_data))
+IVSA_data
+anova_AQ_SessionsToAcquisition_df = as.data.frame(anova_AQ_SessionsToAcquisition)
+h2_AQ_SessionsToAcquisition = anova_AQ_SessionsToAcquisition_df["Strain","Mean Sq"] / (anova_AQ_SessionsToAcquisition_df["Strain","Mean Sq"] + ((mean_n - 1) * anova_AQ_SessionsToAcquisition_df["Residuals","Mean Sq"]))
+h2_AQ_SessionsToAcquisition
+```
+
+This heritability of `r round(h2_AQ_SessionsToAcquisition,2)` is also higher than previous estimates.
+
+Doing the calculation without 129.
+
+```{r}
+mean_n = nrow(IVSA_data_no_129) / length(unique(IVSA_data_no_129$Strain))
+anova_AQ_SessionsToAcquisition_no_129 = anova(lm(log10(AQ_SessionsToAcquisition) ~ Strain, data = IVSA_data_no_129))
+anova_AQ_SessionsToAcquisition_no_129_df = as.data.frame(anova_AQ_SessionsToAcquisition_no_129)
+h2_AQ_SessionsToAcquisition_no_129 = anova_AQ_SessionsToAcquisition_no_129_df["Strain","Mean Sq"] / (anova_AQ_SessionsToAcquisition_no_129_df["Strain","Mean Sq"] + ((mean_n - 1) * anova_AQ_SessionsToAcquisition_no_129_df["Residuals","Mean Sq"]))
+h2_AQ_SessionsToAcquisition_no_129
+```
+
+This heritability of `r round(h2_AQ_SessionsToAcquisition_no_129,2)` is a good magnitude.
+
+### Plotting strain x sex means for sessions to acquisition
+
+Plotting the strain:sex information for these data. The calculations will be back-transformed.
+
+```{r}
+IVSA_AQ_SessionsToAcquisition_summary = IVSA_data %>%
+  group_by(Strain, Sex) %>%
+  summarize(Strain_Sex_mean = mean(log10(AQ_SessionsToAcquisition), na.rm = TRUE),
+            Strain_Sex_sem = sd(log10(AQ_SessionsToAcquisition), na.rm = TRUE) / length(which(!is.na(log10(AQ_SessionsToAcquisition)))),
+            Strain_Sex_n = length(which(!is.na(log10(AQ_SessionsToAcquisition))))) %>%
+  mutate(Strain_Sex = paste(Strain, gsub("^([MF]).*$", "\\1", Sex), sep = " "),
+         Strain_Sex_backmean = 10 ^ Strain_Sex_mean,
+         Strain_Sex_ul = 10 ^ (Strain_Sex_mean + Strain_Sex_sem), 
+         Strain_Sex_ll = 10 ^ (Strain_Sex_mean - Strain_Sex_sem))
+IVSA_AQ_SessionsToAcquisition_summary = as.data.frame(IVSA_AQ_SessionsToAcquisition_summary)
+IVSA_AQ_SessionsToAcquisition_summary$Strain_Sex = factor(IVSA_AQ_SessionsToAcquisition_summary$Strain_Sex,
+                                                levels = paste(rep(founders_key$strain, each = 2), rep(c(" F", " M"), times = 8), sep = ""),
+                                                ordered = TRUE)
+IVSA_AQ_SessionsToAcquisition_summary$Strain = factor(IVSA_AQ_SessionsToAcquisition_summary$Strain,
+                                            levels = founders_key$strain,
+                                            ordered = TRUE)
+
+IVSA_AQ_SessionsToAcquisition_plot = ggplot(data = IVSA_AQ_SessionsToAcquisition_summary, aes(x = Strain_Sex, y = Strain_Sex_backmean, color = Strain, group = Strain)) +
+  geom_line(size = 1) +
+  geom_point(size = 2) +
+  geom_errorbar(aes(ymin = Strain_Sex_ll, ymax = Strain_Sex_ul), width = 0.5, size = 1) +
+  scale_color_manual(values = founders_key$collaborative_cross_color_broman) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), legend.position="none") +
+  xlab(NULL) +
+  ylab("Sessions to Acquisition") +
+  ggtitle("IVSA: Sessions to Acquisition (FR1 1.0 mg/kg)")
+
+IVSA_AQ_SessionsToAcquisition_plot
+```
+
+Plotting individual points for IVSA infusions at FR-1 1.0 mg/kg
+
+```{r}
+IVSA_data$Strain_Sex = factor(paste(as.character(IVSA_data$Strain),
+                                    as.character(IVSA_data$Sex),
+                                    sep = " "),
+                              levels = paste(rep(founders_key$strain, each = 2), rep(c("F","M"), times = 8), sep = " "),
+                              ordered = TRUE)
+IVSA_data$Strain = factor(IVSA_data$Strain, levels = founders_key$strain, ordered = TRUE)
+
+founders_FR1_individual_points_plot = ggplot(data = IVSA_data, aes(x = Strain_Sex, y = DR_Inf_Total_1p0mgkg, color = Strain, shape = Sex)) +
+  geom_beeswarm(size = 2) +
+  scale_color_manual(values = c(founders_key$collaborative_cross_color_broman)) +
+  scale_shape_manual(values = c(19,17)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), legend.position="none") +
+  xlab(NULL) +
+  ylab("FR1 Total Infusions at 1.0 mg/kg") +
+  ggtitle("IVSA: 1.0 mg/kg Infusions")
+founders_FR1_individual_points_plot
+```
+
+Plotting individual points for IVSA sessions to acquisition
+
+```{r}
+founders_StA_individual_points_plot = ggplot(data = IVSA_data, aes(x = Strain_Sex, y = AQ_SessionsToAcquisition, color = Strain, shape = Sex)) +
+  geom_beeswarm(size = 2) +
+  scale_color_manual(values = c(founders_key$collaborative_cross_color_broman)) +
+  scale_shape_manual(values = c(19,17)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), legend.position="none") +
+  xlab(NULL) +
+  ylab("Sessions to Acquisition") +
+  ggtitle("IVSA: Sessions to Acquisition (FR1 1.0 mg/kg)")
+founders_StA_individual_points_plot
+```
+
+Saving plot
+
+```{r}
+saveRDS(IVSA_AQ_SessionsToAcquisition_plot, "C:/Users/dattau/Documents/R_IVSA_Troy/IVSA/IVSA/csna_project_4_behavior/output/IVSA_AQ_SessionsToAcquisition_strain_sex_plot.RDS")
+```
+
+### Fitting ANOVA model for DR_Inf_Total_AUC (Area under the curve for Dose Response phase of self-administraion
+
+Fitting the model with genetic background (strain), sex, and strain x sex interactions.
+
+```{r}
+anova(lm(DR_Inf_Total_AUC ~ Strain * Sex, data = IVSA_data))
+```
+
+Again, strain and strain by sex interaction are significant  in this dataset. Plotting residuals of model with these factors.
+
+
+
+```{r}
+founders_key_no_129 <- founders_key[which(founders_key$strain != "129S1/SvImJ"),]
+IVSA_resid = IVSA_data %>% 
+  filter(!is.na(DR_Inf_Total_AUC))
+IVSA_resid$DR_Inf_Total_AUC_Resid = resid(lm(DR_Inf_Total_AUC ~ Strain, data = IVSA_resid))
+
+ggplot(data = IVSA_resid, aes(x = Strain, y = DR_Inf_Total_AUC, color = Strain, shape = Sex)) +
+  geom_hline(yintercept = 500, col = "#999999") +
+  geom_beeswarm(size = 2) + 
+  scale_color_manual(values = founders_key_no_129$collaborative_cross_color_broman) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_shape_manual(values = c(16,23))
+```
+
+This fit doesn't look good. Trying Box-Cox to see if a response variable transform may be merited.
+
+```{r}
+boxcox(lm(DR_Inf_Total_AUC ~ Strain, data = IVSA_resid))
+```
+
+The lambda centered close 0.5 implies that a sqrt transform may help with the non-normal residuals.
+
+```{r}
+founders_key_no_129 <- founders_key[which(founders_key$strain != "129S1/SvImJ"),]
+IVSA_resid$DR_Inf_Total_AUC_sqrt = resid(lm(sqrt(DR_Inf_Total_AUC) ~ Strain, data = IVSA_resid))
+
+ggplot(data = IVSA_resid, aes(x = Strain , y = DR_Inf_Total_AUC_sqrt, color = Strain, shape = Sex)) +
+  geom_hline(yintercept = 0, col = "#999999") +
+  geom_beeswarm(size = 2) + 
+  scale_color_manual(values = founders_key_no_129$collaborative_cross_color_broman) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_shape_manual(values = c(16,23))
+```
+
+This looks a little better. Trying Box-Cox to see if the log-likelihood is centered at 1 with the transformed data.
+
+```{r}
+boxcox(lm(sqrt(DR_Inf_Total_AUC) ~ Strain * Sex, data = IVSA_resid))
+```
+
+This looks acceptable. Proceeding with model selection using the sqrt transformation.
+
+```{r}
+AICs = c()
+AICs["AIC_inter"] = AIC(lm(sqrt(DR_Inf_Total_AUC) ~ Strain + Sex + Strain:Sex, data = IVSA_data))
+AICs["AIC_nointer"] = AIC(lm(sqrt(DR_Inf_Total_AUC)  ~ Strain + Sex, data = IVSA_data))
+AICs["AIC_nosex"] = AIC(lm(sqrt(DR_Inf_Total_AUC)  ~ Strain, data = IVSA_data))
+AICs["AIC_nostrain"] = AIC(lm(sqrt(DR_Inf_Total_AUC) ~ 1, data = IVSA_data))
+
+AICs
+
+BICs = c()
+BICs["BIC_inter"] = BIC(lm(sqrt(DR_Inf_Total_AUC)  ~ Strain + Sex + Strain:Sex, data = IVSA_data))
+BICs["BIC_nointer"] = BIC(lm(sqrt(DR_Inf_Total_AUC)  ~ Strain + Sex, data = IVSA_data))
+BICs["BIC_nosex"] = BIC(lm(sqrt(DR_Inf_Total_AUC) ~ Strain, data = IVSA_data))
+BICs["BIC_nostrain"] = BIC(lm(sqrt(DR_Inf_Total_AUC) ~ 1, data = IVSA_data))
+
+BICs
+```
+
+The one-way ANOVA with just the strain factor appears to be the best model. Displaying the ANOVA table.
+
+```{r}
+anova(lm(sqrt(DR_Inf_Total_AUC) ~ Strain * Sex, data = IVSA_data))
+anova(lm(sqrt(DR_Inf_Total_AUC) ~ Strain * Sex, data = IVSA_data))$`Pr(>F)`[1]
+```
+
+### Calculating heritability for dose response AUC
+
+Calculating heritability using the ANOVA table from the best fitting model. Using the following equation:
+
+$h^2=\displaystyle{{MS_{strain}}\over{MS_{strain} + (n_{mean} - 1) * MS_{resid}}}$
+
+where $MS_{strain}$ is the mean square of the strain differences, $MS_{resid}$ is the mean square of the residuals, and $n_{mean}$ is the mean sample size of a strain.
+
+
+```{r}
+mean_n = nrow(IVSA_data) / length(unique(IVSA_data$Strain))
+anova_DR_Inf_Total_AUC = anova(lm(sqrt(DR_Inf_Total_AUC) ~ Strain, data = IVSA_data))
+anova_DR_Inf_Total_AUC_df = as.data.frame(anova_DR_Inf_Total_AUC)
+h2_DR_Inf_Total_AUC = anova_DR_Inf_Total_AUC_df["Strain","Mean Sq"] / (anova_DR_Inf_Total_AUC_df["Strain","Mean Sq"] + ((mean_n - 1) * anova_DR_Inf_Total_AUC_df["Residuals","Mean Sq"]))
+h2_DR_Inf_Total_AUC
+```
+
+
+```{r}
+mean_n = nrow(IVSA_data) / (length(unique(IVSA_data$Strain)) * length(unique(IVSA_data$Sex)))
+anova_DR_Inf_Total_AUC = anova(lm(sqrt(DR_Inf_Total_AUC) ~ Strain * Sex, data = IVSA_data))
+anova_DR_Inf_Total_AUC_df = as.data.frame(anova_DR_Inf_Total_AUC)
+h2_DR_Inf_Total_AUC = (anova_DR_Inf_Total_AUC_df["Strain","Mean Sq"]-anova_DR_Inf_Total_AUC_df["Strain:Sex","Mean Sq"]) /(2 * (anova_DR_Inf_Total_AUC_df["Strain","Mean Sq"] + (mean_n -1) * anova_DR_Inf_Total_AUC_df["Residuals","Mean Sq"]))
+h2_DR_Inf_Total_AUC
+
+#h2 = round((msb-msi)/(s*(msb+(n-1)*mse)),2)
+save(list=ls(), file="IVSA.Rdata")
+```
+
+This heritability of `r round(h2_DR_Inf_Total_AUC,2)` is also higher than previous estimates.
+
+Doing the calculation without 129.
+
+```{r}
+mean_n = nrow(IVSA_data_no_129) / length(unique(IVSA_data_no_129$Strain))
+anova_DR_Inf_Total_AUC_no_129 = anova(lm(sqrt(DR_Inf_Total_AUC) ~ Strain, data = IVSA_data_no_129))
+anova_DR_Inf_Total_AUC_no_129_df = as.data.frame(anova_DR_Inf_Total_AUC_no_129)
+h2_DR_Inf_Total_AUC_no_129 = anova_DR_Inf_Total_AUC_no_129_df["Strain","Mean Sq"] / (anova_DR_Inf_Total_AUC_no_129_df["Strain","Mean Sq"] + ((mean_n - 1) * anova_DR_Inf_Total_AUC_no_129_df["Residuals","Mean Sq"]))
+h2_DR_Inf_Total_AUC_no_129
+```
+
+
+
+### Plotting strain x sex means for sessions to acquisition
+
+Plotting the strain:sex information for these data. The calculations will be back-transformed.
+
+```{r}
+founders_key_no_129 <- founders_key[which(founders_key$strain != "129S1/SvImJ"),]
+IVSA_DR_Inf_Total_AUC_summary = IVSA_data %>% filter(Strain != "129S1/SvImJ")%>%
+  group_by(Strain, Sex) %>%
+  summarize(Strain_Sex_mean = mean(sqrt(DR_Inf_Total_AUC), na.rm = TRUE),
+            Strain_Sex_sem = sd(sqrt(DR_Inf_Total_AUC), na.rm = TRUE) / length(which(!is.na(sqrt(DR_Inf_Total_AUC)))),
+            Strain_Sex_n = length(which(!is.na(sqrt(DR_Inf_Total_AUC))))) %>%
+  mutate(Strain_Sex = paste(Strain, gsub("^([MF]).*$", "\\1", Sex), sep = " "),
+         Strain_Sex_backmean =  Strain_Sex_mean ^ 2 ,
+         Strain_Sex_ul = (Strain_Sex_mean + Strain_Sex_sem)^ 2, 
+         Strain_Sex_ll = (Strain_Sex_mean - Strain_Sex_sem)^ 2)
+IVSA_DR_Inf_Total_AUC_summary = as.data.frame(IVSA_DR_Inf_Total_AUC_summary)
+IVSA_DR_Inf_Total_AUC_summary$Strain_Sex = factor(IVSA_DR_Inf_Total_AUC_summary$Strain_Sex,
+                                                levels = paste(rep(founders_key_no_129$strain, each = 2), rep(c(" F", " M"), times = 6), sep = ""),
+                                                ordered = TRUE)
+IVSA_DR_Inf_Total_AUC_summary$Strain = factor(IVSA_DR_Inf_Total_AUC_summary$Strain,
+                                            levels = founders_key_no_129$strain,
+                                            ordered = TRUE)
+
+IVSA_DR_Inf_Total_AUC_plot = ggplot(data = IVSA_DR_Inf_Total_AUC_summary, aes(x = Strain_Sex, y = Strain_Sex_backmean, color = Strain, group = Strain)) +
+  geom_line(size = 1) +
+  geom_point(size = 2) +
+  geom_errorbar(aes(ymin = Strain_Sex_ll, ymax = Strain_Sex_ul), width = 0.5, size = 1) +
+  scale_color_manual(values = founders_key_no_129$collaborative_cross_color_broman) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), legend.position="none") +
+  xlab(NULL) +
+  ylab("Dose-Response Infusions AUC") +
+  ggtitle("IVSA: Dose-Response Infusions AUC")
+
+IVSA_DR_Inf_Total_AUC_plot
+```
+
+Plotting individual points for IVSA infusions at FR-1 1.0 mg/kg
+
+
+Saving plot
+
+```{r}
+saveRDS(IVSA_AQ_SessionsToAcquisition_plot, "./output/IVSA_AQ_SessionsToAcquisition_strain_sex_plot.RDS")
+```
+
+## Document Control
+
+This document was prepared using RMarkdown in RStudio.

@@ -1,0 +1,193 @@
+---
+title: "Founders Intravenous Self-Administration Data: Heritability and Plotting"
+author: "Michael C. Saul (michael.saul [at] jax.org)"
+modified by: "Udita Datta (udita.datta [at] jax.org)"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    number_sections: true
+    fig_retina: true
+    self_contained: true
+    code_folding: show
+    theme: flatly
+    highlight: default
+    df_print: paged
+---
+
+# Background
+
+## Motivation
+
+### Purpose of analysis
+
+This analysis is performed to process the intravenous self-administration data and calculate:
+
+1) Heritability
+2) Strain-by-sex means and standard errors for plotting
+
+**These data were collected by the CSNA research assistants. Ultimate authorship of the resultant publications will be determined in discussion with Leona Gagnon.** The preprocessing script `IVSA_import_preprocess.Rmd` was used to filter the data to only those data requiring reporting.
+
+### Note about this analysis
+
+The data have a floor effect (animals that took no cocaine) for infusions and a ceiling effect (animals that did not acquire self-administration) for sessions to acquisition. The appropriateness of a conventional linear model should be discussed with Vivek Philip. It's possible that we should fit a Tobit regression.
+
+# Analysis
+
+## Setup
+
+### Working directory
+
+All chunks will run in the working folder for this experiment.
+
+```{r setup}
+script_root_dir = "C:/Users/dattau/Documents/IVSA_Proj_org/IVSA/IVSA"
+knitr::opts_knit$set(root.dir = script_root_dir)
+```
+
+Getting current date
+
+```{r}
+current_date = format(Sys.time(),"%Y-%m-%d")
+```
+
+### R libraries
+
+Calling R libraries necessary for this analysis.
+
+```{r}
+library("tidyverse")
+library("lubridate")
+library("cowplot")
+library("MASS")
+library("ggbeeswarm")
+```
+
+## Importing data
+
+## Importing and displaying raw intravenous self-administration data
+
+Getting data from the filtering script and taking out the `DE_` part of the header
+
+```{r}
+IVSA_data = readRDS(paste("C:/Users/dattau/Documents/IVSA_Proj_org/IVSA/IVSA/csna_project_4_behavior/data/IVSA_data_preprocessed_EX_RE_2020-12-20.RDS", sep = ""))
+colnames(IVSA_data) = gsub("^DE_","",colnames(IVSA_data))
+row.names(IVSA_data) = as.character(IVSA_data$Subject)
+IVSA_data
+```
+
+Getting founders strain key
+
+```{r}
+founders_key = readRDS("C:/Users/dattau/Documents/IVSA_Proj_org/IVSA/IVSA/csna_project_4_behavior/data/cc_do_founders_key.RDS")
+row.names(founders_key) = founders_key$strain
+IVSA_data = IVSA_data %>%
+  filter(Strain %in% founders_key$strain)
+#rm(list = c("IVSA_raw"))
+IVSA_data = as.data.frame(IVSA_data)
+```
+### Fitting ANOVA model for Slope_Extinction_Active_Lever: Extinction phase of self-administraion
+
+Fitting the model with genetic background (strain), sex, and strain x sex interactions.
+
+```{r}
+anova(lm(Slope_Extinction_Active_Lever ~ Strain * Sex, data = IVSA_data))
+```
+
+No effects are significant  in this dataset. Plotting residuals of model with strain, anyways.
+
+
+
+```{r}
+founders_key_no_129 <- founders_key[which(founders_key$strain != "129S1/SvImJ"),]
+IVSA_resid = IVSA_data %>%
+  filter(!is.na(Slope_Extinction_Active_Lever))
+IVSA_resid$DR_Inf_Total_AUC_Resid = resid(lm(Slope_Extinction_Active_Lever ~ Strain, data = IVSA_resid))
+
+ggplot(data = IVSA_resid, aes(x = Strain, y = Slope_Extinction_Active_Lever, color = Strain, shape = Sex)) +
+  geom_hline(yintercept = 0, col = "#999999") +
+  geom_beeswarm(size = 2) + 
+  scale_color_manual(values = founders_key_no_129$collaborative_cross_color_broman) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_shape_manual(values = c(16,23))
+```
+```{r}
+min(IVSA_resid$Slope_Extinction_Active_Lever)
+boxcox(lm((Slope_Extinction_Active_Lever + 74) ~ Strain, data = IVSA_resid))
+```
+
+The log-likelihood centered at 0 implies that a log-transform may help with the non-normal residuals.
+
+```{r}
+IVSA_resid$Slope_Extinction_Active_Lever_Resid_constant = resid(lm((Slope_Extinction_Active_Lever + 74) ~ Strain, data = IVSA_resid))
+
+ggplot(data = IVSA_resid, aes(x = Strain , y = Slope_Extinction_Active_Lever_Resid_constant, color = Strain, shape = Sex)) +
+  geom_hline(yintercept = 0, col = "#999999") +
+  geom_beeswarm(size = 2) + 
+  scale_color_manual(values = founders_key_no_129$collaborative_cross_color_broman) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_shape_manual(values = c(16,23))
+```
+
+This looks a little better. Trying Box-Cox to see if the log-likelihood is centered at 1 with the transformed data.
+
+
+
+```{r}
+mean_n = nrow(IVSA_data) / length(unique(IVSA_data$Strain))
+anova_Slope_Extinction_Active_Lever = anova(lm((Slope_Extinction_Active_Lever+74) ~ Strain, data = IVSA_data))
+anova_Slope_Extinction_Active_Lever_df = as.data.frame(anova_Slope_Extinction_Active_Lever)
+h2_Slope_Extinction_Active_Lever = anova_Slope_Extinction_Active_Lever_df["Strain","Mean Sq"] / (anova_Slope_Extinction_Active_Lever_df["Strain","Mean Sq"] + ((mean_n - 1) * anova_Slope_Extinction_Active_Lever_df["Residuals","Mean Sq"]))
+h2_Slope_Extinction_Active_Lever
+```
+
+
+```{r}
+mean_n = nrow(IVSA_data) / length(unique(IVSA_data$Strain))
+anova_Slope_Extinction_Active_Lever = anova(lm(((Slope_Extinction_Active_Lever)^ (1/3)) ~ Strain, data = IVSA_data))
+anova_Slope_Extinction_Active_Lever_df = as.data.frame(anova_Slope_Extinction_Active_Lever)
+h2_Slope_Extinction_Active_Lever = anova_Slope_Extinction_Active_Lever_df["Strain","Mean Sq"] / (anova_Slope_Extinction_Active_Lever_df["Strain","Mean Sq"] + ((mean_n - 1) * anova_Slope_Extinction_Active_Lever_df["Residuals","Mean Sq"]))
+h2_Slope_Extinction_Active_Lever
+```
+```{r}
+anova(lm(RI_percent_final_EX ~ Strain * Sex, data = IVSA_data))
+```
+
+Again, strain is the only significant factor in this dataset. Plotting residuals of model with only this factor.
+
+Strain is the only significant factor here. Looking at the residuals of the simplest model with just this in it first.
+
+```{r}
+founders_key_no_129 <- founders_key[which(founders_key$strain != "129S1/SvImJ"),]
+IVSA_resid = IVSA_data %>% 
+  filter(!is.na(RI_percent_final_EX))
+IVSA_resid$RI_percent_final_EX_Resid = resid(lm(RI_percent_final_EX ~ Strain, data = IVSA_resid))
+
+ggplot(data = IVSA_resid, aes(x = Strain, y = RI_percent_final_EX, color = Strain, shape = Sex)) +
+  geom_hline(yintercept = 500, col = "#999999") +
+  geom_beeswarm(size = 2) + 
+  scale_color_manual(values = founders_key_no_129$collaborative_cross_color_broman) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_shape_manual(values = c(16,23))
+```
+
+This fit doesn't look good. Trying Box-Cox to see if a response variable transform may be merited.
+
+```{r}
+boxcox(lm(RI_percent_final_EX ~ Strain, data = IVSA_resid))
+```
+
+
+```{r}
+mean_n = nrow(IVSA_data) / length(unique(IVSA_data$Strain))
+anova_RI_percent_final_EX = anova(lm(((RI_percent_final_EX)^ (1/3)) ~ Strain, data = IVSA_data))
+anova_RI_percent_final_EX_df = as.data.frame(anova_RI_percent_final_EX)
+h2_RI_percent_final_EX = anova_RI_percent_final_EX_df["Strain","Mean Sq"] / (anova_RI_percent_final_EX_df["Strain","Mean Sq"] + ((mean_n - 1) * anova_RI_percent_final_EX_df["Residuals","Mean Sq"]))
+h2_RI_percent_final_EX
+```
+## Document Control
+
+This document was prepared using RMarkdown in RStudio.
