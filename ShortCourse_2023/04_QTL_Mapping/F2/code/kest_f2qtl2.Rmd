@@ -1,0 +1,132 @@
+---
+title: "QTL analysis of morphine tolerance in a (B6 × 129)F~2~ cross"
+source: Rmd
+output:
+  html_document:
+    df_print: paged
+  word_document: default
+---
+
+
+```{r message=FALSE, echo=FALSE, warning=FALSE}
+library(qtl)
+library(qtl2)
+library(ggplot2)
+library(GGally)
+#library(qtl2plot)
+```
+
+This tutorial will take you through the process of mapping a QTL and searching for candidate genes using morphine tolerance as the trait assayed in an F~2~ population.
+
+The data comes from a behavioral study in which 224 male and female mice from an (B6 × 129)F~2~ cross. The trait of interest is **jumping frequency**. Prior to mapping this trait was subsequently transformed by taking its square root in order to achieve normality.
+
+Please refer to the following publication for additional details [Kest , et al. (2004) (<i>Mamm Genome</i> 8:610-7)](https://rd.springer.com/article/10.1007/s00335-004-2367-3)
+
+## Installation of required R packages
+
+By now you would have all ready installed the required R packages necessary for the successful completion of this module. If you have **NOT**, please do so now by following the instructions below by pasting them in the R console:
+
+1. [qtl](http://www.rqtl.org/) - install.packages("qtl")
+
+2. [qtl2](https://kbroman.org/qtl2/) - install.packages("qtl2", repos="http://rqtl.org/qtl2cran")
+
+3. [ggplot2](https://ggplot2.tidyverse.org/) - install.packages("ggplot2")
+
+4. [GGally](https://github.com/ggobi/ggally) - install.packages("GGally")
+
+
+
+## QTL mapping workflow
+![](../figs/mapping-workflow.png)
+
+### Load and explore the data
+
+```{r load_data, warning=FALSE}
+bxa <- read.cross(format="csv", file="../data/Chesler2012_B6x129S_B37_Data.csv", genotypes = c("B","H","S"), alleles = c("B","S"))
+summary(bxa)
+```
+
+### Convert to qtl2
+```{r convert2qtl2, warning=FALSE}
+bxa.qtl2 <-  convert2cross2(bxa)
+summary(bxa.qtl2)
+```
+
+### Calculating genotype probabilities
+
+The first basic task in QTL analysis is to calculate conditional genotype probabilities, given the observed marker data, at each putative QTL position. This is accomplished with the calc_genoprob() function. Unlike the corresponding function in R/qtl, calc.genoprob(), the result is not inserted back into the input cross object, but is returned as a list of three-dimensional arrays (one per chromosome). Each 3d array of probabilities is arranged as individuals × genotypes × positions.
+
+If we wish to perform QTL calculations at positions between markers (so called “pseudomarkers”), we first need to insert such positions into the genetic map with the function insert_pseudomarkers(). Unlike R/qtl, the map is kept separate from the genotype probabilities.
+
+#### insert pseudomarkers
+```{r insert_pseudomarkers}
+map <- insert_pseudomarkers(bxa.qtl2$gmap, step=1)
+```
+
+#### calculate the QTL genotype probabilities
+```{r calc_genoprob}
+pr <- calc_genoprob(bxa.qtl2, map, error_prob=0.002)
+```
+The genome scan functions (see below) use genotype probabilities as well as a matrix of phenotypes. If you wished to perform a genome scan via an additive allele model, you would first convert the genotype probabilities to allele probabilities, using the function genoprob_to_alleleprob().
+
+#### calculate the QTL allele probabilities
+```{r calc_genoprob}
+apr <- genoprob_to_alleleprob(pr)
+```
+
+#### Performing a genome scan
+To perform a genome scan by Haley-Knott regression (Haley and Knott 1992), use the function scan1().
+
+scan1() takes as input the genotype probabilities, a matrix of phenotypes, optional additive and interactive covariates, and the special X chromosome covariates. Another option is to provide a vector of weights.
+
+```{r calc_genoprob}
+Xcovar <- get_x_covar(bxa.qtl2)
+out <- scan1(pr, bxa.qtl2$pheno[,3], Xcovar=Xcovar)
+```
+
+#### Plot the genome scan
+```{r plot_scan1}
+plot(out, map, col="violetred")
+```
+
+#### Performing a permutation test
+```{r permutations}
+operm <- scan1perm(pr, bxa.qtl2$pheno[,3], Xcovar=Xcovar, n_perm=100)
+thr <- summary(operm, alpha=c(0.01, 0.05, 0.10, 0.63))
+```
+
+#### Plot the genome scan with thresholds
+```{r plot_scan1}
+plot(out, map, col="violetred", ylim=c(0, 1.05*thr[1]))
+abline(h = thr[1], lty=1)
+abline(h = thr[2], lty=2)
+abline(h = thr[3], lty=3)
+abline(h = thr[4], lty=4)
+```
+
+#### Finding LOD peaks
+```{r lod_peaks}
+find_peaks(out, map, threshold=thr[4], drop=1.5)
+```
+
+
+#### Estimated QTL effects
+```{r qtl_effects}
+c2eff <- scan1coef(pr[,"1"], bxa.qtl2$pheno[,3])
+par(mar=c(4.1, 4.1, 1.1, 2.6), las=1)
+col <- c("slateblue", "violetred", "green3")
+plot(c2eff, map["1"], columns=1:3, col=col)
+last_coef <- unclass(c2eff)[nrow(c2eff),]
+# pull out last coefficients
+for(i in seq(along=last_coef))
+    axis(side=4, at=last_coef[i], names(last_coef)[i], tick=FALSE, col.axis=col[i])
+```
+
+Finally, to plot the raw phenotypes against the genotypes at a single putative QTL position, you can use the function plot_pxg(). This takes a vector of genotypes as produced by the maxmarg() function, which picks the most likely genotype from a set of genotype probabilities, provided it is greater than some specified value (the argument minprob). Note that the “marg” in “maxmarg” stands for “marginal”, as this function is selecting the genotype at each position that has maximum marginal probability.
+
+```{r plot_pxg}
+g <- maxmarg(pr, map, chr=1, pos=38.536, return_char=TRUE)
+par(mar=c(4.1, 4.1, 0.6, 0.6))
+plot_pxg(g, bxa.qtl2$pheno[,3], ylab="B.wght phenotype")
+```
+

@@ -1,0 +1,131 @@
+---
+title: "QTL analysis of morphine tolerance in a (B6 × 129~3~)F~2~ cross"
+source: Rmd
+output:
+  html_document:
+    df_print: paged
+  word_document: default
+---
+
+
+```{r message=FALSE, echo=FALSE, warning=FALSE}
+library(qtl)
+```
+
+This tutorial will take you through the process of mapping a QTL and searching for candidate genes using morphine tolerance as the trait assayed in an F~2~ population.
+
+The data comes from a behavioral study in which 224 male and female mice from an (B6 × 129P~3~)F~2~ cross. The trait of interest is **jumping frequency**. Prior to mapping this trait was subsequently transformed by taking its square root in order to achieve normality.
+
+Please refer to the following publication for additional details [Kest , et al. (2004) (<i>Mamm Genome</i> 8:610-7)](https://rd.springer.com/article/10.1007/s00335-004-2367-3)
+
+## Installation of required R packages
+
+By now you would have all ready installed the required R packages necessary for the successful completion of this module. If you have **NOT**, please do so now by following the instructions below by pasting them in the R console:
+
+1. [qtl](http://www.rqtl.org/) - install.packages("qtl")
+
+### Load and explore the data
+
+```{r load_data, warning=FALSE}
+bxa <- read.cross(format="csv", file="../data/tolerance4.csv", genotypes = c("A","H","B"), alleles = c("A","B")
+                  , estimate.map =TRUE)
+summary(bxa)
+```
+
+### Genome scans
+
+### Set up for scanning by calculating genotype probabilities.
+```{r genoprobs, message=FALSE, warning=FALSE}
+bxa <- calc.genoprob(bxa, step=1, stepwidth="fixed", map.function="c-f", err=0.002)
+```
+
+
+
+###  One dimensional genome scan 
+```{r scanone, message=FALSE, warning=FALSE}
+bxa.scan1a <- scanone(bxa, pheno.col="sqrdep", method="hk")
+plot(bxa.scan1a)
+```
+
+###  Run permutations.
+```{r scanone_permutations, message=FALSE, warning=FALSE}
+bxa.perm1a <-scanone(bxa, pheno.col="sqrdep", method="hk", n.perm=100, perm.Xsp=TRUE)
+```
+
+###  Plot the genome scan.
+```{r plot_scanone, message=FALSE, warning=FALSE}
+plot(bxa.scan1a)
+add.threshold(bxa.scan1a, perms=bxa.perm1a, alpha=0.01,lty="dashed",lwd=2,col="blue")
+add.threshold(bxa.scan1a, perms=bxa.perm1a, alpha=0.05,lty="dashed",lwd=2,col="red")
+add.threshold(bxa.scan1a, perms=bxa.perm1a, alpha=0.63,lty="dashed",lwd=2,col="green")
+```
+
+### Tabular summary options	
+```{r summmarize_scan1, message=FALSE, warning=FALSE}
+summary(bxa.scan1a, 2.0)
+summary(bxa.scan1a, perms=bxa.perm1a, alpha=0.10)
+summary(bxa.scan1a, perms=bxa.perm1a, alpha=0.10, format="tabByCol",ci.function="lodint")
+```
+
+### Find nearest marker	
+
+Now let's find the nearest marker to the chromosome 1 peak.
+```{r find_nearest_marker, message=FALSE, warning=FALSE}
+find.marker(bxa, 1, 47.3)
+```
+
+### Two dimensional genome scan 
+```{r scantwo, message=FALSE, warning=FALSE, results="hide"}
+bxa.scan2a <- scantwo(bxa, pheno.col="sqrdep", method="hk")
+```
+
+
+### Plot the pairwise scan
+```{r plot_scantwo, message=FALSE, warning=FALSE}
+plot(bxa.scan2a)
+```
+
+### Scantwo sumary
+```{r summmarize_scan2, message=FALSE, warning=FALSE}
+summary(bxa.scan2a, what="best", thresholds=c(9.1, 7.1, 6.3, 6.3, 3.3))
+```
+
+### Multiple QTL mapping
+
+We begin by first imputing genotypes. Followed by creating a QTL object that allows us to model the effects from multiple loci jointly.
+
+```{r fit_mqm, message=FALSE, warning=FALSE}
+bxa <- sim.geno(bxa, step=2, n.draws=128, err=0.001)
+
+# Create a QTL object by pulling out imputed genotypes at selected loci.
+qtl <- makeqtl(bxa, chr=c(1, 5, 10), pos=c(47.3, 21.5, 42.0))
+qtl
+plot(qtl)
+
+# Fit a model with selected QTL loci.
+out.fq <- fitqtl(bxa, qtl=qtl, formula = y ~ Q1 + Q2 + Q3, pheno.col = 7)
+summary(out.fq)
+```
+
+### Plot effects
+
+```{r plot_effects}
+m1<-find.marker(bxa,chr=1, pos=48.3)
+m2<-find.marker(bxa,chr=5, pos=21.5)
+m3<-find.marker(bxa,chr=10, pos=41.0)
+
+effectplot(bxa,pheno.col=7, mname1=m1)
+effectplot(bxa,pheno.col=7, mname1=m2)
+effectplot(bxa,pheno.col=7, mname1=m3)
+```
+
+
+### Plot the phenotype values versus the genotypes at a marker or markers.
+
+```{r plot_PXG}
+
+
+plotPXG(bxa,pheno.col=7, marker=m1)
+plotPXG(bxa,pheno.col=7, marker=m2)
+plotPXG(bxa,pheno.col=7, marker=m3)
+```

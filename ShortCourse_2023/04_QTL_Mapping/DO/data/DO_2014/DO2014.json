@@ -1,0 +1,30 @@
+{
+  "description": "DO data from Logan RW, et al. (2014) Genes Brain Behav 12:424-437",
+  "crosstype": "do",
+  "sep": ",",
+  "na.strings": ["-", "NA"],
+  "comment.char": "#",
+  "geno": "DO2014_geno.csv",
+  "founder_geno": "DO2014_foundergeno.csv",
+  "gmap": "DO2014_gmap.csv",
+  "pmap": "DO2014_pmap.csv",
+  "pheno": "DO2014_pheno.csv",
+  "covar": "DO2014_covar.csv",
+  "alleles": ["A", "B", "C", "D", "E", "F", "G", "H"],
+  "x_chr": "X",
+  "genotypes": {
+    "A": 1,
+    "H": 2,
+    "B": 3
+  },
+  "geno_transposed": true,
+  "founder_geno_transposed": true,
+  "sex": {
+    "covar": "Sex",
+    "female": "female",
+    "male": "male"
+  },
+  "cross_info": {
+    "covar": "ngen"
+  }
+}
